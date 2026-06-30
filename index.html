@@ -834,20 +834,18 @@ async function fetchSat(){
     const point=ee.Geometry.Point([pt.lon,pt.lat]);
     const region=point.buffer(800).bounds();
     const end=ee.Date(Date.now()),start=end.advance(-3,"month");
-    const s2=ee.ImageCollection("COPERNICUS/S2_SR_HARMONIC").filterBounds(point).filterDate(start,end).filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE",25)).median();
+    const s2=ee.ImageCollection("COPERNICUS/S2_SR_HARMONIC").filterBounds(point).filterDate(start,end).filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE",25)).median().clip(region);
     const ndvi=s2.normalizedDifference(["B8","B4"]).rename("NDVI");
     const ndwi=s2.normalizedDifference(["B3","B8"]).rename("NDWI");
     const bsi=s2.expression("((SWIR+RED)-(NIR+BLUE))/((SWIR+RED)+(NIR+BLUE))",{SWIR:s2.select("B11"),RED:s2.select("B4"),NIR:s2.select("B8"),BLUE:s2.select("B2")}).rename("BSI");
     const nirN=s2.select("B8").divide(10000),redN=s2.select("B4").divide(10000);
     const msavi=nirN.multiply(2).add(1).subtract(nirN.multiply(2).add(1).pow(2).subtract(nirN.subtract(redN).multiply(8)).sqrt()).divide(2).rename("MSAVI");
-    const[uRGB,uNDVI,uBSI,uMSAVI,uNDWI]=await Promise.all([
-      thumb(s2,{bands:["B4","B3","B2"],min:0,max:3000},region),
-      thumb(ndvi,{min:-0.2,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},region),
-      thumb(bsi,{min:-0.3,max:0.5,palette:["#1b5e20","#81c784","#ffcc02","#e53935","#b71c1c"]},region),
-      thumb(msavi,{min:0,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},region),
-      thumb(ndwi,{min:-0.5,max:0.5,palette:["#6d4c41","#ffcc02","#64b5f6","#0d47a1"]},region)
-    ]);
-    setMapImg(0,uRGB);setMapImg(1,uNDVI);setMapImg(2,uBSI);setMapImg(3,uMSAVI);setMapImg(4,uNDWI);
+    
+    setMapImg(0, await thumb(s2,{bands:["B4","B3","B2"],min:0,max:3000},region));
+    setMapImg(1, await thumb(ndvi,{min:-0.2,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},region));
+    setMapImg(2, await thumb(bsi,{min:-0.3,max:0.5,palette:["#1b5e20","#81c784","#ffcc02","#e53935","#b71c1c"]},region));
+    setMapImg(3, await thumb(msavi,{min:0,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},region));
+    setMapImg(4, await thumb(ndwi,{min:-0.5,max:0.5,palette:["#6d4c41","#ffcc02","#64b5f6","#0d47a1"]},region));
     ndvi.addBands(bsi).addBands(ndwi).addBands(msavi)
       .reduceRegion({reducer:ee.Reducer.mean().combine({reducer2:ee.Reducer.max(),sharedInputs:true}),geometry:point.buffer(200),scale:10,maxPixels:1e9})
       .evaluate((r,err)=>{
