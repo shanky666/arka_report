@@ -1007,7 +1007,7 @@ async function computeNDVI(){
     if(y<ny)periods.push({label:`${y+1} Rabi Jan`,start:`${y+1}-01-01`,end:`${y+1}-02-15`});
   }
   const feats=periods.map(p=>{
-    const s2=ee.ImageCollection("COPERNICUS/S2_SR_HARMONIC").filterBounds(point).filterDate(p.start,p.end).filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE",40)).median();
+    const s2=ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED").filterBounds(point).filterDate(p.start,p.end).filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE",40)).median();
     const ndvi=s2.normalizedDifference(["B8","B4"]);
     return ee.Feature(null,{label:p.label,ndvi:ndvi.reduceRegion({reducer:ee.Reducer.mean(),geometry:point.buffer(200),scale:10,maxPixels:1e9}).get("nd")});
   });
