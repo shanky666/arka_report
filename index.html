@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriInsight — SoiLENZ Diagnostic Report Builder</title>
+<meta name="description" content="Satellite-derived agricultural soil health diagnostic platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@google/earthengine@1.5.6/build/ee_api_js.js"></script>
+<style>
+:root{
+  --gd:#1b3b22; --gm:#2d5a38; --gl:#4C7A3D; --gp:#e8f5e1; --tr:#c85a24;
+  --sd:#3e2a1c; --sm:#6b4a32; --cr:#f7f5f0; --pa:#ffffff; --ink:#1a1a1a;
+  --mu:#6b7280; --ln:#e2ddd4; --ok:#2e7d32; --wn:#e65100; --bd:#b71c1c;
+  --sh:0 2px 16px rgba(0,0,0,0.06); --sl:0 8px 40px rgba(0,0,0,0.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: Inter,sans-serif; background: var(--cr); color: var(--ink); line-height: 1.6; font-size: 14px; min-height: 100vh; }
+h1,h2,h3,h4 { font-family: Bitter,serif; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--cr); }
+::-webkit-scrollbar-thumb { background: var(--ln); border-radius: 3px; }
+#app { display: grid; grid-template-rows: 56px 1fr; height: 100vh; overflow: hidden; }
+.toolbar { background: var(--gd); color:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 20px; gap:12px; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,.25); }
+.brand { font-family:Bitter,serif; font-weight:800; font-size:17px; display:flex; align-items:center; gap:8px; white-space:nowrap; }
+.brand-accent { color:#7ab648; }
+.brand-sub { color:#a3d977; font-size:11px; font-weight:400; font-family:Inter,sans-serif; }
+.tbr { display:flex; gap:8px; align-items:center; }
+.btn { padding:8px 14px; border:none; border-radius:8px; font-weight:600; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:5px; transition:all .2s; white-space:nowrap; }
+.btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
+.btn:active { transform:translateY(0); }
+.btn:disabled { opacity:.5; cursor:not-allowed; transform:none; filter:none; }
+.btn-p { background:var(--gl); color:#fff; }
+.btn-s { background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.2); }
+.btn-t { background:var(--tr); color:#fff; }
+.btn-o { background:transparent; color:#fff; border:1px solid rgba(255,255,255,.3); }
+.workspace { display:grid; grid-template-columns:380px 1fr; overflow:hidden; height:100%; }
+.panel-l { background:var(--pa); border-right:1px solid var(--ln); overflow-y:auto; overflow-x:hidden; }
+.tabs { display:flex; border-bottom:2px solid var(--ln); background:var(--pa); position:sticky; top:0; z-index:10; }
+.tab-btn { flex:1; padding:12px 4px; border:none; background:none; cursor:pointer; font-size:11px; font-weight:600; color:var(--mu); text-transform:uppercase; letter-spacing:.04em; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; }
+.tab-btn.active { color:var(--gl); border-bottom-color:var(--gl); }
+.tab-btn:hover:not(.active) { color:var(--ink); background:var(--cr); }
+.tab-cnt { display:none; padding:20px; }
+.tab-cnt.active { display:block; }
+.fg { margin-bottom:14px; }
+.fg label { display:block; font-size:11px; font-weight:700; color:var(--sm); margin-bottom:5px; text-transform:uppercase; letter-spacing:.05em; }
+.fg input, .fg select, .fg textarea { width:100%; padding:9px 12px; border:1.5px solid var(--ln); border-radius:8px; font-size:13.5px; font-family:Inter,sans-serif; background:#fff; color:var(--ink); transition:border-color .2s,box-shadow .2s; outline:none; }
+.fg input:focus, .fg select:focus { border-color:var(--gl); box-shadow:0 0 0 3px rgba(76,122,61,.1); }
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.sh { display:flex; align-items:center; gap:8px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--ln); }
+.sn { width:24px; height:24px; border-radius:50%; background:var(--gd); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:"JetBrains Mono",monospace; flex-shrink:0; }
+.st { font-size:14px; font-weight:700; color:var(--sd); font-family:Bitter,serif; }
+.ss { font-size:11.5px; color:var(--mu); margin-top:-8px; margin-bottom:14px; }
+.upload-z { border:2px dashed var(--ln); border-radius:10px; padding:24px 16px; text-align:center; color:var(--mu); cursor:pointer; background:var(--cr); transition:all .25s; position:relative; }
+.upload-z:hover, .upload-z.drag-over { border-color:var(--gl); background:var(--gp); color:var(--gm); }
+.upload-z .ui { font-size:28px; margin-bottom:6px; }
+.upload-z p { font-size:12.5px; }
+.upload-z input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+#ticketPreview { width:100%; border-radius:8px; margin-top:12px; box-shadow:var(--sh); display:none; }
+.sp { display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:5px 10px; border-radius:20px; background:#eee; color:var(--mu); font-weight:600; margin-top:8px; }
+.sp.ok { background:#e8f5e1; color:var(--ok); }
+.sp.wn { background:#fff3e0; color:var(--wn); }
+.sp.bd { background:#fde8e8; color:var(--bd); }
+.sdot { width:7px; height:7px; border-radius:50%; background:currentColor; }
+.ocr-log { font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--mu); background:var(--cr); border:1px solid var(--ln); border-radius:7px; padding:8px 10px; max-height:100px; overflow:auto; margin-top:8px; display:none; }
+.ptbl { width:100%; border-collapse:collapse; font-size:12px; }
+.ptbl th { background:var(--gd); color:#fff; padding:6px 8px; font-size:11px; font-weight:600; text-align:left; }
+.ptbl td { padding:5px 7px; border-bottom:1px solid var(--ln); vertical-align:middle; }
+.ptbl tr:nth-child(even) td { background:var(--cr); }
+.ptbl input { width:70px; padding:3px 6px; border:1px solid var(--ln); border-radius:5px; font-size:12px; }
+.bdg { padding:2px 8px; border-radius:12px; font-size:10.5px; font-weight:700; display:inline-block; }
+.L,.Deficient,.Severe { background:#fde8e8; color:var(--bd); }
+.H,.Moderate { background:#fff3e0; color:var(--wn); }
+.S,.Adequate,.Normal { background:#e8f5e1; color:var(--ok); }
+.Basic { background:#fff3e0; color:var(--wn); }
+.gee-note { background:#fff3e0; border-left:3px solid var(--tr); padding:10px 12px; border-radius:0 8px 8px 0; font-size:12px; color:var(--sm); margin:12px 0; line-height:1.6; }
+.gee-note code { font-family:"JetBrains Mono",monospace; background:rgba(0,0,0,.06); padding:1px 4px; border-radius:3px; font-size:11px; }
+.gsb { font-size:12px; color:var(--mu); margin-top:8px; display:flex; align-items:center; gap:6px; }
+.gsb.connected { color:var(--ok); font-weight:600; }
+.lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.lang-opt { border:2px solid var(--ln); border-radius:10px; padding:14px 12px; cursor:pointer; text-align:center; transition:all .2s; }
+.lang-opt:hover { border-color:var(--gl); background:var(--gp); }
+.lang-opt.sel { border-color:var(--gl); background:var(--gp); }
+.lang-opt .ln { font-size:14px; font-weight:700; margin-bottom:3px; }
+.lang-opt .lv { font-size:22px; color:var(--gm); }
+.lang-opt .ll { font-size:10.5px; color:var(--mu); }
+.panel-r { background:#d4cfc7; overflow-y:auto; padding:28px 24px; }
+.rdoc { max-width:860px; margin:0 auto; width:100%; background:var(--pa); border-radius:4px; box-shadow:var(--sl); overflow:hidden; }
+.cover-page { background:var(--gd); color:#fff; min-height:700px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; }
+.cover-bg { position:absolute; inset:0; z-index:0; }
+.cover-c { position:relative; z-index:2; padding:48px; display:flex; flex-direction:column; min-height:700px; justify-content:space-between; }
+.c-eye { font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#a3d977; margin-bottom:16px; }
+.c-title { font-size:44px; font-weight:800; line-height:1.08; max-width:620px; margin-bottom:12px; }
+.c-title em { color:#a3d977; font-style:normal; }
+.c-sub { font-size:15px; color:#c8e6c9; max-width:560px; margin-bottom:32px; }
+.c-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); border-radius:8px; padding:8px 16px; margin-bottom:32px; font-size:12px; color:#c8e6c9; }
+.c-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:20px 24px; margin-bottom:24px; }
+.c-meta .k { display:block; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:#a5d6a7; margin-bottom:4px; }
+.c-meta .v { font-size:15px; font-weight:700; color:#fff; }
+.c-meta .v.sc { font-size:20px; color:#a3d977; }
+.c-foot { display:flex; justify-content:space-between; align-items:flex-end; font-size:11px; color:#81c784; }
+.c-logo { text-align:right; }
+.c-logo .lb { font-family:Bitter,serif; font-size:22px; font-weight:800; color:#fff; }
+.c-logo .ls { font-size:11px; color:#a5d6a7; }
+.rsec { padding:32px 40px; border-bottom:1px solid var(--ln); page-break-inside:avoid; }
+.rsec:last-child { border-bottom:none; }
+.rh2 { font-size:18px; font-weight:800; color:var(--gd); display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+.rh2 .rn { width:26px; height:26px; border-radius:50%; background:var(--gl); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; font-family:"JetBrains Mono",monospace; flex-shrink:0; }
+.rsub { font-size:12.5px; color:var(--mu); margin-bottom:18px; margin-left:36px; }
+.sl-page { background:#fff; border-bottom:1px solid var(--ln); }
+.sl-hdr { background:var(--gd); color:#fff; padding:20px 40px; display:flex; justify-content:space-between; align-items:center; }
+.sl-hdr .shb h2 { font-size:20px; font-weight:800; }
+.sl-hdr .shb p { font-size:11px; color:#a3d977; }
+.sl-hdr .shl { text-align:right; }
+.sl-hdr .shl .pw { font-size:10px; color:#a5d6a7; }
+.sl-hdr .shl .sn2 { font-family:Bitter,serif; font-size:22px; font-weight:800; color:#a3d977; }
+.sl-hdr .shl .sd { font-size:10px; color:#c8e6c9; line-height:1.3; }
+.sl-body { padding:24px 40px; display:grid; grid-template-columns:220px 1fr 1fr; gap:24px; align-items:start; }
+.si-item { display:flex; align-items:flex-start; gap:8px; margin-bottom:14px; }
+.si-item .ic { font-size:16px; color:var(--gl); margin-top:1px; }
+.si-item .tx .lbl { font-size:10.5px; color:var(--mu); text-transform:uppercase; letter-spacing:.04em; }
+.si-item .tx .vl { font-size:13.5px; font-weight:600; color:var(--ink); }
+.sc-col { display:flex; flex-direction:column; align-items:center; }
+.plant-oval { width:180px; height:220px; border-radius:50%; background:linear-gradient(180deg,#87ceeb 0%,#4caf50 45%,#3e2a1c 100%); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 32px rgba(0,0,0,.15); margin-bottom:12px; position:relative; overflow:hidden; }
+.plant-oval .sob { position:absolute; bottom:0; left:0; right:0; height:45%; background:linear-gradient(180deg,#5d3b28 0%,#3e2a1c 100%); border-radius:0 0 50% 50%; }
+.plant-oval .pe { position:relative; z-index:2; font-size:70px; margin-top:-30px; }
+.fb { background:var(--gd); color:#fff; border-radius:10px; padding:12px 24px; text-align:center; width:100%; }
+.fb .fbl { font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:#a5d6a7; margin-bottom:4px; }
+.fb .fbv { font-family:Bitter,serif; font-size:22px; font-weight:800; color:#a3d977; }
+.hsc { border:2px solid var(--ln); border-radius:12px; padding:16px; text-align:center; margin-bottom:16px; }
+.hsc .hscl { font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--mu); margin-bottom:8px; font-weight:700; }
+.hsc .hscn { font-family:Bitter,serif; font-size:36px; font-weight:800; color:var(--gd); }
+.hsc .hscd { font-size:18px; color:var(--mu); font-weight:400; }
+.hsc .hscs { font-size:12px; font-weight:700; margin-top:4px; }
+.ic-card { border:2px solid var(--ln); border-radius:12px; padding:14px; }
+.ic-card .ict { font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--mu); margin-bottom:12px; font-weight:700; }
+.gr { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.gi { text-align:center; }
+.gi .gw { width:52px; height:30px; }
+.gi .garc { width:52px; height:30px; }
+.gi .gl2 { font-size:10px; color:var(--mu); margin-top:2px; font-weight:600; }
+.gi .gsc { font-size:10px; color:var(--ink); font-weight:700; }
+.sl-ftr { background:var(--gd); color:#a3d977; text-align:center; padding:12px 40px; font-size:12.5px; font-weight:600; display:flex; justify-content:space-between; align-items:center; }
+.map-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
+.map-card { border:1px solid var(--ln); border-radius:8px; overflow:hidden; background:#fff; }
+.map-card img, .map-card canvas { width:100%; aspect-ratio:1/1; display:block; object-fit:cover; }
+.map-card .mc { padding:8px 10px; }
+.mc .mct { font-size:12px; font-weight:700; color:var(--ink); display:block; }
+.mc .mcs { font-size:10.5px; color:var(--mu); }
+.skeleton { width:100%; aspect-ratio:1/1; background:linear-gradient(90deg,#eee 25%,#f5f5f5 50%,#eee 75%); background-size:200% 100%; animation:shim 1.5s infinite; }
+@keyframes shim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.ph { width:100%; aspect-ratio:1/1; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f0ede8; color:var(--mu); font-size:11px; text-align:center; padding:8px; gap:4px; }
+.ph .phi { font-size:28px; }
+.rtbl { width:100%; border-collapse:collapse; font-size:13px; }
+.rtbl th { background:var(--gd); color:#fff; padding:9px 12px; font-size:11px; font-weight:600; text-align:left; letter-spacing:.04em; font-family:Bitter,serif; }
+.rtbl td { padding:9px 12px; border-bottom:1px solid var(--ln); vertical-align:middle; }
+.rtbl tr:nth-child(even) td { background:#fafaf8; }
+.rtbl tr:last-child td { border-bottom:none; }
+.sbox { display:flex; align-items:center; gap:20px; background:var(--cr); border:1px solid var(--ln); border-radius:12px; padding:18px 24px; margin-bottom:18px; }
+.sbig { font-family:Bitter,serif; font-size:48px; font-weight:800; color:var(--gd); line-height:1; }
+.sbig.wn { color:var(--wn); } .sbig.bd { color:var(--bd); }
+.smeta strong { font-size:16px; display:block; margin-bottom:4px; }
+.smeta p { font-size:12.5px; color:var(--mu); }
+.ci { border-left:3px solid var(--tr); padding:10px 14px; margin:8px 0; background:#fff; border-radius:0 8px 8px 0; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+.ci .ct { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--tr); font-weight:700; margin-bottom:3px; }
+.ci .cx { font-size:13px; color:var(--ink); line-height:1.6; }
+.rg { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.rc { background:#fafaf8; border:1px solid var(--ln); border-radius:10px; padding:14px 16px; }
+.rc h4 { font-size:13px; font-weight:700; color:var(--gd); margin-bottom:10px; }
+.rc ul { padding-left:16px; }
+.rc ul li { font-size:12.5px; color:var(--ink); margin-bottom:5px; }
+.gdl { display:grid; grid-template-columns:1fr 1fr; gap:4px 24px; }
+.gdl dt { font-family:"JetBrains Mono",monospace; font-weight:700; color:var(--tr); font-size:12px; margin-top:8px; }
+.gdl dd { font-size:12px; color:var(--ink); margin:2px 0 8px; line-height:1.5; }
+.nbox { background:#fff9f0; border-left:3px solid var(--tr); padding:10px 14px; border-radius:0 8px 8px 0; font-size:12.5px; color:var(--sm); margin:12px 0; line-height:1.6; }
+.es { text-align:center; color:var(--mu); padding:32px; font-size:13px; }
+.es .ei { font-size:36px; margin-bottom:8px; }
+.pdiv { text-align:center; padding:8px; font-size:10.5px; color:#aaa; background:#d4cfc7; font-family:"JetBrains Mono",monospace; }
+@media print {
+  .toolbar,.panel-l,.no-print { display:none !important; }
+  #app { display:block; height:auto; overflow:visible; }
+  .workspace { display:block; height:auto; overflow:visible; }
+  .panel-r { padding:0; background:#fff; overflow:visible; height:auto; }
+  .rdoc { box-shadow:none; border-radius:0; max-width:100%; }
+  .cover-page { min-height:100vh; page-break-after:always; }
+  .sl-page { page-break-after:always; }
+  .rsec { page-break-inside:avoid; }
+  body { background:#fff; }
+  .pdiv { display:none; }
+}
+@media(max-width:900px) {
+  .workspace { grid-template-columns:1fr; }
+  .map-grid { grid-template-columns:repeat(2,1fr); }
+  .sl-body { grid-template-columns:1fr; }
+  .c-meta { grid-template-columns:repeat(2,1fr); }
+  .rg { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="toolbar no-print">
+    <div class="brand">🌿 AgriInsight <span class="brand-accent">x</span> SoiLENZ <span class="brand-sub">| Satellite Diagnostic Platform</span></div>
+    <div class="tbr">
+      <button class="btn btn-s" id="connectGeeBtn">🛰 Connect Earth Engine</button>
+      <button class="btn btn-p" id="fetchSatBtn" disabled>📡 Fetch Satellite Data</button>
+      <button class="btn btn-o" id="generateBtn" disabled>🧠 Generate Report</button>
+      <button class="btn btn-t" id="exportPdfBtn">⬇ Export PDF</button>
+    </div>
+  </div>
+  <div class="workspace">
+    <div class="panel-l no-print">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tm">✏ Manual</button>
+        <button class="tab-btn" data-tab="tg">🛰 GEE</button>
+        <button class="tab-btn" data-tab="tl">🌐 Language</button>
+      </div>
+      <div class="tab-cnt active" id="tm">
+        <div class="sh"><span class="sn">A</span><span class="st">Farmer and Field Details</span></div>
+        <div class="fg"><label>Farmer Name</label><input type="text" id="inName" placeholder="e.g. Surendra" oninput="syncCover()"></div>
+        <div class="fg"><label>Mobile Number</label><input type="text" id="inMobile" placeholder="e.g. 9182800369" oninput="syncCover()"></div>
+        <div class="fg"><label>Crop</label><input type="text" id="inCrop" placeholder="e.g. Palm Orchids" oninput="syncCover()"></div>
+        <div class="g2">
+          <div class="fg"><label>Latitude</label><input type="text" id="inLat" placeholder="12.9753" oninput="syncCover()"></div>
+          <div class="fg"><label>Longitude</label><input type="text" id="inLon" placeholder="77.5910" oninput="syncCover()"></div>
+        </div>
+        <div class="fg"><label>Analysis Date</label><input type="date" id="inDate" oninput="syncCover()"></div>
+        <div class="fg"><label>Field Area (Ha)</label><input type="text" id="inArea" placeholder="e.g. 2.5" oninput="syncCover()"></div>
+        <div class="sh" style="margin-top:20px;"><span class="sn">B</span><span class="st">Soil Parameters (Manual Entry)</span></div>
+        <p class="ss">Enter soil parameter values here.</p>
+        <div id="manualParamTable"></div>
+        <button class="btn btn-p" style="margin-top:14px;width:100%;" onclick="applyManualParams()">Apply Manual Values to Report</button>
+      </div>
+      <div class="tab-cnt" id="tg">
+        <div class="sh"><span class="sn">🛰</span><span class="st">Earth Engine Setup</span></div>
+        <div class="gee-note">
+          <strong>One-time setup:</strong><br>
+          1. Register free project at <code>signup.earthengine.google.com</code><br>
+          2. Create an <strong>OAuth 2.0 Web Client ID</strong> in Google Cloud Console<br>
+          3. Add your URL to Authorized JavaScript Origins<br>
+          4. Run <code>python -m http.server</code> and open <code>http://localhost:8000</code><br>
+          Warning: <code>file://</code> URLs will NOT work
+        </div>
+        <div class="fg"><label>OAuth Client ID</label><input type="text" id="geeClientId" placeholder="xxxxx.apps.googleusercontent.com"></div>
+        <button class="btn btn-p" style="width:100%;" id="connectGeeBtnTab">🔗 Authenticate with Earth Engine</button>
+        <div class="gsb" id="geeStatusBar"><span class="sdot" style="background:#ccc"></span> Not connected</div>
+        <div style="margin-top:24px;">
+          <div class="sh"><span class="sn">🤖</span><span class="st">AI Narrative Engine (Optional)</span></div>
+          <p class="ss">Hugging Face free tier for AI prose. Rule-based fallback is used if left blank.</p>
+          <div class="fg"><label>Hugging Face Token</label><input type="password" id="hfToken" placeholder="hf_... (free at huggingface.co/settings/tokens)"></div>
+          <div class="fg"><label>Model</label><input type="text" id="hfModel" placeholder="mistralai/Mistral-7B-Instruct-v0.2"></div>
+        </div>
+      </div>
+      <div class="tab-cnt" id="tl">
+        <div class="sh"><span class="sn">🌐</span><span class="st">Report Language</span></div>
+        <p class="ss">Select the language for the exported PDF report. English is the default.</p>
+        <div class="lang-grid">
+          <div class="lang-opt sel" data-lang="en" onclick="selLang(this)"><div class="ln">English</div><div class="lv">English</div><div class="ll">Default</div></div>
+          <div class="lang-opt" data-lang="kn" onclick="selLang(this)"><div class="ln">Kannada</div><div class="lv">ಕನ್ನಡ</div><div class="ll">Karnataka</div></div>
+          <div class="lang-opt" data-lang="bn" onclick="selLang(this)"><div class="ln">Bengali</div><div class="lv">বাংলা</div><div class="ll">West Bengal</div></div>
+          <div class="lang-opt" data-lang="or" onclick="selLang(this)"><div class="ln">Odia</div><div class="lv">ଓଡ଼ିଆ</div><div class="ll">Odisha</div></div>
+          <div class="lang-opt" data-lang="gu" onclick="selLang(this)"><div class="ln">Gujarati</div><div class="lv">ગુજરાતી</div><div class="ll">Gujarat</div></div>
+        </div>
+        <div class="nbox" style="margin-top:20px;">Report labels and headings will be translated. Numeric values and satellite data remain unchanged.</div>
+        <button class="btn btn-p" style="margin-top:16px;width:100%;" onclick="applyLang()">Apply Language to Report</button>
+      </div>
+    </div>
+    <div class="panel-r">
+      <div id="reportRoot">
+        <div class="pdiv no-print">-- Page 1: Cover Page --</div>
+        <div class="rdoc">
+          <div class="cover-page">
+            <svg class="cover-bg" viewBox="0 0 860 700" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="860" height="700" fill="#1b3b22"/>
+              <path d="M0,280 C200,240 400,310 600,270 C720,248 800,278 860,260 L860,700 L0,700 Z" fill="#243e2b" opacity="0.7"/>
+              <path d="M0,380 C220,345 400,400 580,362 C700,340 790,368 860,350 L860,700 L0,700 Z" fill="#2d5234" opacity="0.6"/>
+              <path d="M0,480 C180,455 380,495 560,465 C700,445 790,468 860,455 L860,700 L0,700 Z" fill="#3a6640" opacity="0.5"/>
+              <path d="M0,580 C200,565 380,590 540,568 C680,550 790,568 860,558 L860,700 L0,700 Z" fill="#4a7a4f" opacity="0.4"/>
+              <circle cx="750" cy="120" r="180" fill="rgba(163,217,119,0.04)"/>
+              <circle cx="750" cy="120" r="120" fill="rgba(163,217,119,0.04)"/>
+              <circle cx="750" cy="120" r="60" fill="rgba(163,217,119,0.06)"/>
+            </svg>
+            <div class="cover-c">
+              <div>
+                <div class="c-eye">AgriInsight AI · SoiLENZ · Satellite Diagnostic Platform</div>
+                <h1 class="c-title">Soil Health <em>Intelligence</em> Report</h1>
+                <p class="c-sub">Satellite-derived environmental and soil stress analysis combined with on-ground SoiLENZ portable lab testing from Arkashine Innovations Pvt Ltd.</p>
+                <div class="c-badge">🌿 Sentinel-2 Satellite · ERA5 Climate Data · SoiLENZ Portable Analyzer</div>
+              </div>
+              <div>
+                <div class="c-meta">
+                  <div><span class="k" id="clFarmer">Farmer Name</span><span class="v" id="cName">-</span></div>
+                  <div><span class="k" id="clCrop">Current Crop</span><span class="v" id="cCrop">-</span></div>
+                  <div><span class="k" id="clLoc">Location (Lat / Lon)</span><span class="v" id="cLatLon">-</span></div>
+                  <div><span class="k" id="clDate">Date of Analysis</span><span class="v" id="cDate">-</span></div>
+                  <div><span class="k" id="clMob">Mobile Number</span><span class="v" id="cMobile">-</span></div>
+                  <div><span class="k" id="clHealth">Overall Soil Health</span><span class="v sc" id="cHealth">-</span></div>
+                </div>
+                <div class="c-foot">
+                  <div id="cFootL">Generated from SoiLENZ Field Ticket OCR + Sentinel-2 / ERA5 via Google Earth Engine</div>
+                  <div class="c-logo">
+                    <div class="lb">SoiLENZ</div>
+                    <div class="ls">Advanced Soil Intelligence<br>from Arkashine Labs</div>
+                    <div style="font-size:10px;color:#81c784;margin-top:6px;" id="cGenDate">-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pdiv no-print">-- Page 2: SoiLENZ Soil Health Intelligence --</div>
+        <div class="rdoc" style="margin-top:2px;">
+          <div class="sl-page">
+            <div class="sl-hdr">
+              <div class="shb"><h2>SOIL HEALTH INTELLIGENCE REPORT</h2><p>Powered by SoiLENZ</p></div>
+              <div class="shl"><div class="pw">Powered by</div><div class="sn2">SoiLENZ</div><div class="sd">Advanced Soil Intelligence<br>from Arkashine Labs</div></div>
+            </div>
+            <div class="sl-body">
+              <div>
+                <div class="si-item"><div class="ic">📍</div><div class="tx"><div class="lbl" id="slLoc">Location</div><div class="vl" id="slLocV">-</div></div></div>
+                <div class="si-item"><div class="ic">📅</div><div class="tx"><div class="lbl" id="slDate">Date of Analysis</div><div class="vl" id="slDateV">-</div></div></div>
+                <div class="si-item"><div class="ic">🌾</div><div class="tx"><div class="lbl" id="slArea">Field Area</div><div class="vl" id="slAreaV">-</div></div></div>
+                <div class="si-item"><div class="ic">🌿</div><div class="tx"><div class="lbl" id="slCrop">Crop (Current)</div><div class="vl" id="slCropV">-</div></div></div>
+                <div class="si-item"><div class="ic">🛰</div><div class="tx"><div class="lbl" id="slNDVI">Vegetation Index (NDVI)</div><div class="vl" id="slNDVIV">-</div></div></div>
+                <div class="si-item"><div class="ic">🌧</div><div class="tx"><div class="lbl" id="slRain">Annual Rainfall</div><div class="vl" id="slRainV">-</div></div></div>
+                <div class="si-item"><div class="ic">🧂</div><div class="tx"><div class="lbl" id="slEC">Soil Salinity (EC)</div><div class="vl" id="slECV">-</div></div></div>
+              </div>
+              <div class="sc-col">
+                <div class="plant-oval"><div class="sob"></div><div class="pe">🌱</div></div>
+                <div class="fb">
+                  <div class="fbl" id="slFert">OVERALL SOIL FERTILITY</div>
+                  <div class="fbv" id="slFertV">-</div>
+                  <canvas id="fertGauge" width="120" height="65" style="margin:8px auto 0;display:block;"></canvas>
+                </div>
+              </div>
+              <div>
+                <div class="hsc">
+                  <div class="hscl" id="slScore">SOIL HEALTH SCORE</div>
+                  <div><span class="hscn" id="slScoreV">-</span><span class="hscd">/100</span></div>
+                  <canvas id="healthGauge" width="160" height="85" style="margin:8px auto;display:block;"></canvas>
+                  <div class="hscs" id="slScoreSt">-</div>
+                </div>
+                <div class="ic-card">
+                  <div class="ict" id="slInd">SOIL HEALTH INDICATORS</div>
+                  <div class="gr" id="indGauges"></div>
+                </div>
+              </div>
+            </div>
+            <div class="sl-ftr"><span id="slFooter">Healthy Soil. Higher Yield. Sustainable Future.</span><span style="background:rgba(255,255,255,.1);border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;">2</span></div>
+          </div>
+        </div>
+        <div class="pdiv no-print">-- Page 3: Satellite Imagery Analysis --</div>
+        <div class="rdoc" style="margin-top:2px;">
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">3</span><span id="rSat">Satellite Imagery Analysis</span></h2>
+            <p class="rsub" id="rSatSub">Sentinel-2 L2A (10m resolution), latest cloud-free composite (last 3 months) via Google Earth Engine. Connect Earth Engine and click Fetch Satellite Data to populate.</p>
+            <div class="map-grid" id="mapGrid">
+              <div class="map-card"><div class="ph"><div class="phi">🗺</div><span>RGB True Colour</span></div><div class="mc"><span class="mct">RGB - True Colour Composite</span><span class="mcs">Bands: Red (B4), Green (B3), Blue (B2)</span></div></div>
+              <div class="map-card"><div class="ph"><div class="phi">🌿</div><span>Vegetation Index NDVI</span></div><div class="mc"><span class="mct" id="mNDVI">Normalized Difference Vegetation Index (NDVI)</span><span class="mcs">Green = healthy; Red = bare or stressed</span></div></div>
+              <div class="map-card"><div class="ph"><div class="phi">🏜</div><span>Bare Soil Index BSI</span></div><div class="mc"><span class="mct" id="mBSI">Bare Soil Index (BSI)</span><span class="mcs">Red = exposed bare soil; Green = vegetation</span></div></div>
+              <div class="map-card"><div class="ph"><div class="phi">🌱</div><span>MSAVI</span></div><div class="mc"><span class="mct" id="mMSAVI">Modified Soil-Adjusted Vegetation Index (MSAVI)</span><span class="mcs">Corrected for soil brightness</span></div></div>
+              <div class="map-card"><div class="ph"><div class="phi">💧</div><span>Water Index NDWI</span></div><div class="mc"><span class="mct" id="mNDWI">Normalized Difference Water Index (NDWI)</span><span class="mcs">Blue = water-stressed; Red = wet or irrigated</span></div></div>
+              <div class="map-card"><canvas id="rainfallChart"></canvas><div class="mc"><span class="mct" id="mRain">Monthly Rainfall Profile</span><span class="mcs">ERA5-Land reanalysis (last 12 months)</span></div></div>
+            </div>
+          </div>
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">4</span><span id="rSpec">Spectral Index Analysis</span></h2>
+            <p class="rsub" id="rSpecSub">Computed from Sentinel-2 satellite imagery over 200m buffer around the farm coordinates.</p>
+            <table class="rtbl"><thead><tr><th id="thIdx">Satellite Index (Full Name)</th><th id="thMn">Mean Value</th><th id="thMx">Max Value</th><th id="thIn">Interpretation</th></tr></thead>
+            <tbody>
+              <tr><td><strong>NDVI</strong> - Normalized Difference Vegetation Index</td><td id="sNDVImean">-</td><td id="sNDVImax">-</td><td id="sNDVIint">Awaiting satellite data</td></tr>
+              <tr><td><strong>BSI</strong> - Bare Soil Index</td><td id="sBSImean">-</td><td>-</td><td id="sBSIint">Awaiting satellite data</td></tr>
+              <tr><td><strong>NDWI</strong> - Normalized Difference Water Index</td><td id="sNDWImean">-</td><td>-</td><td id="sNDWIint">Awaiting satellite data</td></tr>
+              <tr><td><strong>MSAVI</strong> - Modified Soil-Adjusted Vegetation Index</td><td id="sMSAVImean">-</td><td>-</td><td id="sMSAVIint">Awaiting satellite data</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <div class="pdiv no-print">-- Page 4: Soil Health Profile --</div>
+        <div class="rdoc" style="margin-top:2px;">
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">5</span><span id="rSoil">Soil Health Profile</span></h2>
+            <p class="rsub" id="rSoilSub">Parameters from the SoiLENZ portable soil test ticket. Optimal ranges per SoiLENZ reference guide.</p>
+            <table class="rtbl"><thead><tr><th id="thPar">Parameter (Full Name)</th><th id="thUnt">Unit</th><th id="thRng">Optimal Range</th><th id="thMeas">Measured Value</th><th id="thSt">Status</th></tr></thead>
+            <tbody id="soilBody"><tr><td colspan="5" style="text-align:center;color:var(--mu);padding:24px;">Enter values in Manual tab.</td></tr></tbody></table>
+          </div>
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">6</span><span id="rNDVI">Temporal Vegetation Index (NDVI) Pattern 2022 to Present</span></h2>
+            <p class="rsub" id="rNDVISub">Kharif monsoon and Rabi winter season NDVI from Sentinel-2 median composites. Generated after clicking Generate Report.</p>
+            <canvas id="ndviTrendChart" height="90"></canvas>
+            <table class="rtbl" style="margin-top:12px;"><thead><tr><th>Crop Season</th><th>NDVI Value</th><th>Vegetation Status</th></tr></thead>
+            <tbody id="ndviBody"><tr><td colspan="3" style="text-align:center;color:var(--mu);padding:18px;">Not yet computed - click Generate Report</td></tr></tbody></table>
+          </div>
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">7</span><span id="rRain">Rainfall and Water Deficit Analysis - ERA5-Land</span></h2>
+            <table class="rtbl"><thead><tr><th>Year</th><th>Annual Rainfall (mm)</th><th>vs Normal</th><th>Reference Evapotranspiration ET0 (mm)</th><th>Water Deficit (mm)</th><th>Drought Class</th></tr></thead>
+            <tbody id="rainBody"><tr><td colspan="6" style="text-align:center;color:var(--mu);padding:18px;">Not yet computed</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="pdiv no-print">-- Page 5: Root Cause Analysis and Scorecard --</div>
+        <div class="rdoc" style="margin-top:2px;">
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">8</span><span id="rRC">Root Cause Analysis</span></h2>
+            <p class="rsub">Generated from satellite indices and soil test data. <span id="narSrc" style="font-style:italic;"></span></p>
+            <div id="rcBox"><div class="es"><div class="ei">🔬</div>Click Generate Report after loading satellite and soil data.</div></div>
+          </div>
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">9</span><span id="rRem">Remediation Plan and Recommendations</span></h2>
+            <div class="rg">
+              <div class="rc"><h4>⚡ Immediate - 0 to 3 months</h4><ul id="planI"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+              <div class="rc"><h4>🌱 Season 1 - Soil Correction - 3 to 9 months</h4><ul id="planS1"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+              <div class="rc"><h4>🌾 Season 2 - Crop Establishment - 9 to 18 months</h4><ul id="planS2"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+              <div class="rc"><h4>🏗 Long-Term - 18 or more months</h4><ul id="planLT"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+            </div>
+          </div>
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">10</span><span id="rSC">Site Health Scorecard</span></h2>
+            <div class="sbox"><div class="sbig" id="overScore">-</div><div class="smeta"><strong id="overLabel">Overall Site Health Score</strong><p id="overNote">Computed after satellite and soil data are available.</p></div></div>
+            <table class="rtbl"><thead><tr><th id="thSCI">Health Indicator</th><th id="thSCS">Score /10</th><th id="thSCR">Risk Level</th><th id="thSCA">Priority Action</th></tr></thead>
+            <tbody id="scBody"><tr><td colspan="4" style="text-align:center;color:var(--mu);padding:18px;">Not yet computed</td></tr></tbody></table>
+          </div>
+        </div>
+        <div class="pdiv no-print">-- Page 6: Data Sources and Glossary --</div>
+        <div class="rdoc" style="margin-top:2px;">
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">11</span><span id="rDS">Data Sources and Methodology</span></h2>
+            <p style="font-size:13px;color:var(--ink);line-height:1.75;">
+              <strong>Satellite Imagery:</strong> Copernicus Sentinel-2 Level-2A surface reflectance imagery at 10 metre spatial resolution from the European Space Agency. Cloud-masked median composites computed via Google Earth Engine. Normalized Difference Vegetation Index (NDVI) formula: (Near-Infrared minus Red) divided by (Near-Infrared plus Red). Modified Soil-Adjusted Vegetation Index (MSAVI), Bare Soil Index (BSI), and Normalized Difference Water Index (NDWI) are additional spectral indices.<br><br>
+              <strong>Climate and Rainfall:</strong> ERA5-Land monthly reanalysis from ECMWF and Copernicus at approximately 0.1 degree resolution, accessed via Google Earth Engine. Reference Evapotranspiration (ET0) estimated from ERA5-Land potential evaporation fields.<br><br>
+              <strong>Soil Data:</strong> On-site SoiLENZ portable electrochemical soil test from Arkashine Innovations Pvt Ltd. Parameters extracted from the printed ticket via Optical Character Recognition using Tesseract.js version 5. All 14 parameters can be manually edited before generating the report.
+            </p>
+            <div class="nbox">Warning: This report combines satellite-derived reanalysis data with a single on-site portable soil test. Laboratory soil analysis, groundwater testing, and agronomist consultation are strongly recommended before implementing any remediation. Satellite values represent approximately 10-metre pixel estimates and may not capture exact micro-field conditions. This report is for preliminary diagnostic purposes only.</div>
+          </div>
+          <div class="rsec">
+            <h2 class="rh2"><span class="rn">12</span><span id="rGL">Glossary of Technical Terms</span></h2>
+            <dl class="gdl" id="glossGrid"></dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+/* ============================================================
+   STATE
+============================================================ */
+const S = { tp:{}, mp:{}, gee:{ok:false}, sat:null, ndviY:null, rainY:null, sc:null, lang:"en" };
+
+/* ============================================================
+   TRANSLATIONS
+============================================================ */
+const TR = {
+  en:{ farmer:"Farmer Name",crop:"Current Crop",loc:"Location (Lat / Lon)",date:"Date of Analysis",mob:"Mobile Number",
+    health:"Overall Soil Health",footL:"Generated from SoiLENZ Field Ticket + Sentinel-2 / ERA5 via Google Earth Engine",
+    fert:"OVERALL SOIL FERTILITY",score:"SOIL HEALTH SCORE",ind:"SOIL HEALTH INDICATORS",
+    slogan:"Healthy Soil. Higher Yield. Sustainable Future.",
+    sat:"Satellite Imagery Analysis",spec:"Spectral Index Analysis",soil:"Soil Health Profile",
+    ndvi:"Temporal Vegetation Index (NDVI) Pattern 2022 to Present",
+    rain:"Rainfall and Water Deficit Analysis - ERA5-Land",
+    rc:"Root Cause Analysis",rem:"Remediation Plan and Recommendations",
+    sc:"Site Health Scorecard",ds:"Data Sources and Methodology",gl:"Glossary of Technical Terms",
+    locLbl:"Location",dateLbl:"Date of Analysis",areaLbl:"Field Area",cropLbl:"Crop (Current)",
+    ndviLbl:"Vegetation Index (NDVI)",rainLbl:"Annual Rainfall",ecLbl:"Soil Salinity (EC)",
+    ndviMap:"Normalized Difference Vegetation Index (NDVI)",bsiMap:"Bare Soil Index (BSI)",
+    msaviMap:"Modified Soil-Adjusted Vegetation Index (MSAVI)",ndwiMap:"Normalized Difference Water Index (NDWI)",
+    rainMap:"Monthly Rainfall Profile",
+    thIdx:"Satellite Index (Full Name)",thMn:"Mean Value",thMx:"Max Value",thIn:"Interpretation",
+    thPar:"Parameter (Full Name)",thUnt:"Unit",thRng:"Optimal Range",thMeas:"Measured Value",thSt:"Status",
+    thSCI:"Health Indicator",thSCS:"Score /10",thSCR:"Risk Level",thSCA:"Priority Action" },
+  kn:{ farmer:"ರೈತರ ಹೆಸರು",crop:"ಪ್ರಸ್ತುತ ಬೆಳೆ",loc:"ಸ್ಥಳ (ಅಕ್ಷಾಂಶ / ರೇಖಾಂಶ)",date:"ವಿಶ್ಲೇಷಣೆ ದಿನಾಂಕ",
+    mob:"ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",health:"ಒಟ್ಟಾರೆ ಮಣ್ಣಿನ ಆರೋಗ್ಯ",
+    footL:"SoiLENZ ಟಿಕೆಟ್ + Sentinel-2 / ERA5 ನಿಂದ ರಚಿಸಲಾಗಿದೆ",
+    fert:"ಒಟ್ಟಾರೆ ಮಣ್ಣಿನ ಫಲವತ್ತತೆ",score:"ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಸ್ಕೋರ್",ind:"ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಸೂಚಕಗಳು",
+    slogan:"ಆರೋಗ್ಯಕರ ಮಣ್ಣು. ಹೆಚ್ಚಿನ ಇಳುವರಿ. ಸಮರ್ಥನೀಯ ಭವಿಷ್ಯ.",
+    sat:"ಉಪಗ್ರಹ ಚಿತ್ರ ವಿಶ್ಲೇಷಣೆ",spec:"ರೋಹಿತ ಸೂಚ್ಯಂಕ ವಿಶ್ಲೇಷಣೆ",soil:"ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಪ್ರೊಫೈಲ್",
+    ndvi:"ತಾತ್ಕಾಲಿಕ NDVI ಮಾದರಿ (2022-ಪ್ರಸ್ತುತ)",rain:"ಮಳೆ ಮತ್ತು ನೀರಿನ ಕೊರತೆ ವಿಶ್ಲೇಷಣೆ",
+    rc:"ಮೂಲ ಕಾರಣ ವಿಶ್ಲೇಷಣೆ",rem:"ಪರಿಹಾರ ಯೋಜನೆ ಮತ್ತು ಶಿಫಾರಸುಗಳು",
+    sc:"ಸ್ಥಳ ಆರೋಗ್ಯ ಸ್ಕೋರ್ಕಾರ್ಡ್",ds:"ಡೇಟಾ ಮೂಲಗಳು ಮತ್ತು ವಿಧಾನ",gl:"ತಾಂತ್ರಿಕ ಪದಗಳ ಪಟ್ಟಿ",
+    locLbl:"ಸ್ಥಳ",dateLbl:"ವಿಶ್ಲೇಷಣೆ ದಿನಾಂಕ",areaLbl:"ಕ್ಷೇತ್ರ ವಿಸ್ತೀರ್ಣ",cropLbl:"ಬೆಳೆ (ಪ್ರಸ್ತುತ)",
+    ndviLbl:"ಸಸ್ಯ ಸೂಚ್ಯಂಕ (NDVI)",rainLbl:"ವಾರ್ಷಿಕ ಮಳೆ",ecLbl:"ಮಣ್ಣಿನ ಲವಣಾಂಶ (EC)",
+    ndviMap:"ಸಾಮಾನ್ಯ ವ್ಯತ್ಯಾಸ ಸಸ್ಯ ಸೂಚ್ಯಂಕ (NDVI)",bsiMap:"ಬೇರ್ ಸಾಯಿಲ್ ಇಂಡೆಕ್ಸ್ (BSI)",
+    msaviMap:"ಮಣ್ಣು ಸರಿಹೊಂದಿಸಿದ ಸಸ್ಯ ಸೂಚ್ಯಂಕ (MSAVI)",ndwiMap:"ನೀರು ಸೂಚ್ಯಂಕ (NDWI)",
+    rainMap:"ಮಾಸಿಕ ಮಳೆ ಪ್ರೊಫೈಲ್",
+    thIdx:"ಉಪಗ್ರಹ ಸೂಚ್ಯಂಕ",thMn:"ಸರಾಸರಿ ಮೌಲ್ಯ",thMx:"ಗರಿಷ್ಠ ಮೌಲ್ಯ",thIn:"ವ್ಯಾಖ್ಯಾನ",
+    thPar:"ಮಾನದಂಡ",thUnt:"ಘಟಕ",thRng:"ಸೂಕ್ತ ವ್ಯಾಪ್ತಿ",thMeas:"ಅಳೆಯಿದ ಮೌಲ್ಯ",thSt:"ಸ್ಥಿತಿ",
+    thSCI:"ಆರೋಗ್ಯ ಸೂಚ್ಯಂಕ",thSCS:"ಸ್ಕೋರ್",thSCR:"ಅಪಾಯ ಮಟ್ಟ",thSCA:"ಆದ್ಯತೆ ಕ್ರಮ" },
+  bn:{ farmer:"কৃষকের নাম",crop:"বর্তমান ফসল",loc:"অবস্থান (অক্ষাংশ / দ্রাঘিমাংশ)",date:"বিশ্লেষণের তারিখ",
+    mob:"মোবাইল নম্বর",health:"সামগ্রিক মাটির স্বাস্থ্য",
+    footL:"SoiLENZ টিকেট + Sentinel-2 / ERA5 থেকে তৈরি",
+    fert:"সামগ্রিক মাটির উর্বরতা",score:"মাটির স্বাস্থ্য স্কোর",ind:"মাটির স্বাস্থ্য সূচক",
+    slogan:"সুস্থ মাটি। বেশি ফলন। টেকসই ভবিষ্যৎ।",
+    sat:"স্যাটেলাইট চিত্র বিশ্লেষণ",spec:"বর্ণালী সূচক বিশ্লেষণ",soil:"মাটির স্বাস্থ্য প্রোফাইল",
+    ndvi:"NDVI প্যাটার্ন 2022 থেকে বর্তমান",rain:"বৃষ্টিপাত ও জল ঘাটতি বিশ্লেষণ",
+    rc:"মূল কারণ বিশ্লেষণ",rem:"প্রতিকার পরিকল্পনা ও সুপারিশ",
+    sc:"সাইট স্বাস্থ্য স্কোরকার্ড",ds:"ডেটার উৎস ও পদ্ধতি",gl:"প্রযুক্তিগত পরিভাষা",
+    locLbl:"অবস্থান",dateLbl:"বিশ্লেষণের তারিখ",areaLbl:"মাঠের এলাকা",cropLbl:"ফসল (বর্তমান)",
+    ndviLbl:"উদ্ভিদ সূচক (NDVI)",rainLbl:"বার্ষিক বৃষ্টিপাত",ecLbl:"মাটির লবণাক্ততা (EC)",
+    ndviMap:"NDVI সূচক",bsiMap:"BSI - ন্যাগ্ন মাটি সূচক",msaviMap:"MSAVI - উদ্ভিদ সূচক",
+    ndwiMap:"NDWI - জল সূচক",rainMap:"মাসিক বৃষ্টিপাত প্রোফাইল",
+    thIdx:"স্যাটেলাইট সূচক",thMn:"গড় মান",thMx:"সর্বোচ্চ মান",thIn:"ব্যাখ্যা",
+    thPar:"প্যারামিটার",thUnt:"একক",thRng:"সর্বোত্তম পরিসর",thMeas:"পরিমাপিত মান",thSt:"অবস্থা",
+    thSCI:"স্বাস্থ্য সূচক",thSCS:"স্কোর",thSCR:"ঝুঁকির মাত্রা",thSCA:"অগ্রাধিকার পদক্ষেপ" },
+  or:{ farmer:"କୃଷକଙ୍କ ନାମ",crop:"ବର୍ତ୍ତମାନ ଫସଲ",loc:"ଅବସ୍ଥାନ",date:"ବିଶ୍ଳେଷଣ ତାରିଖ",
+    mob:"ମୋବାଇଲ ନମ୍ବର",health:"ସାମଗ୍ରିକ ମୃତ୍ତିକା ସ୍ବାସ୍ଥ୍ୟ",
+    footL:"SoiLENZ ଟିକେଟ + Sentinel-2 / ERA5 ରୁ ତିଆରି",
+    fert:"ସାମଗ୍ରିକ ମୃତ୍ତିକା ଉର୍ବରତା",score:"ମୃତ୍ତିକା ସ୍ବାସ୍ଥ୍ୟ ସ୍କୋର",ind:"ମୃତ୍ତିକା ସ୍ବାସ୍ଥ୍ୟ ସୂଚକ",
+    slogan:"ସ୍ବାସ୍ଥ୍ୟକର ମୃତ୍ତିକା। ଅଧିକ ଅମଳ। ଟେକସଯୋଗ୍ୟ ଭବିଷ୍ୟତ।",
+    sat:"ଉପଗ୍ରହ ଚିତ୍ର ବିଶ୍ଳେଷଣ",spec:"ସ୍ପେକ୍ଟ୍ରାଲ ସୂଚ୍ୟଙ୍କ",soil:"ମୃତ୍ତିକା ଆରୋଗ୍ୟ ପ୍ରୋଫାଇଲ",
+    ndvi:"NDVI ଧାରା 2022-ବର୍ତ୍ତମାନ",rain:"ବର୍ଷା ଓ ଜଳ ଅଭାବ ବିଶ୍ଳେଷଣ",
+    rc:"ମୂଳ କାରଣ ବିଶ୍ଳେଷଣ",rem:"ପ୍ରତିକାର ଯୋଜନା ଓ ସୁପାରିଶ",
+    sc:"ସ୍ଥଳ ସ୍ବାସ୍ଥ୍ୟ ସ୍କୋରକାର୍ଡ",ds:"ଡାଟା ଉତ୍ସ ଓ ପ୍ରଣାଳୀ",gl:"ବୈଷୟିକ ଶବ୍ଦ ପଟ୍ଟିକା",
+    locLbl:"ଅବସ୍ଥାନ",dateLbl:"ତାରିଖ",areaLbl:"କ୍ଷେତ୍ର ଆୟତ",cropLbl:"ଫସଲ",
+    ndviLbl:"NDVI ସୂଚ୍ୟଙ୍କ",rainLbl:"ବାର୍ଷିକ ବର୍ଷା",ecLbl:"ଲବଣୀୟତା (EC)",
+    ndviMap:"NDVI",bsiMap:"BSI",msaviMap:"MSAVI",ndwiMap:"NDWI",rainMap:"ମାସିକ ବର୍ଷା",
+    thIdx:"ଉପଗ୍ରହ ସୂଚ୍ୟଙ୍କ",thMn:"ହାରାହାରି",thMx:"ସର୍ବାଧିକ",thIn:"ବ୍ୟାଖ୍ୟା",
+    thPar:"ପ୍ୟାରାମିଟର",thUnt:"ଏକକ",thRng:"ଉପଯୁକ୍ତ ପରିସର",thMeas:"ମାପ",thSt:"ସ୍ଥିତି",
+    thSCI:"ସ୍ବାସ୍ଥ୍ୟ ସୂଚ୍ୟଙ୍କ",thSCS:"ସ୍କୋର",thSCR:"ବିପଦ",thSCA:"ଅଗ୍ରାଧିକାର ପଦକ୍ଷେପ" },
+  gu:{ farmer:"ખેડૂતનું નામ",crop:"વર્તમાન પાક",loc:"સ્થળ (અક્ષાંશ / રેખાંશ)",date:"વિશ્લેષણ તારીખ",
+    mob:"મોબાઇલ નંબર",health:"એકંદર જમીન આરોગ્ય",
+    footL:"SoiLENZ ટિકેટ + Sentinel-2 / ERA5 માંથી",
+    fert:"એકંદર જમીન ફળદ્રુપતા",score:"જમીન આરોગ્ય સ્કોર",ind:"જમીન આરોગ્ય સૂચક",
+    slogan:"સ્વસ્થ જમીન. ઉચ્ચ ઉત્પાદન. ટકાઉ ભવિષ્ય.",
+    sat:"ઉપગ્રહ ઇમેજ વિશ્લેષણ",spec:"સ્પેક્ટ્રલ ઇન્ડેક્સ",soil:"જમીન આરોગ્ય પ્રોફાઇલ",
+    ndvi:"NDVI ધારા 2022-વર્તમાન",rain:"વરસાદ અને જળ ઘટ વિશ્લેષણ",
+    rc:"મૂળ કારણ વિશ્લેષણ",rem:"ઉપચાર યોજના અને ભલામણો",
+    sc:"સ્થળ આરોગ્ય સ્કોરકાર્ડ",ds:"ડેટા સ્ત્રોત અને પદ્ધતિ",gl:"ટેકનિકલ પરિભાષા",
+    locLbl:"સ્થળ",dateLbl:"તારીખ",areaLbl:"ખેત વિસ્તાર",cropLbl:"પાક",
+    ndviLbl:"NDVI",rainLbl:"વાર્ષિક વરસાદ",ecLbl:"ખારાશ (EC)",
+    ndviMap:"NDVI",bsiMap:"BSI",msaviMap:"MSAVI",ndwiMap:"NDWI",rainMap:"માસિક વરસાદ",
+    thIdx:"ઉપગ્રહ સૂચ્યાંક",thMn:"સરેરાશ",thMx:"મહત્તમ",thIn:"અર્થઘટન",
+    thPar:"પ્રાચલ",thUnt:"એકમ",thRng:"શ્રેષ્ઠ શ્રેણી",thMeas:"માપ",thSt:"સ્થિતિ",
+    thSCI:"આરોગ્ય સૂચ્યાંક",thSCS:"સ્કોર",thSCR:"જોખમ",thSCA:"અગ્રતા ક્રિયા" }
+};
+function t(k){ return (TR[S.lang]&&TR[S.lang][k])||TR.en[k]||k; }
+
+/* ============================================================
+   PARAM DEFINITIONS
+============================================================ */
+const PD = {
+  OC:{ label:"Organic Carbon (OC)",unit:"%",range:"0-1",full:"Organic Carbon - decomposed organic matter driving microbial life, water retention and nutrient cycling." },
+  N:{ label:"Nitrogen (N)",unit:"kg/ha",range:"125-800",full:"Nitrogen - primary macronutrient for vegetative growth and chlorophyll synthesis." },
+  P:{ label:"Phosphorus (P)",unit:"kg/ha",range:"1-200",full:"Phosphorus - macronutrient for root development, flowering and ATP energy transfer." },
+  K:{ label:"Potassium (K)",unit:"kg/ha",range:"20-1000",full:"Potassium - macronutrient regulating water balance, disease resistance and fruit quality." },
+  Ca:{ label:"Calcium (Ca)",unit:"meq/100g",range:"1-100",full:"Calcium - secondary nutrient strengthening cell walls and soil aggregate structure." },
+  Mg:{ label:"Magnesium (Mg)",unit:"meq/100g",range:"1-50",full:"Magnesium - central atom of chlorophyll; activates many plant enzymes." },
+  S:{ label:"Sulphur (S)",unit:"ppm",range:"2-250",full:"Sulphur - secondary nutrient for protein and enzyme synthesis in plants." },
+  Fe:{ label:"Iron (Fe)",unit:"ppm",range:"1-50",full:"Iron - micronutrient essential for chlorophyll synthesis; deficiency causes interveinal chlorosis." },
+  Mn:{ label:"Manganese (Mn)",unit:"ppm",range:"1-25",full:"Manganese - micronutrient in photosynthesis and enzyme activation." },
+  Cu:{ label:"Copper (Cu)",unit:"ppm",range:"0.1-10",full:"Copper - micronutrient supporting enzyme function, lignin synthesis and disease resistance." },
+  Zn:{ label:"Zinc (Zn)",unit:"ppm",range:"0.2-10",full:"Zinc - micronutrient for auxin hormone regulation, grain and fruit filling." },
+  B:{ label:"Boron (B)",unit:"ppm",range:"0.1-10",full:"Boron - micronutrient essential for cell wall integrity and reproductive growth." },
+  pH:{ label:"Soil pH",unit:"0-14 scale",range:"0-14",full:"Soil pH - acidity/alkalinity on 0-14 scale; controls nutrient availability. Ideal range: 6.0-7.5." },
+  EC:{ label:"Electrical Conductivity (EC)",unit:"dS/m",range:"0.1-30",full:"Electrical Conductivity (EC) - proxy for soluble salt content; high EC causes salinity stress." }
+};
+const PO = ["pH","EC","OC","N","P","K","Ca","Mg","S","Fe","Mn","Cu","Zn","B"];
+
+const GLOSS = {
+  "OC (Organic Carbon)":"Decomposed organic matter in soil. Drives water retention, microbial life and nutrient cycling. Measured as percentage weight. Ideal: above 0.5%.",
+  "N (Nitrogen)":"Primary macronutrient for vegetative growth and chlorophyll. Low N causes yellowing of older leaves. Applied as urea, DAP or biofertiliser.",
+  "P (Phosphorus)":"Macronutrient for root development, flowering and energy transfer. Low P causes purpling of leaves. Applied as SSP or DAP.",
+  "K (Potassium)":"Macronutrient regulating water balance, disease resistance and fruit quality. Deficiency shows as leaf edge scorching.",
+  "Ca (Calcium)":"Secondary nutrient strengthening cell walls and soil aggregate stability. Deficiency causes tip burn and blossom end rot.",
+  "Mg (Magnesium)":"Central atom of the chlorophyll molecule. Deficiency causes interveinal chlorosis starting from older leaves.",
+  "S (Sulphur)":"Secondary nutrient for protein and enzyme synthesis; component of amino acids cysteine and methionine.",
+  "Fe (Iron)":"Micronutrient for chlorophyll synthesis. Deficiency causes interveinal chlorosis on young leaves, especially in alkaline soils.",
+  "Mn (Manganese)":"Micronutrient in photosynthesis oxygen evolution and enzyme activation. Availability drops at pH above 7.",
+  "Cu (Copper)":"Micronutrient supporting enzyme function, lignin synthesis and resistance to fungal diseases.",
+  "Zn (Zinc)":"Micronutrient for auxin growth hormone regulation and grain filling. Very commonly deficient in Indian soils.",
+  "B (Boron)":"Micronutrient essential for cell wall integrity, sugar transport, pollen viability and reproductive growth.",
+  "pH (Soil pH)":"Acidity/alkalinity on 0-14 scale. pH 7 is neutral. Most nutrients available between pH 6.0 and 7.5.",
+  "EC (Electrical Conductivity)":"Proxy for soluble salt content in dS/m. EC above 2 dS/m causes salinity stress; above 4 dS/m severely limits most crops.",
+  "NDVI (Normalized Difference Vegetation Index)":"Satellite measure of vegetation greenness and density. Formula: (NIR - RED) / (NIR + RED). Range -1 to +1. Healthy vegetation above 0.5.",
+  "BSI (Bare Soil Index)":"Satellite measure of exposed vegetation-free soil. High BSI indicates low ground cover and erosion risk.",
+  "NDWI (Normalized Difference Water Index)":"Satellite measure of canopy water content. Negative values indicate water stress in the crop canopy.",
+  "MSAVI (Modified Soil-Adjusted Vegetation Index)":"Vegetation index corrected for soil background brightness; more accurate than NDVI over sparse vegetation.",
+  "ERA5-Land":"Global climate reanalysis dataset from ECMWF and Copernicus at 0.1 degree resolution, providing hourly climate estimates back to 1950.",
+  "ET0 (Reference Evapotranspiration)":"Water lost to evaporation plus transpiration from a reference grass surface under standard conditions, measured in mm per year.",
+  "Kharif Season":"Monsoon-sown crop season in India, roughly June to October. Includes rice, sorghum, maize and cotton.",
+  "Rabi Season":"Winter-sown crop season in India, roughly October to March. Includes wheat, barley, mustard and chickpea.",
+  "Sentinel-2":"European Space Agency satellite providing 10m multispectral imagery, freely available through Copernicus and Google Earth Engine.",
+  "Google Earth Engine (GEE)":"Cloud-based geospatial analysis platform providing access to petabytes of satellite imagery and climate datasets."
+};
+
+/* ============================================================
+   TAB SWITCHING
+============================================================ */
+document.querySelectorAll(".tab-btn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".tab-cnt").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    document.getElementById(b.dataset.tab).classList.add("active");
+  });
+});
+
+/* ============================================================
+   LANGUAGE
+============================================================ */
+function selLang(el){
+  document.querySelectorAll(".lang-opt").forEach(o=>o.classList.remove("sel"));
+  el.classList.add("sel"); S.lang=el.dataset.lang;
+}
+function applyLang(){
+  const m={clFarmer:"farmer",clCrop:"crop",clLoc:"loc",clDate:"date",clMob:"mob",clHealth:"health",
+    cFootL:"footL",slFert:"fert",slScore:"score",slInd:"ind",slFooter:"slogan",
+    slLoc:"locLbl",slDate:"dateLbl",slArea:"areaLbl",slCrop:"cropLbl",
+    slNDVI:"ndviLbl",slRain:"rainLbl",slEC:"ecLbl",
+    mNDVI:"ndviMap",mBSI:"bsiMap",mMSAVI:"msaviMap",mNDWI:"ndwiMap",mRain:"rainMap",
+    rSat:"sat",rSpec:"spec",rSoil:"soil",rNDVI:"ndvi",rRain:"rain",
+    rRC:"rc",rRem:"rem",rSC:"sc",rDS:"ds",rGL:"gl",
+    thIdx:"thIdx",thMn:"thMn",thMx:"thMx",thIn:"thIn",
+    thPar:"thPar",thUnt:"thUnt",thRng:"thRng",thMeas:"thMeas",thSt:"thSt",
+    thSCI:"thSCI",thSCS:"thSCS",thSCR:"thSCR",thSCA:"thSCA"};
+  Object.entries(m).forEach(([id,key])=>{
+    const el=document.getElementById(id); if(el) el.textContent=t(key);
+  });
+  alert("Language applied: "+document.querySelector(".lang-opt.sel .ln").textContent);
+}
+
+/* ============================================================
+   COVER SYNC
+============================================================ */
+function syncCover(){
+  const v=id=>document.getElementById(id).value||"";
+  const set=(id,val)=>{ const e=document.getElementById(id); if(e) e.textContent=val||"-"; };
+  set("cName",v("inName")); set("cCrop",v("inCrop")); set("cDate",v("inDate")); set("cMobile",v("inMobile"));
+  const lat=v("inLat"),lon=v("inLon");
+  set("cLatLon",(lat&&lon)?lat+" / "+lon:"");
+  set("cGenDate","Generated "+new Date().toLocaleString());
+  set("slLocV",(lat&&lon)?lat+"N, "+lon+"E":""); set("slDateV",v("inDate"));
+  set("slCropV",v("inCrop")); set("slAreaV",v("inArea")?v("inArea")+" Ha":"");
+  if(S.sc) set("cHealth",S.sc.overall+"/100");
+}
+["inName","inMobile","inCrop","inLat","inLon","inDate","inArea"].forEach(id=>{
+  const e=document.getElementById(id); if(e) e.addEventListener("input",syncCover);
+});
+syncCover();
+
+/* ============================================================
+   MANUAL PARAM TABLE
+============================================================ */
+function renderManualTable(){
+  const w=document.getElementById("manualParamTable");
+  let h=`<table class="ptbl"><thead><tr><th>Parameter</th><th>Value</th><th>Status</th></tr></thead><tbody>`;
+  PO.forEach(c=>{
+    const d=PD[c],cur=S.mp[c]||{};
+    h+=`<tr><td><strong>${c}</strong><br><span style="font-size:10px;color:var(--mu)">${d.unit}</span></td>
+      <td><input type="text" id="mp_${c}" value="${cur.value||""}" placeholder="${d.range}"></td>
+      <td><select id="ms_${c}" style="font-size:11px;padding:3px;border:1px solid var(--ln);border-radius:5px;">
+        <option value="">-</option>
+        <option value="Low" ${cur.status=="Low"?"selected":""}>Low</option>
+        <option value="Sufficient" ${cur.status=="Sufficient"?"selected":""}>Sufficient</option>
+        <option value="High" ${cur.status=="High"?"selected":""}>High</option>
+      </select></td></tr>`;
+  });
+  w.innerHTML=h+"</tbody></table>";
+}
+renderManualTable();
+
+function applyManualParams(){
+  PO.forEach(c=>{
+    const v=document.getElementById("mp_"+c)?.value?.trim();
+    const st=document.getElementById("ms_"+c)?.value;
+    if(v){ S.mp[c]={range:PD[c].range,value:v,status:st||""}; }
+  });
+  Object.assign(S.tp,S.mp);
+  renderSoilTable(S.tp); updateSoiLENZ(); syncCover();
+  alert("Manual values applied to report.");
+}
+
+function stClass(s){if(!s)return"";if(/low|deficient|critical/i.test(s))return"L";if(/high|moderate/i.test(s))return"H";if(/suff|adequate|ok/i.test(s))return"S";if(/basic/i.test(s))return"Basic";return"";}
+
+/* ============================================================
+   SOIL REPORT TABLE
+============================================================ */
+function renderSoilTable(params){
+  const b=document.getElementById("soilBody"); b.innerHTML=""; let any=false;
+  PO.forEach(c=>{
+    const p=params[c]; if(!p) return; any=true;
+    const d=PD[c]||{label:c,unit:"",range:""};
+    const cs=stClass(p.status);
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td><strong>${d.label}</strong></td><td><span style="font-family:monospace;font-size:11px">${d.unit}</span></td><td>${d.range}</td><td><strong style="font-family:monospace">${p.value}</strong></td><td>${p.status?`<span class="bdg ${cs}">${p.status}</span>`:"—"}</td>`;
+    b.appendChild(tr);
+  });
+  if(!any) b.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--mu);padding:24px">Upload a ticket or enter values manually.</td></tr>`;
+}
+
+/* ============================================================
+   GAUGE DRAWING
+============================================================ */
+function drawGauge(canvas,score,color){
+  if(!canvas)return;
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  const cx=w/2,cy=h-8,r=Math.min(w,h*1.8)/2-6;
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,0,false);ctx.lineWidth=10;ctx.strokeStyle="#e8e8e8";ctx.stroke();
+  const end=Math.PI+(score/100)*Math.PI;
+  ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,end,false);ctx.strokeStyle=color;ctx.stroke();
+  const ang=Math.PI+(score/100)*Math.PI,nl=r-4;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(ang)*nl,cy+Math.sin(ang)*nl);
+  ctx.strokeStyle="#333";ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,4,0,Math.PI*2);ctx.fillStyle="#333";ctx.fill();
+}
+function scoreColor(s){return s<35?"#e53935":s<55?"#fb8c00":s<75?"#fdd835":"#43a047";}
+
+function paramScore(c,v){
+  const n=parseFloat(v); if(isNaN(n))return 50;
+  const m={pH:n>8.5||n<5.5?20:n>7.8||n<6?50:85,EC:n>4?15:n>2?40:n>1?70:90,
+    OC:n<0.3?20:n<0.5?45:n<0.75?70:90,N:n<150?25:n<280?55:n<500?80:90,
+    P:n<10?25:n<25?60:n<100?85:90,K:n<100?30:n<200?55:n<500?80:90,
+    Ca:n<5?30:n<20?65:n<60?85:90,Mg:n<2?30:n<5?65:n<30?85:90,
+    S:n<10?30:n<20?60:n<100?85:90,Fe:n<2?25:n<4?55:n<20?85:90,
+    Mn:n<1?25:n<2?55:n<10?85:90,Cu:n<0.2?30:n<0.5?60:n<5?85:90,
+    Zn:n<0.5?25:n<1?55:n<5?85:90,B:n<0.2?25:n<0.5?60:n<5?85:90};
+  return m[c]||60;
+}
+
+function updateSoiLENZ(){
+  const params=S.tp;
+  const codes=Object.keys(params).filter(c=>PO.includes(c));
+  if(!codes.length)return;
+  const scores={};
+  codes.forEach(c=>{scores[c]=paramScore(c,params[c].value);});
+  if(S.sat&&S.sat.NDVI_mean!=null){
+    const nd=S.sat.NDVI_mean;
+    scores.NDVI=nd<0.2?15:nd<0.35?35:nd<0.5?65:85;
+  }
+  const avg=Math.round(Object.values(scores).reduce((a,b)=>a+b,0)/Object.values(scores).length);
+  const fert=avg>=70?"HIGH":avg>=45?"MEDIUM":"LOW";
+  const fc=avg>=70?"#43a047":avg>=45?"#fb8c00":"#e53935";
+  const sc=scoreColor(avg);
+  const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+  set("slScoreV",avg); set("slScoreSt",avg>=70?"GOOD":avg>=45?"MODERATE":"POOR");
+  const sst=document.getElementById("slScoreSt"); if(sst) sst.style.color=sc;
+  set("slFertV",fert); const fv=document.getElementById("slFertV"); if(fv) fv.style.color=fc;
+  set("cHealth",avg+"/100");
+  if(params.EC) set("slECV",params.EC.value+" dS/m ("+(params.EC.status||"-")+")");
+  drawGauge(document.getElementById("healthGauge"),avg,sc);
+  drawGauge(document.getElementById("fertGauge"),avg,fc);
+  const ig=document.getElementById("indGauges"); ig.innerHTML="";
+  ["pH","EC","N","P","K","OC"].forEach(c=>{
+    if(!scores[c])return;
+    const s=scores[c],col=scoreColor(s);
+    const item=document.createElement("div"); item.className="gi";
+    const cid="g_"+c;
+    item.innerHTML=`<div class="gw"><canvas id="${cid}" width="52" height="30" class="garc"></canvas></div><div class="gl2">${c}</div><div class="gsc">${s}/100</div>`;
+    ig.appendChild(item);
+    setTimeout(()=>drawGauge(document.getElementById(cid),s,col),50);
+  });
+  S.sc=S.sc||{}; S.sc.overall=avg; S.sc.scores=scores;
+}
+
+/* ============================================================
+   GLOSSARY
+============================================================ */
+function renderGloss(){
+  const g=document.getElementById("glossGrid"); g.innerHTML="";
+  Object.entries(GLOSS).forEach(([t,d])=>{
+    const dt=document.createElement("dt"); dt.textContent=t;
+    const dd=document.createElement("dd"); dd.textContent=d;
+    g.appendChild(dt); g.appendChild(dd);
+  });
+}
+renderGloss();
+
+/* ============================================================
+   GEE CONNECTION
+============================================================ */
+function doConnect(){
+  const cid=document.getElementById("geeClientId").value.trim();
+  if(!cid){alert("Paste your OAuth Client ID in the GEE tab first.");return;}
+  const bar=document.getElementById("geeStatusBar");
+  bar.innerHTML=`<span class="sdot" style="background:orange"></span> Connecting...`;
+  if(typeof ee==="undefined"){
+    bar.innerHTML=`<span class="sdot" style="background:red"></span> Earth Engine API not loaded. Serve via python -m http.server on http://localhost`;
+    return;
+  }
+  ee.data.authenticateViaOauth(cid,()=>{
+    ee.initialize(null,null,()=>{
+      S.gee.ok=true; bar.className="gsb connected";
+      bar.innerHTML=`<span class="sdot" style="background:var(--ok)"></span> Connected OK`;
+      document.getElementById("fetchSatBtn").disabled=false;
+      document.getElementById("generateBtn").disabled=false;
+    },err=>{bar.innerHTML=`<span class="sdot" style="background:red"></span> Init failed: ${err}`;});
+  },err=>{bar.innerHTML=`<span class="sdot" style="background:red"></span> Auth failed: ${err}`;
+  },["https://www.googleapis.com/auth/earthengine.readonly"]);
+}
+document.getElementById("connectGeeBtn").addEventListener("click",doConnect);
+document.getElementById("connectGeeBtnTab").addEventListener("click",doConnect);
+
+/* ============================================================
+   SATELLITE FETCH
+============================================================ */
+document.getElementById("fetchSatBtn").addEventListener("click",fetchSat);
+function getPoint(){
+  const lat=parseFloat(document.getElementById("inLat").value);
+  const lon=parseFloat(document.getElementById("inLon").value);
+  return(isNaN(lat)||isNaN(lon))?null:{lat,lon};
+}
+function setMapImg(idx,url){
+  const cards=document.querySelectorAll("#mapGrid .map-card");
+  const card=cards[idx]; if(!card)return;
+  const old=card.querySelector(".ph,.skeleton,img:not([alt=''])");
+  if(old&&url){const img=document.createElement("img");img.src=url;img.crossOrigin="anonymous";img.style.cssText="width:100%;aspect-ratio:1/1;display:block;object-fit:cover;";old.replaceWith(img);}
+  else if(old){old.style.background="#fde8e8";}
+}
+function thumb(image,vis,region){return new Promise(resolve=>{
+  image.visualize(vis).getThumbURL({region,dimensions:300,format:"png"},(url,err)=>{
+    if(err){console.error("Thumb:",err);resolve(null);}else resolve(url);
+  });
+});}
+
+let rainChart=null;
+function renderRainChart(labels,vals){
+  const ctx=document.getElementById("rainfallChart");
+  if(rainChart)rainChart.destroy();
+  const grad=ctx.getContext("2d").createLinearGradient(0,0,0,200);
+  grad.addColorStop(0,"rgba(76,122,61,0.9)"); grad.addColorStop(1,"rgba(76,122,61,0.3)");
+  rainChart=new Chart(ctx,{type:"bar",data:{labels,datasets:[{label:"mm",data:vals,backgroundColor:grad,borderColor:"#2d5a38",borderWidth:1,borderRadius:3}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:8}}},y:{ticks:{font:{size:8}}}}}});
+}
+
+async function fetchSat(){
+  if(!S.gee.ok){alert("Connect Earth Engine first.");return;}
+  const pt=getPoint(); if(!pt){alert("Enter valid Latitude and Longitude in the Manual tab.");return;}
+  const btn=document.getElementById("fetchSatBtn"); btn.disabled=true; btn.textContent="Fetching...";
+  for(let i=0;i<5;i++){const c=document.querySelectorAll("#mapGrid .map-card")[i];if(c){const o=c.querySelector(".ph,img");if(o){const s=document.createElement("div");s.className="skeleton";o.replaceWith(s);}}
+  }
+  try{
+    const point=ee.Geometry.Point([pt.lon,pt.lat]);
+    const region=point.buffer(800).bounds();
+    const end=ee.Date(Date.now()),start=end.advance(-3,"month");
+    const s2=ee.ImageCollection("COPERNICUS/S2_SR_HARMONIC").filterBounds(point).filterDate(start,end).filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE",25)).median();
+    const ndvi=s2.normalizedDifference(["B8","B4"]).rename("NDVI");
+    const ndwi=s2.normalizedDifference(["B3","B8"]).rename("NDWI");
+    const bsi=s2.expression("((SWIR+RED)-(NIR+BLUE))/((SWIR+RED)+(NIR+BLUE))",{SWIR:s2.select("B11"),RED:s2.select("B4"),NIR:s2.select("B8"),BLUE:s2.select("B2")}).rename("BSI");
+    const nirN=s2.select("B8").divide(10000),redN=s2.select("B4").divide(10000);
+    const msavi=nirN.multiply(2).add(1).subtract(nirN.multiply(2).add(1).pow(2).subtract(nirN.subtract(redN).multiply(8)).sqrt()).divide(2).rename("MSAVI");
+    const[uRGB,uNDVI,uBSI,uMSAVI,uNDWI]=await Promise.all([
+      thumb(s2,{bands:["B4","B3","B2"],min:0,max:3000},region),
+      thumb(ndvi,{min:-0.2,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},region),
+      thumb(bsi,{min:-0.3,max:0.5,palette:["#1b5e20","#81c784","#ffcc02","#e53935","#b71c1c"]},region),
+      thumb(msavi,{min:0,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},region),
+      thumb(ndwi,{min:-0.5,max:0.5,palette:["#6d4c41","#ffcc02","#64b5f6","#0d47a1"]},region)
+    ]);
+    setMapImg(0,uRGB);setMapImg(1,uNDVI);setMapImg(2,uBSI);setMapImg(3,uMSAVI);setMapImg(4,uNDWI);
+    ndvi.addBands(bsi).addBands(ndwi).addBands(msavi)
+      .reduceRegion({reducer:ee.Reducer.mean().combine({reducer2:ee.Reducer.max(),sharedInputs:true}),geometry:point.buffer(200),scale:10,maxPixels:1e9})
+      .evaluate((r,err)=>{
+        if(err){console.error("Stats:",err);return;}
+        S.sat=r; fillSpecTable(r); updateSoiLENZ();
+        const nd=r.NDVI_mean;
+        if(nd!=null){const e=document.getElementById("slNDVIV");if(e)e.textContent=nd.toFixed(3)+(nd<0.3?" (Low)":nd<0.5?" (Moderate)":" (Healthy)");}
+      });
+    const rc=ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR").filterDate(end.advance(-12,"month"),end).select("total_precipitation_sum");
+    rc.map(img=>ee.Feature(null,{date:img.date().format("YYYY-MM"),mm:ee.Number(img.reduceRegion({reducer:ee.Reducer.mean(),geometry:point,scale:10000}).get("total_precipitation_sum")).multiply(1000)}))
+      .reduceColumns(ee.Reducer.toList(2),["date","mm"]).get("list").evaluate(list=>{
+        if(!list)return;
+        renderRainChart(list.map(r=>r[0]),list.map(r=>+(r[1]||0).toFixed(1)));
+        const tot=list.reduce((a,r)=>a+(r[1]||0),0);
+        const rv=document.getElementById("slRainV"); if(rv) rv.textContent=tot.toFixed(0)+" mm/yr (ERA5)";
+      });
+    btn.textContent="Satellite Data Fetched OK";
+    setTimeout(()=>{btn.textContent="📡 Fetch Satellite Data";btn.disabled=false;},2000);
+  }catch(err){console.error(err);btn.textContent="📡 Fetch Satellite Data";btn.disabled=false;alert("Fetch failed: "+err.message);}
+}
+
+function fillSpecTable(r){
+  const nd=r.NDVI_mean,bs=r.BSI_mean,nw=r.NDWI_mean,ms=r.MSAVI_mean;
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s("sNDVImean",nd!=null?nd.toFixed(3):"-"); s("sNDVImax",r.NDVI_max!=null?r.NDVI_max.toFixed(3):"-");
+  s("sNDVIint",nd==null?"-":nd<0.2?"Severe stress - bare or extremely sparse canopy":nd<0.35?"High stress - sparse degraded canopy":nd<0.5?"Moderate stress - partial canopy below optimal":"Healthy dense productive canopy");
+  s("sBSImean",bs!=null?bs.toFixed(3):"-");
+  s("sBSIint",bs==null?"-":bs>0.25?"Very high bare soil exposure - erosion risk":bs>0.12?"Elevated bare soil - mulching recommended":"Low bare soil - adequate ground cover");
+  s("sNDWImean",nw!=null?nw.toFixed(3):"-");
+  s("sNDWIint",nw==null?"-":nw<-0.3?"Severe canopy water deficit - urgent irrigation":nw<-0.1?"Mild water stress - review irrigation":"Adequate canopy water content");
+  s("sMSAVImean",ms!=null?ms.toFixed(3):"-");
+  s("sMSAVIint",ms==null?"-":ms<0.2?"Very low - stressed on bright soil background":ms<0.4?"Moderate - soil background influence present":"Good vegetation coverage confirmed");
+}
+
+/* ============================================================
+   GENERATE REPORT
+============================================================ */
+document.getElementById("generateBtn").addEventListener("click",async()=>{
+  const btn=document.getElementById("generateBtn"); btn.disabled=true; btn.textContent="Working...";
+  try{
+    if(!S.sat&&S.gee.ok){await fetchSat();await new Promise(r=>setTimeout(r,2000));}
+    btn.textContent="Computing NDVI trend..."; await computeNDVI();
+    btn.textContent="Computing rainfall..."; await computeRain();
+    btn.textContent="Building scorecard..."; computeSC();
+    btn.textContent="Writing analysis..."; await genNarrative();
+    updateSoiLENZ(); syncCover();
+    btn.textContent="Report Generated!";
+    setTimeout(()=>{btn.textContent="🧠 Generate Report";btn.disabled=false;},2500);
+  }catch(err){console.error(err);btn.textContent="🧠 Generate Report";btn.disabled=false;alert("Error: "+err.message);}
+});
+
+/* ============================================================
+   NDVI TREND
+============================================================ */
+let ndviChart=null;
+async function computeNDVI(){
+  if(!S.gee.ok)return;
+  const pt=getPoint(); if(!pt)return;
+  const point=ee.Geometry.Point([pt.lon,pt.lat]);
+  const sy=2022,ny=new Date().getFullYear();
+  const periods=[];
+  for(let y=sy;y<=ny;y++){
+    periods.push({label:`${y} Kharif Oct`,start:`${y}-10-01`,end:`${y}-11-15`});
+    if(y<ny)periods.push({label:`${y+1} Rabi Jan`,start:`${y+1}-01-01`,end:`${y+1}-02-15`});
+  }
+  const feats=periods.map(p=>{
+    const s2=ee.ImageCollection("COPERNICUS/S2_SR_HARMONIC").filterBounds(point).filterDate(p.start,p.end).filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE",40)).median();
+    const ndvi=s2.normalizedDifference(["B8","B4"]);
+    return ee.Feature(null,{label:p.label,ndvi:ndvi.reduceRegion({reducer:ee.Reducer.mean(),geometry:point.buffer(200),scale:10,maxPixels:1e9}).get("nd")});
+  });
+  return new Promise(resolve=>{
+    ee.FeatureCollection(feats).reduceColumns(ee.Reducer.toList(2),["label","ndvi"]).get("list").evaluate(list=>{
+      if(!list){resolve();return;}
+      S.ndviY=list; renderNDVITrend(list); resolve();
+    });
+  });
+}
+function renderNDVITrend(list){
+  const body=document.getElementById("ndviBody"); body.innerHTML="";
+  const labels=[],vals=[];
+  list.forEach(([lbl,ndvi])=>{
+    if(ndvi==null)return;
+    labels.push(lbl); vals.push(+ndvi.toFixed(3));
+    const st=ndvi<0.25?"Severe Decline":ndvi<0.4?"Moderate Stress":ndvi<0.55?"Brief Recovery":"Healthy Response";
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${lbl}</td><td style="font-family:monospace;font-weight:700">${ndvi.toFixed(3)}</td><td>${st}</td>`;
+    body.appendChild(tr);
+  });
+  document.getElementById("rNDVISub").textContent=`${labels.length} seasonal periods computed from Sentinel-2 median composites.`;
+  const ctx=document.getElementById("ndviTrendChart");
+  if(ndviChart)ndviChart.destroy();
+  const g=ctx.getContext("2d").createLinearGradient(0,0,0,200);
+  g.addColorStop(0,"rgba(76,122,61,0.3)");g.addColorStop(1,"rgba(76,122,61,0)");
+  ndviChart=new Chart(ctx,{type:"line",data:{labels,datasets:[{label:"NDVI",data:vals,borderColor:"#2d5a38",backgroundColor:g,fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:"#2d5a38"}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:0.9}}}});
+}
+
+/* ============================================================
+   RAINFALL HISTORY
+============================================================ */
+async function computeRain(){
+  if(!S.gee.ok)return;
+  const pt=getPoint(); if(!pt)return;
+  const point=ee.Geometry.Point([pt.lon,pt.lat]);
+  const feats=[];
+  for(let y=2021;y<=new Date().getFullYear();y++){
+    const coll=ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR").filterDate(`${y}-01-01`,`${y}-12-31`);
+    const rain=coll.select("total_precipitation_sum").sum().reduceRegion({reducer:ee.Reducer.mean(),geometry:point,scale:10000}).get("total_precipitation_sum");
+    const pet=coll.select("potential_evaporation_sum").sum().reduceRegion({reducer:ee.Reducer.mean(),geometry:point,scale:10000}).get("potential_evaporation_sum");
+    feats.push(ee.Feature(null,{year:y,rain:ee.Number(rain).multiply(1000),et0:ee.Number(pet).abs().multiply(1000)}));
+  }
+  return new Promise(resolve=>{
+    ee.FeatureCollection(feats).reduceColumns(ee.Reducer.toList(3),["year","rain","et0"]).get("list").evaluate(list=>{
+      if(!list){resolve();return;}
+      const body=document.getElementById("rainBody"); body.innerHTML="";
+      const rains=list.map(r=>r[1]).filter(v=>v!=null);
+      const norm=rains.reduce((a,b)=>a+b,0)/rains.length;
+      S.rainY={list,norm};
+      list.forEach(([yr,rain,et0])=>{
+        if(rain==null)return;
+        const pct=(rain-norm)/norm*100;
+        const def=(et0||0)-rain;
+        const cls=pct<-25?"Severe":pct<-10?"Moderate":"Normal";
+        const tr=document.createElement("tr");
+        tr.innerHTML=`<td><strong>${yr}</strong></td><td style="font-family:monospace">${rain.toFixed(0)}</td><td style="color:${pct>=0?"var(--ok)":"var(--bd)"}">${pct>=0?"+":""}${pct.toFixed(1)}%</td><td style="font-family:monospace">${et0?et0.toFixed(0):"-"}</td><td>${def>0?def.toFixed(0):"-"}</td><td><span class="bdg ${cls}">${cls}</span></td>`;
+        body.appendChild(tr);
+      });
+      resolve();
+    });
+  });
+}
+
+/* ============================================================
+   SCORECARD
+============================================================ */
+function computeSC(){
+  const sat=S.sat||{},params=S.tp||{};
+  const ndvi=sat.NDVI_mean??0.4,bsi=sat.BSI_mean??0.1,ndwi=sat.NDWI_mean??-0.1;
+  const get=c=>params[c]?parseFloat(params[c].value):null;
+  const s10=(v,bad,good)=>Math.max(0,Math.min(10,10*(v-bad)/(good-bad)));
+  const rows=[];
+  rows.push({name:"Vegetation Cover (NDVI)",score:s10(ndvi,0.15,0.65),risk:ndvi<0.3?"CRITICAL":ndvi<0.45?"HIGH":"MEDIUM",action:ndvi<0.35?"Plant restoration crop; implement drip irrigation immediately":"Maintain current canopy management"});
+  rows.push({name:"Bare Soil Exposure (BSI)",score:10-s10(bsi,0,0.3),risk:bsi>0.2?"HIGH":"MEDIUM",action:bsi>0.15?"Apply organic mulch; establish cover crop":"Monitor seasonal bare soil"});
+  rows.push({name:"Canopy Water Status (NDWI)",score:s10(ndwi,-0.5,0.1),risk:ndwi<-0.3?"CRITICAL":ndwi<-0.1?"HIGH":"MEDIUM",action:ndwi<-0.2?"Install drip irrigation; apply mulch":"Review irrigation schedule"});
+  const ph=get("pH");if(ph!=null)rows.push({name:"Soil pH",score:ph>8.5||ph<5.5?2:ph>7.8||ph<6?5:9,risk:(ph>8.5||ph<5.5)?"HIGH":"MEDIUM",action:ph>7.5?"Apply gypsum and elemental sulphur to lower pH":"Maintain soil pH management"});
+  const ec=get("EC");if(ec!=null)rows.push({name:"Salinity (EC)",score:ec>4?1:ec>2?4:ec>1?7:9,risk:ec>4?"CRITICAL":ec>2?"HIGH":"MEDIUM",action:ec>2?"Gypsum + deep leaching irrigation":"Monitor salinity quarterly"});
+  const oc=get("OC");if(oc!=null)rows.push({name:"Organic Carbon (OC)",score:oc<0.3?2:oc<0.5?5:oc<0.75?8:9,risk:oc<0.3?"CRITICAL":oc<0.5?"HIGH":"MEDIUM",action:"Apply farmyard manure 5-10 t/ha per year + green manure crops"});
+  const n=get("N");if(n!=null)rows.push({name:"Nitrogen (N) Availability",score:n<150?3:n<280?6:9,risk:n<150?"HIGH":"MEDIUM",action:"Azospirillum biofertiliser + split-dose balanced NPK"});
+  const p=get("P");if(p!=null)rows.push({name:"Phosphorus (P) Availability",score:p<10?3:p<25?6:9,risk:p<10?"HIGH":"LOW",action:p<10?"Apply SSP or DAP fertiliser based on crop demand":"Phosphorus levels adequate"});
+  const zn=get("Zn");if(zn!=null)rows.push({name:"Zinc (Zn) Micronutrient",score:zn<0.5?3:zn<1?6:9,risk:zn<0.5?"HIGH":"MEDIUM",action:zn<0.5?"Foliar ZnSO4 spray 0.5%; soil apply zinc sulphate":"Zinc levels acceptable"});
+  const overall=rows.reduce((a,r)=>a+r.score,0)/rows.length;
+  const pct=Math.round(overall*10);
+  S.sc={rows,overall:pct,scores:S.sc?.scores||{}};
+  const body=document.getElementById("scBody"); body.innerHTML="";
+  rows.forEach(r=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${r.name}</td><td style="font-family:monospace;font-weight:700">${r.score.toFixed(1)}/10</td><td><span class="bdg ${r.risk}">${r.risk}</span></td><td style="font-size:12px">${r.action}</td>`;
+    body.appendChild(tr);
+  });
+  const oe=document.getElementById("overScore");
+  oe.textContent=pct+"/100";
+  oe.className="sbig"+(pct<40?" bd":pct<65?" wn":"");
+  document.getElementById("overNote").textContent=pct<40?"Multiple critical indicators - immediate multi-pronged remediation required.":pct<65?"Moderate stress across indicators - targeted intervention recommended.":"Generally healthy site with minor issues to monitor.";
+}
+
+/* ============================================================
+   NARRATIVE
+============================================================ */
+async function genNarrative(){
+  const tok=document.getElementById("hfToken").value.trim();
+  const mdl=document.getElementById("hfModel").value.trim()||"mistralai/Mistral-7B-Instruct-v0.2";
+  const facts=buildFacts();
+  if(tok){
+    try{
+      const prompt=`You are a senior agronomist writing a field diagnostic report.\n\nDATA:\n${facts}\n\nWrite TWO sections:\n\n## ROOT CAUSE ANALYSIS\n(4-5 bullet points, each starting with "- ", identifying causes of soil/crop stress)\n\n## REMEDIATION PLAN\nIMMEDIATE:\n- action\nSEASON1:\n- action\nSEASON2:\n- action\nLONGTERM:\n- action\n\nBe specific and base everything strictly on the data provided.`;
+      const resp=await fetch(`https://api-inference.huggingface.co/models/${mdl}`,{
+        method:"POST",headers:{"Authorization":`Bearer ${tok}`,"Content-Type":"application/json"},
+        body:JSON.stringify({inputs:prompt,parameters:{max_new_tokens:800,temperature:0.3,return_full_text:false}})
+      });
+      if(!resp.ok)throw new Error("HF status "+resp.status);
+      const data=await resp.json();
+      const text=Array.isArray(data)?data[0].generated_text:data.generated_text||"";
+      if(text&&text.length>60){parseHFText(text);document.getElementById("narSrc").textContent="(AI-generated by "+mdl+")";return;}
+      throw new Error("Empty response");
+    }catch(e){console.warn("HF failed:",e);document.getElementById("narSrc").textContent="(Hugging Face unavailable - rule-based analysis shown)";}
+  }else{document.getElementById("narSrc").textContent="(Rule-based - add HF token in GEE tab for AI prose)";}
+  ruleBasedNarrative();
+}
+function buildFacts(){
+  const sat=S.sat||{},p=S.tp||{};
+  const lines=[];
+  if(sat.NDVI_mean!=null)lines.push(`NDVI mean: ${sat.NDVI_mean.toFixed(3)}`);
+  if(sat.BSI_mean!=null)lines.push(`BSI mean: ${sat.BSI_mean.toFixed(3)}`);
+  if(sat.NDWI_mean!=null)lines.push(`NDWI mean: ${sat.NDWI_mean.toFixed(3)}`);
+  Object.entries(p).forEach(([k,v])=>lines.push(`${PD[k]?.label||k}: ${v.value} ${PD[k]?.unit||""} - ${v.status||"unknown"}`));
+  if(S.sc)lines.push(`Overall health: ${S.sc.overall}/100`);
+  const cr=document.getElementById("inCrop").value; if(cr)lines.push(`Crop: ${cr}`);
+  return lines.join("\n");
+}
+function parseHFText(text){
+  const rcBox=document.getElementById("rcBox"); rcBox.innerHTML="";
+  const rcm=text.match(/ROOT CAUSE ANALYSIS([\s\S]*?)(?:## REMEDIATION|IMMEDIATE:|$)/i);
+  if(rcm){rcm[1].split("\n").map(l=>l.replace(/^[-*]\s*/,"").trim()).filter(Boolean).forEach(line=>{
+    const d=document.createElement("div"); d.className="ci";
+    d.innerHTML=`<div class="ct">FINDING</div><div class="cx">${line}</div>`;
+    rcBox.appendChild(d);
+  });}
+  const keys={IMMEDIATE:"planI",SEASON1:"planS1",SEASON2:"planS2",LONGTERM:"planLT"};
+  Object.entries(keys).forEach(([k,id])=>{
+    const re=new RegExp(k+":?([\\s\\S]*?)(?:IMMEDIATE:|SEASON1:|SEASON2:|LONGTERM:|$)","i");
+    const m=text.match(re);
+    const ul=document.getElementById(id); ul.innerHTML="";
+    if(m)m[1].split("\n").map(l=>l.replace(/^[-*]\s*/,"").trim()).filter(Boolean).slice(0,5).forEach(line=>{
+      const li=document.createElement("li"); li.textContent=line; ul.appendChild(li);
+    });
+    if(!ul.children.length)ul.innerHTML=`<li style="color:var(--mu)">See rule-based section below</li>`;
+  });
+}
+function ruleBasedNarrative(){
+  const sat=S.sat||{},p=S.tp||{};
+  const nd=sat.NDVI_mean,bs=sat.BSI_mean,nw=sat.NDWI_mean;
+  const get=c=>p[c]?parseFloat(p[c].value):null;
+  const causes=[];
+  if(nd!=null&&nd<0.4)causes.push({tag:"PRIMARY - Vegetation Stress",text:`Normalized Difference Vegetation Index (NDVI) mean of ${nd.toFixed(3)} indicates sparse or severely stressed vegetation. Healthy agricultural land typically shows NDVI above 0.55 during active growth phases.`});
+  if(nw!=null&&nw<-0.15)causes.push({tag:"PRIMARY - Water Deficit",text:`Normalized Difference Water Index (NDWI) of ${nw.toFixed(3)} signals significant water deficit in the crop canopy and surface soil, linked to inadequate rainfall or poor water-holding capacity from low Organic Carbon.`});
+  if(bs!=null&&bs>0.12)causes.push({tag:"SECONDARY - Bare Soil Exposure",text:`Bare Soil Index (BSI) of ${bs.toFixed(3)} indicates elevated exposure of bare unvegetated soil. This accelerates surface evaporation, reduces soil microbial activity, and increases erosion risk during intense rainfall.`});
+  const oc=get("OC"),ph=get("pH"),ec=get("EC"),n=get("N"),zn=get("Zn");
+  if(oc!=null&&oc<0.5)causes.push({tag:"PRIMARY - Organic Matter Depletion",text:`Organic Carbon (OC) at ${oc}% is below the critical threshold of 0.5%. Depleted organic matter reduces water retention, beneficial microbial populations, cation exchange capacity, and availability of all major and micronutrients.`});
+  if(ph!=null&&ph>7.8)causes.push({tag:"CONTRIBUTING - Soil Alkalinity",text:`Soil pH of ${ph} indicates alkaline to highly alkaline conditions. At pH above 7.8, plant availability of Phosphorus, Iron, Manganese, Zinc and Boron drops significantly through precipitation and fixation reactions.`});
+  if(ec!=null&&ec>1.5)causes.push({tag:"CONTRIBUTING - Soil Salinity",text:`Electrical Conductivity (EC) of ${ec} dS/m indicates saline soil conditions restricting root water uptake through osmotic stress, reducing nutrient absorption efficiency.`});
+  if(zn!=null&&zn<1.0)causes.push({tag:"SECONDARY - Zinc Deficiency",text:`Zinc (Zn) at ${zn} ppm is below the critical level of 1 ppm. Zinc is essential for auxin synthesis, grain filling, and disease resistance. Deficiency is amplified in alkaline and high-Phosphorus soils.`});
+  if(n!=null&&n<280)causes.push({tag:"SECONDARY - Nitrogen Limitation",text:`Available Nitrogen (N) at ${n} kg/ha is limiting optimal vegetative growth. Coupled with low Organic Carbon, the soil natural nitrogen mineralization capacity is severely reduced.`});
+  if(!causes.length)causes.push({tag:"ANALYSIS",text:"Load satellite data and soil parameters to generate a full root cause analysis specific to this site."});
+  const rcBox=document.getElementById("rcBox"); rcBox.innerHTML="";
+  causes.forEach(c=>{const d=document.createElement("div");d.className="ci";d.innerHTML=`<div class="ct">${c.tag}</div><div class="cx">${c.text}</div>`;rcBox.appendChild(d);});
+  const imm=[],s1=[],s2=[],lt=[];
+  if(nw!=null&&nw<-0.2){imm.push("Install drip or sprinkler micro-irrigation to address acute water stress");imm.push("Apply organic mulch at 4-5 tonnes per hectare to reduce surface evaporation by 40-60%");}
+  if(ec!=null&&ec>1.5){imm.push("Apply gypsum at 2.5 t/ha to displace sodium ions and improve soil structure");imm.push("Conduct heavy leaching irrigation to flush accumulated salts below root zone");}
+  if(n!=null&&n<280)imm.push("Apply starter NPK fertiliser at 100:50:50 kg/ha as split doses");
+  if(zn!=null&&zn<1.0)imm.push("Foliar spray of Zinc Sulphate at 0.5% concentration, 2 applications 15 days apart");
+  if(ph!=null&&ph>7.8)imm.push("Apply elemental Sulphur at 250-500 kg/ha to initiate gradual pH reduction");
+  if(!imm.length)imm.push("Monitor soil moisture and continue current crop management","Conduct confirmatory lab soil test to validate field readings");
+  s1.push("Apply farmyard manure or vermicompost at 5-10 tonnes per hectare to build Organic Carbon");
+  s1.push("Sow a green manure crop such as Daincha or Sunhemp and incorporate at flowering to add 80-120 kg N/ha");
+  if(ph!=null&&ph>7.5)s1.push("Apply gypsum at 3 t/ha plus Sulphur at 200 kg/ha for sustained pH correction");
+  s1.push("Establish soil monitoring: test pH, EC and NDVI every 3 months to track remediation progress");
+  s2.push("Select a high-yielding crop variety suited to local soil and climate conditions");
+  s2.push("Apply Rhizobium or Azospirillum biofertiliser seed treatment for biological nitrogen fixation");
+  s2.push("Establish drip fertigation for precise application of water-soluble NPK nutrients");
+  if(zn!=null&&zn<0.5)s2.push("Apply Zinc Sulphate heptahydrate at 25 kg/ha as basal soil application before planting");
+  s2.push("Implement integrated nutrient management combining 50% chemical and 50% organic fertilisation");
+  lt.push("Develop a 3-year organic carbon building plan targeting OC above 0.75% through continuous organic matter addition");
+  lt.push("Install permanent drip irrigation with soil moisture sensors for precision water management");
+  lt.push("Adopt conservation agriculture: zero-tillage, cover cropping and crop rotation to rebuild soil biology");
+  lt.push("Annual satellite-based NDVI monitoring to track vegetation recovery and land productivity trends");
+  lt.push("Explore Soil Health Card scheme and NABARD farm finance for subsidised soil correction inputs");
+  const fill=(id,arr)=>{const ul=document.getElementById(id);ul.innerHTML="";arr.forEach(tx=>{const li=document.createElement("li");li.textContent=tx;ul.appendChild(li);});};
+  fill("planI",imm);fill("planS1",s1);fill("planS2",s2);fill("planLT",lt);
+}
+
+/* ============================================================
+   PDF EXPORT
+============================================================ */
+document.getElementById("exportPdfBtn").addEventListener("click",async()=>{
+  const btn=document.getElementById("exportPdfBtn"); btn.disabled=true; btn.textContent="Generating PDF...";
+  const el=document.getElementById("reportRoot");
+  const name=document.getElementById("inName").value||"AgriInsight";
+  const date=new Date().toISOString().split("T")[0];
+  const fn=name.replace(/\s+/g,"_")+"_SoiLENZ_Report_"+date+".pdf";
+  const opt={margin:[0,0,0,0],filename:fn,image:{type:"jpeg",quality:0.98},
+    html2canvas:{scale:2,useCORS:true,allowTaint:true,logging:false},
+    jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
+    pagebreak:{mode:["avoid-all","css","legacy"]}};
+  try{
+    await html2pdf().set(opt).from(el).save();
+    btn.textContent="PDF Saved!";
+    setTimeout(()=>{btn.textContent="⬇ Export PDF";btn.disabled=false;},2000);
+  }catch(e){console.error(e);btn.textContent="⬇ Export PDF";btn.disabled=false;alert("PDF export failed: "+e.message);}
+});
+
+/* ============================================================
+   INIT
+============================================================ */
+document.getElementById("inDate").value=new Date().toISOString().split("T")[0];
+syncCover();
+setTimeout(()=>{
+  drawGauge(document.getElementById("healthGauge"),0,"#e0e0e0");
+  drawGauge(document.getElementById("fertGauge"),0,"#e0e0e0");
+},100);
+window.addEventListener("load",()=>{
+  if(typeof ee==="undefined"){
+    document.getElementById("geeStatusBar").innerHTML=`<span class="sdot" style="background:orange"></span> Earth Engine API not available. Serve via python -m http.server on http://localhost`;
+  }
+  const geeInput=document.getElementById("geeClientId");
+  const hfInput=document.getElementById("hfToken");
+  const hfMod=document.getElementById("hfModel");
+  
+  if(localStorage.getItem("ai_gee")) geeInput.value=localStorage.getItem("ai_gee");
+  if(localStorage.getItem("ai_hf")) hfInput.value=localStorage.getItem("ai_hf");
+  if(localStorage.getItem("ai_hfm")) hfMod.value=localStorage.getItem("ai_hfm");
+
+  geeInput.addEventListener("input",e=>localStorage.setItem("ai_gee",e.target.value));
+  hfInput.addEventListener("input",e=>localStorage.setItem("ai_hf",e.target.value));
+  hfMod.addEventListener("input",e=>localStorage.setItem("ai_hfm",e.target.value));
+});
+</script>
+</body>
+</html>
