@@ -39,14 +39,90 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .btn-s { background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.2); }
 .btn-t { background:var(--tr); color:#fff; }
 .btn-o { background:transparent; color:#fff; border:1px solid rgba(255,255,255,.3); }
-.workspace { display:grid; grid-template-columns:380px 1fr; overflow:hidden; height:100%; }
-.panel-l { background:var(--pa); border-right:1px solid var(--ln); overflow-y:auto; overflow-x:hidden; }
+
+/* Layout redesign */
+.workspace { display:grid !important; grid-template-columns:380px 1fr !important; overflow:hidden !important; height:calc(100vh - 54px) !important; }
+.panel-l { background:var(--pa) !important; border-right:1px solid var(--ln) !important; overflow-y:auto !important; overflow-x:hidden !important; display:block !important; }
+.panel-r { background:#d4cfc7 !important; overflow-y:auto !important; padding:40px 24px !important; }
+
 .tabs { display:flex; border-bottom:2px solid var(--ln); background:var(--pa); position:sticky; top:0; z-index:10; }
 .tab-btn { flex:1; padding:12px 4px; border:none; background:none; cursor:pointer; font-size:11px; font-weight:600; color:var(--mu); text-transform:uppercase; letter-spacing:.04em; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; }
 .tab-btn.active { color:var(--gl); border-bottom-color:var(--gl); }
 .tab-btn:hover:not(.active) { color:var(--ink); background:var(--cr); }
 .tab-cnt { display:none; padding:20px; background:var(--pa); }
 .tab-cnt.active { display:block; }
+
+/* Settings Dropdown Panel styling */
+.settings-panel {
+  background: #112519;
+  border-bottom: 2px solid #24412c;
+  padding: 16px 24px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.settings-panel label { color: #a5d6a7 !important; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; display: block; letter-spacing: .05em; }
+.settings-panel input { background: rgba(255,255,255,0.08) !important; color: #fff !important; border: 1.5px solid rgba(255,255,255,0.15) !important; padding: 8px 12px; border-radius: 6px; width: 100%; outline: none; box-sizing: border-box; }
+.settings-panel input:focus { border-color: #7ab648 !important; }
+
+/* Plain text editable inputs inside A4 pages */
+.cover-input, .soil-input, .soil-select, .crop-suit-sel, .custom-crop-suit, .custom-crop-name {
+  border: 1px dashed transparent !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 2px 4px !important;
+  outline: none !important;
+  border-radius: 4px !important;
+  transition: all 0.2s !important;
+}
+.cover-input::placeholder, .soil-input::placeholder, .custom-crop-name::placeholder { color: rgba(0,0,0,0.3) !important; }
+.cover-input:hover, .soil-input:hover, .soil-select:hover, .crop-suit-sel:hover, .custom-crop-suit:hover, .custom-crop-name:hover {
+  border-color: rgba(76,122,61,0.3) !important;
+  background: rgba(76,122,61,0.03) !important;
+}
+.cover-input:focus, .soil-input:focus, .soil-select:focus, .crop-suit-sel:focus, .custom-crop-suit:focus, .custom-crop-name:focus {
+  border-color: var(--gl) !important;
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: 0 0 0 3px rgba(76,122,61,0.1) !important;
+}
+
+/* Cover inputs in dark hero section — white text */
+.cover-input {
+  color: #fff !important;
+  border-bottom: 1px dashed rgba(255,255,255,0.2) !important;
+  border-radius: 0 !important;
+}
+.cover-input::placeholder {
+  color: rgba(255,255,255,0.4) !important;
+}
+.cover-input:focus {
+  background: rgba(255,255,255,0.1) !important;
+  color: #fff !important;
+  border-bottom-color: #fff !important;
+}
+
+/* Cover inputs inside the light .cover-data section — dark text */
+.cover-data .cover-input {
+  color: var(--gd) !important;
+  border-bottom: 1px dashed rgba(27,58,43,0.25) !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+}
+.cover-data .cover-input::placeholder {
+  color: rgba(27,58,43,0.35) !important;
+  font-weight: 400 !important;
+}
+.cover-data .cover-input:focus {
+  background: rgba(255,255,255,0.6) !important;
+  color: var(--gd) !important;
+  border-bottom-color: var(--gl) !important;
+}
+
 .fg { margin-bottom:14px; }
 .fg label { display:block; font-size:11px; font-weight:700; color:var(--sm); margin-bottom:5px; text-transform:uppercase; letter-spacing:.05em; }
 .fg input, .fg select, .fg textarea { width:100%; padding:9px 12px; border:1.5px solid var(--ln); border-radius:8px; font-size:13.5px; font-family:Inter,sans-serif; background:#fff; color:var(--ink); transition:border-color .2s,box-shadow .2s; outline:none; }
@@ -90,7 +166,26 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .lang-opt .lv { font-size:22px; color:var(--gm); }
 .lang-opt .ll { font-size:10.5px; color:var(--mu); }
 .panel-r { background:#d4cfc7; overflow-y:auto; padding:28px 24px; }
-.rdoc { max-width:794px; width:100%; margin:0 auto 24px; background:var(--pa); box-shadow:var(--sl); display:flex; flex-direction:column; overflow:hidden; border-radius:2px; }
+
+/* Mirror printed document size on-screen */
+.rdoc { 
+  width: 210mm !important; 
+  height: 297mm !important; 
+  max-width: 210mm !important; 
+  min-height: 297mm !important; 
+  margin: 0 auto 30px !important; 
+  background: #fff !important; 
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18) !important; 
+  padding: 15mm !important; 
+  box-sizing: border-box !important; 
+  position: relative !important; 
+  display: flex !important; 
+  flex-direction: column !important; 
+  overflow: hidden !important; 
+  border-radius: 4px !important; 
+  border: none !important;
+}
+
 .pg-hdr { display:flex; justify-content:space-between; align-items:center; padding:12px 40px; border-bottom:1px solid var(--ln); background:#fff; flex-shrink:0; border-left:4px solid var(--gl); }
 .pg-ht { font-family:Bitter,serif; font-size:13px; font-weight:800; color:var(--gd); text-align:right; line-height:1.2; }
 .pg-hs { font-size:9.5px; color:var(--mu); text-align:right; }
@@ -269,10 +364,22 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
     print-color-adjust: exact !important;
     color-adjust: exact !important;
   }
-  .toolbar, .panel-l, .no-print, .pdiv { display:none !important; }
+  input, select, textarea {
+    border: none !important;
+    background: transparent !important;
+    color: var(--ink) !important;
+    font-weight: bold !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    pointer-events: none !important;
+  }
+  input::placeholder { color: transparent !important; }
+  .toolbar, .panel-l, .no-print, .pdiv, .settings-panel { display:none !important; }
   body { background:#fff; margin:0; padding:0; }
   #app { display:block; height:auto; overflow:visible; }
-  .workspace { display:block; height:auto; overflow:visible; }
+  .workspace { display:block; height:auto; overflow:visible; padding: 0 !important; }
   .panel-r {
     display:block; padding:0; margin:0;
     background:#fff; overflow:visible; height:auto; width:100%;
@@ -373,6 +480,29 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
   .sbig { font-size:40px; }
   .gdl dt { font-size:11px; }
   .gdl dd { font-size:11px; }
+
+  /* Cover page print-only text spans */
+  .print-only { display:block !important; }
+  .no-print { display:none !important; }
+  .cover-print {
+    font-size:14px;
+    font-weight:700;
+    color:var(--gd);
+    display:block;
+    padding:2px 0;
+  }
+}
+
+
+/* Print-only spans are hidden in screen view */
+.print-only { display:none; }
+.cover-print {
+  font-size:13px;
+  font-weight:700;
+  color:var(--gd);
+  display:none;
+  padding:2px 0;
+  min-height:18px;
 }
 
 @media(max-width:900px) {
@@ -386,17 +516,38 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .arka-logo { background-image: url('data:image/jpeg;base64,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'); background-size: contain; background-repeat: no-repeat; background-position: left center; }
 </style>
 </head>
-<body>
 <div id="app">
   <div class="toolbar no-print">
     <div class="brand">🌿 AgriInsight <span class="brand-accent">x</span> SoiLENZ <span class="brand-sub">| Satellite Diagnostic Platform</span></div>
     <div class="tbr">
-      <button class="btn btn-s" id="connectGeeBtn">🛰 Connect Earth Engine</button>
-      <button class="btn btn-p" id="fetchSatBtn" disabled>📡 Fetch Satellite Data</button>
+      <button class="btn btn-s" onclick="toggleSettingsPanel()"><span id="settingsStatusDot" class="sdot" style="background:#ccc"></span> ⚙ Setup &amp; Keys</button>
+      <select id="langSelect" class="btn btn-s" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;" onchange="applyLangSelect(this)">
+        <option value="en" style="color:#000">English (Default)</option>
+        <option value="kn" style="color:#000">Kannada (ಕನ್ನಡ)</option>
+        <option value="bn" style="color:#000">Bengali (বাংলা)</option>
+        <option value="or" style="color:#000">Odia (ଓଡ଼ିଆ)</option>
+        <option value="gu" style="color:#000">Gujarati (ગુજરાતી)</option>
+      </select>
+      <button class="btn btn-s" id="fetchSatBtn" disabled>📡 Fetch Satellite Data</button>
       <button class="btn btn-o" id="generateBtn" disabled>🧠 Generate Report</button>
       <button class="btn btn-t" id="exportPdfBtn">⬇ Export PDF</button>
+      <button class="btn btn-t" style="background:#b71c1c;color:#fff;" onclick="clearAllData()">🗑 Clear All</button>
     </div>
   </div>
+
+  <!-- Collapsible Setup Panel -->
+  <div id="settingsPanel" class="settings-panel no-print" style="display:none;">
+    <div style="display:grid;grid-template-columns:1.5fr 1.5fr 1fr;gap:16px;align-items:end;">
+      <div class="fg" style="margin:0;"><label>Google Earth Engine Client ID</label><input type="text" id="geeClientId" placeholder="xxxxx.apps.googleusercontent.com"></div>
+      <div class="fg" style="margin:0;"><label>Hugging Face API Token</label><input type="password" id="hfToken" placeholder="hf_... (Optional)"></div>
+      <div class="fg" style="margin:0;"><label>AI Model</label><input type="text" id="hfModel" placeholder="mistralai/Mistral-7B-Instruct-v0.2"></div>
+    </div>
+    <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;">
+      <button class="btn btn-p" id="connectGeeBtn" style="padding:6px 12px;font-size:12px;">🔗 Authenticate with GEE</button>
+      <div id="geeStatusBar" class="gsb" style="margin:0;"><span class="sdot" style="background:#ccc"></span> Not connected</div>
+    </div>
+  </div>
+
   <div class="workspace">
     <div class="panel-l no-print">
       <div class="tabs">
@@ -405,48 +556,42 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
         <button class="tab-btn" data-tab="tl">🌐 Language</button>
         <button class="tab-btn" data-tab="tc">🌾 Crops</button>
       </div>
+      
+      <!-- Manual Tab -->
       <div class="tab-cnt active" id="tm">
         <div class="sh"><span class="sn">A</span><span class="st">Farmer and Field Details</span></div>
-        <div class="fg"><label>Farmer Name</label><input type="text" id="inName" placeholder="e.g. Surendra" oninput="syncCover()"></div>
-        <div class="fg"><label>Mobile Number</label><input type="text" id="inMobile" placeholder="e.g. 9182800369" oninput="syncCover()"></div>
-        <div class="fg"><label>Crop</label><input type="text" id="inCrop" placeholder="e.g. Palm Orchids" oninput="syncCover()"></div>
+        <div class="fg"><label>Farmer Name</label><input type="text" id="sbName" placeholder="e.g. Surendra" oninput="syncSidebarToReport()"></div>
+        <div class="fg"><label>Mobile Number</label><input type="text" id="sbMobile" placeholder="e.g. 9182800369" oninput="syncSidebarToReport()"></div>
+        <div class="fg"><label>Crop</label><input type="text" id="sbCrop" placeholder="e.g. Palm Orchids" oninput="syncSidebarToReport()"></div>
         <div class="g2">
-          <div class="fg"><label>Latitude</label><input type="text" id="inLat" placeholder="12.9753" oninput="syncCover()"></div>
-          <div class="fg"><label>Longitude</label><input type="text" id="inLon" placeholder="77.5910" oninput="syncCover()"></div>
+          <div class="fg"><label>Latitude</label><input type="text" id="sbLat" placeholder="12.9753" oninput="syncSidebarToReport()"></div>
+          <div class="fg"><label>Longitude</label><input type="text" id="sbLon" placeholder="77.5910" oninput="syncSidebarToReport()"></div>
         </div>
-        <div class="fg"><label>Analysis Date</label><input type="date" id="inDate" oninput="syncCover()"></div>
-        <div class="fg"><label>Field Area (Ha)</label><input type="text" id="inArea" placeholder="e.g. 2.5" oninput="syncCover()"></div>
+        <div class="fg"><label>Analysis Date</label><input type="date" id="sbDate" oninput="syncSidebarToReport()"></div>
+        <div class="fg"><label>Field Area (Ha)</label><input type="text" id="sbArea" placeholder="e.g. 2.5" oninput="syncSidebarToReport()"></div>
+        
         <div class="sh" style="margin-top:20px;"><span class="sn">B</span><span class="st">Soil Parameters (Manual Entry)</span></div>
         <p class="ss">Enter soil parameter values here.</p>
-        <div id="manualParamTable"></div>
-        <div style="display:flex;gap:12px;margin-top:14px;">
-          <button class="btn btn-o" style="flex:1;color:var(--ink);border-color:var(--ln)" onclick="clearAllData()">🗑 Clear All Data</button>
-          <button class="btn btn-p"  onclick="applyManualParams()">Apply Manual Values to Report</button>
-        </div>
+        <div id="sidebarSoilParams"></div>
+        <button class="btn btn-p" style="width:100%;margin-top:16px;" onclick="applySoilFromSidebar()">💾 Add Soil Parameters to Report</button>
       </div>
+      
+      <!-- GEE Tab -->
       <div class="tab-cnt" id="tg">
         <div class="sh"><span class="sn">🛰</span><span class="st">Earth Engine Setup</span></div>
-        <div class="gee-note">
-          <strong>One-time setup:</strong><br>
-          1. Register free project at <code>signup.earthengine.google.com</code><br>
-          2. Create an <strong>OAuth 2.0 Web Client ID</strong> in Google Cloud Console<br>
-          3. Add your URL to Authorized JavaScript Origins<br>
-          4. Run <code>python -m http.server</code> and open <code>http://localhost:8000</code><br>
-          Warning: <code>file://</code> URLs will NOT work
-        </div>
-        <div class="fg"><label>OAuth Client ID</label><input type="text" id="geeClientId" placeholder="xxxxx.apps.googleusercontent.com"></div>
-        <button class="btn btn-p" style="width:100%;" id="connectGeeBtnTab">🔗 Authenticate with Earth Engine</button>
-        <div class="gsb" id="geeStatusBar"><span class="sdot" style="background:#ccc"></span> Not connected</div>
+        <div class="fg"><label>OAuth Client ID</label><input type="text" id="sbGeeClientId" placeholder="xxxxx.apps.googleusercontent.com" oninput="syncKeys()"></div>
+        <button class="btn btn-p" id="connectGeeBtnTab" style="width:100%;margin-bottom:12px;">🔗 Authenticate with GEE</button>
+        <div class="gsb" id="geeStatusBarSb"><span class="sdot" style="background:#ccc"></span> Not connected</div>
         <div style="margin-top:24px;">
-          <div class="sh"><span class="sn">🤖</span><span class="st">AI Narrative Engine (Optional)</span></div>
-          <p class="ss">Hugging Face free tier for AI prose. Rule-based fallback is used if left blank.</p>
-          <div class="fg"><label>Hugging Face Token</label><input type="password" id="hfToken" placeholder="hf_... (free at huggingface.co/settings/tokens)"></div>
-          <div class="fg"><label>Model</label><input type="text" id="hfModel" placeholder="mistralai/Mistral-7B-Instruct-v0.2"></div>
+          <div class="sh"><span class="sn">🤖</span><span class="st">AI Narrative Engine</span></div>
+          <div class="fg"><label>Hugging Face Token</label><input type="password" id="sbHfToken" placeholder="hf_..." oninput="syncKeys()"></div>
+          <div class="fg"><label>Model</label><input type="text" id="sbHfModel" placeholder="mistralai/Mistral-7B-Instruct-v0.2" oninput="syncKeys()"></div>
         </div>
       </div>
+      
+      <!-- Language Tab -->
       <div class="tab-cnt" id="tl">
         <div class="sh"><span class="sn">🌐</span><span class="st">Report Language</span></div>
-        <p class="ss">Select the language for the exported PDF report. English is the default.</p>
         <div class="lang-grid">
           <div class="lang-opt sel" data-lang="en" onclick="selLang(this)"><div class="ln">English</div><div class="lv">English</div><div class="ll">Default</div></div>
           <div class="lang-opt" data-lang="kn" onclick="selLang(this)"><div class="ln">Kannada</div><div class="lv">ಕನ್ನಡ</div><div class="ll">Karnataka</div></div>
@@ -454,22 +599,16 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
           <div class="lang-opt" data-lang="or" onclick="selLang(this)"><div class="ln">Odia</div><div class="lv">ଓଡ଼ିଆ</div><div class="ll">Odisha</div></div>
           <div class="lang-opt" data-lang="gu" onclick="selLang(this)"><div class="ln">Gujarati</div><div class="lv">ગુજરાતી</div><div class="ll">Gujarat</div></div>
         </div>
-        <div class="nbox" style="margin-top:20px;">Report labels and headings will be translated. Numeric values and satellite data remain unchanged.</div>
-        <button class="btn btn-p" style="margin-top:16px;width:100%;" onclick="applyLang()">Apply Language to Report</button>
       </div>
+      
+      <!-- Crops Tab -->
       <div class="tab-cnt" id="tc">
         <div class="sh"><span class="sn">🌾</span><span class="st">Crop Suitability</span></div>
-        <p class="ss">Select suitability for preset crops OR add your own custom crops below.</p>
-
-        <div class="sh" style="margin-bottom:10px;"><span class="sn">A</span><span class="st">Common Crops</span></div>
-        <div id="cropInputs" style="margin-top:6px;"></div>
-
+        <div id="sidebarCrops"></div>
         <div class="sh" style="margin-top:20px;margin-bottom:10px;"><span class="sn">B</span><span class="st">Add Custom Crop</span></div>
-        <p class="ss">Enter any crop not listed above.</p>
-        <div id="customCropRows"></div>
+        <div id="sidebarCustomCrops"></div>
         <button class="btn btn-o" style="width:100%;margin-top:8px;color:var(--gd);border-color:var(--gd);" onclick="addCustomCropRow()">+ Add Custom Crop</button>
-
-        <button class="btn btn-p" style="margin-top:16px;width:100%;" onclick="applyCrops()">✅ Update Crop Suitability Report</button>
+        <button class="btn btn-p" style="width:100%;margin-top:16px;" onclick="applyCropsFromSidebar()">💾 Add Crops to Report</button>
       </div>
     </div>
     <div class="panel-r">
@@ -490,46 +629,70 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <circle cx="750" cy="120" r="120" fill="rgba(163,217,119,0.04)"/>
               <circle cx="750" cy="120" r="60" fill="rgba(163,217,119,0.06)"/>
             </svg>
-          <div class="cover-page">
-            <!-- TOP HERO: dark green brand section -->
-            <div class="cover-hero">
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
-                <div class="arka-logo" style="width:340px;height:105px;filter:brightness(0) invert(1);opacity:0.9;"></div>
-                <div style="text-align:right;font-size:10px;color:#81c784;font-family:'JetBrains Mono',monospace;line-height:1.8;">
-                  <div style="font-weight:700;font-size:13px;color:#fff;">SoiLENZ</div>
-                  <div>Powered by ArkaShine</div>
-                  <div id="cGenDate" style="color:#a3d977;"></div>
+            <div class="cover-c">
+              <!-- TOP HERO: dark green brand section -->
+              <div class="cover-hero">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+                  <div class="arka-logo" style="width:340px;height:105px;filter:brightness(0) invert(1);opacity:0.9;"></div>
+                  <div style="text-align:right;font-size:10px;color:#81c784;font-family:'JetBrains Mono',monospace;line-height:1.8;">
+                    <div style="font-weight:700;font-size:13px;color:#fff;">SoiLENZ</div>
+                    <div>Powered by ArkaShine</div>
+                    <div id="cGenDate" style="color:#a3d977;"></div>
+                  </div>
                 </div>
+                <div class="c-eye">AgriInsight AI &nbsp;·&nbsp; SoiLENZ &nbsp;·&nbsp; Satellite Diagnostic Platform</div>
+                <h1 class="c-title">Soil Health <em>Intelligence</em> Report</h1>
+                <p class="c-sub">Satellite-derived environmental and soil stress analysis combined with on-ground SoiLENZ portable lab testing from Arkashine Innovations Pvt Ltd.</p>
+                <div class="c-badge">🌿 Sentinel-2 Satellite &nbsp;·&nbsp; ERA5 Climate Data &nbsp;·&nbsp; SoiLENZ Portable Analyzer</div>
               </div>
-              <div class="c-eye">AgriInsight AI &nbsp;·&nbsp; SoiLENZ &nbsp;·&nbsp; Satellite Diagnostic Platform</div>
-              <h1 class="c-title">Soil Health <em>Intelligence</em> Report</h1>
-              <p class="c-sub">Satellite-derived environmental and soil stress analysis combined with on-ground SoiLENZ portable lab testing from Arkashine Innovations Pvt Ltd.</p>
-              <div class="c-badge">🌿 Sentinel-2 Satellite &nbsp;·&nbsp; ERA5 Climate Data &nbsp;·&nbsp; SoiLENZ Portable Analyzer</div>
-            </div>
-            <div class="cover-divider"></div>
-            <!-- BOTTOM DATA: light sage farmer info -->
-            <div class="cover-data">
-              <div>
-                <div style="font-size:11px;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;">Field Analysis Summary</div>
-                <div class="c-meta">
-                  <div class="c-meta-card"><span class="k" id="clFarmer">Farmer Name</span><span class="v" id="cName">—</span></div>
-                  <div class="c-meta-card"><span class="k" id="clCrop">Current Crop</span><span class="v" id="cCrop">—</span></div>
-                  <div class="c-meta-card"><span class="k" id="clLoc">Location (Lat / Lon)</span><span class="v" id="cLatLon" style="font-size:12px;">—</span></div>
-                  <div class="c-meta-card"><span class="k" id="clDate">Date of Analysis</span><span class="v" id="cDate">—</span></div>
-                  <div class="c-meta-card"><span class="k" id="clMob">Mobile Number</span><span class="v" id="cMobile">—</span></div>
-                  <div class="c-meta-card" style="border-left-color:var(--ok);"><span class="k" id="clHealth">Overall Soil Health</span><span class="v sc" id="cHealth">—</span></div>
+              <div class="cover-divider"></div>
+              <!-- BOTTOM DATA: light sage farmer info -->
+              <div class="cover-data">
+                <div>
+                  <div style="font-size:11px;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;">Field Summary &amp; Details</div>
+                  <div class="c-meta">
+                    <div class="c-meta-card">
+                      <span class="k" id="clFarmer">Farmer Name</span>
+                      <input type="text" class="cover-input no-print" id="inName" placeholder="Enter Name" oninput="syncCover()">
+                      <span class="cover-print print-only" id="pName">—</span>
+                    </div>
+                    <div class="c-meta-card">
+                      <span class="k" id="clCrop">Current Crop</span>
+                      <input type="text" class="cover-input no-print" id="inCrop" placeholder="Enter Crop" oninput="syncCover()">
+                      <span class="cover-print print-only" id="pCrop">—</span>
+                    </div>
+                    <div class="c-meta-card">
+                      <span class="k" id="clLoc">Location (Lat / Lon)</span>
+                      <div style="display:flex;gap:4px;" class="no-print">
+                        <input type="text" class="cover-input" id="inLat" placeholder="Lat" oninput="syncCover()" style="width:48%">
+                        <input type="text" class="cover-input" id="inLon" placeholder="Lon" oninput="syncCover()" style="width:48%">
+                      </div>
+                      <span class="cover-print print-only" id="pLatLon">—</span>
+                    </div>
+                    <div class="c-meta-card">
+                      <span class="k" id="clDate">Date of Analysis</span>
+                      <input type="date" class="cover-input no-print" id="inDate" onchange="syncCover()">
+                      <span class="cover-print print-only" id="pDate">—</span>
+                    </div>
+                    <div class="c-meta-card">
+                      <span class="k" id="clMob">Mobile Number</span>
+                      <input type="text" class="cover-input no-print" id="inMobile" placeholder="Enter Mobile" oninput="syncCover()">
+                      <span class="cover-print print-only" id="pMobile">—</span>
+                    </div>
+                    <div class="c-meta-card" style="border-left-color:var(--ok);"><span class="k" id="clHealth">Overall Soil Health</span><span class="v sc" id="cHealth">—</span></div>
+                  </div>
                 </div>
-              </div>
-              <div class="c-data-footer">
-                <div class="cdf-l" id="cFootL">Generated from SoiLENZ Field Ticket OCR + Sentinel-2 / ERA5 via Google Earth Engine</div>
-                <div class="c-logo-lt">
-                  <div class="lb">SoiLENZ</div>
-                  <div class="ls">Advanced Soil Intelligence<br>from Arkashine Innovations</div>
+                <div class="c-data-footer">
+                  <div class="cdf-l" id="cFootL">Generated from SoiLENZ Field Ticket OCR + Sentinel-2 / ERA5 via Google Earth Engine</div>
+                  <div class="c-logo-lt">
+                    <div class="lb">SoiLENZ</div>
+                    <div class="ls">Advanced Soil Intelligence<br>from Arkashine Innovations</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div></div>
         <div class="pdiv no-print">-- Page 2: SoiLENZ Soil Health Intelligence --</div>
         <div class="page-wrapper"><div class="rdoc">
           <div class="pg-hdr">
@@ -545,7 +708,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <div>
                 <div class="si-item"><div class="ic">📍</div><div class="tx"><div class="lbl" id="slLoc">Location</div><div class="vl" id="slLocV">-</div></div></div>
                 <div class="si-item"><div class="ic">📅</div><div class="tx"><div class="lbl" id="slDate">Date of Analysis</div><div class="vl" id="slDateV">-</div></div></div>
-                <div class="si-item"><div class="ic">🌾</div><div class="tx"><div class="lbl" id="slArea">Field Area</div><div class="vl" id="slAreaV">-</div></div></div>
+                <div class="si-item"><div class="ic">🌾</div><div class="tx"><div class="lbl" id="slArea">Field Area</div><input type="text" class="soil-input" id="inArea" placeholder="e.g. 2.5 Ha" oninput="syncCover()"></div></div>
                 <div class="si-item"><div class="ic">🌿</div><div class="tx"><div class="lbl" id="slCrop">Crop (Current)</div><div class="vl" id="slCropV">-</div></div></div>
                 <div class="si-item"><div class="ic">🛰</div><div class="tx"><div class="lbl" id="slNDVI">Vegetation Index (NDVI)</div><div class="vl" id="slNDVIV">-</div></div></div>
                 <div class="si-item"><div class="ic">🌧</div><div class="tx"><div class="lbl" id="slRain">Annual Rainfall</div><div class="vl" id="slRainV">-</div></div></div>
@@ -576,8 +739,8 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
             </div>
             <div class="sl-ftr"><span id="slFooter">Healthy Soil. Higher Yield. Sustainable Future.</span><span style="background:rgba(255,255,255,.1);border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;">2</span></div>
           </div>
-          <div class="pg-ftr"><span class="pg-num">Page 2 of 6</span><span>CONFIDENTIAL — Client Use Only | Data: Sentinel-2 · ERA5-Land · SoiLENZ</span></div>
-        </div>
+          <div class="pg-ftr"><span class="pg-num">Page 2 of 12</span><span>CONFIDENTIAL — Client Use Only | Data: Sentinel-2 · ERA5-Land · SoiLENZ</span></div>
+        </div></div>
         <div class="pdiv no-print">-- Page 3: Satellite Imagery Analysis --</div>
         <div class="page-wrapper"><div class="rdoc">
           <div class="pg-hdr">
@@ -607,10 +770,10 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               </div>
             </div>
           </div>
-          <div class="pg-ftr"><span class="pg-num">Page 3 of 8</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+          <div class="pg-ftr"><span class="pg-num">Page 3 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
         </div></div>
 
-        <div class="pdiv no-print">-- Page 4: Spectral Index Analysis & Temporal Vegetation Index --</div>
+        <div class="pdiv no-print">-- Page 4: Spectral Index Analysis --</div>  
         <div class="page-wrapper"><div class="rdoc">
           <div class="pg-hdr">
             <div class="arka-logo" style="width:340px;height:105px;"></div>
@@ -620,38 +783,45 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
             <div class="rsec" >
               <h2 class="rh2"><span class="rn">4</span><span id="rSpec">Spectral Index Analysis</span></h2>
               <p class="rsub" id="rSpecSub">Computed from Sentinel-2 satellite imagery over 500m buffer around the farm coordinates.</p>
-              <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:16px;align-items:start;">
-                <div>
-                  <table class="rtbl"><thead><tr><th id="thIdx">Satellite Index (Full Name)</th><th id="thMn">Mean Value</th><th id="thMx">Max Value</th><th id="thIn">Interpretation &amp; Agronomic Significance</th></tr></thead>
-                  <tbody>
-                    <tr><td><strong>NDVI</strong> &mdash; Normalized Difference Vegetation Index</td><td id="sNDVImean">—</td><td id="sNDVImax">—</td><td id="sNDVIint">Awaiting satellite data</td></tr>
-                    <tr><td><strong>BSI</strong> &mdash; Bare Soil Index</td><td id="sBSImean">—</td><td>—</td><td id="sBSIint">Awaiting satellite data</td></tr>
-                    <tr><td><strong>NDWI</strong> &mdash; Normalized Difference Water Index</td><td id="sNDWImean">—</td><td>—</td><td id="sNDWIint">Awaiting satellite data</td></tr>
-                    <tr><td><strong>MSAVI</strong> &mdash; Modified Soil-Adjusted Vegetation Index</td><td id="sMSAVImean">—</td><td>—</td><td id="sMSAVIint">Awaiting satellite data</td></tr>
-                  </tbody></table>
-                </div>
-                <div>
-                  <canvas id="specRadarChart" height="150"></canvas>
-                </div>
+              <table class="rtbl"><thead><tr><th id="thIdx">Satellite Index (Full Name)</th><th id="thMn">Mean Value</th><th id="thMx">Max Value</th><th id="thIn">Interpretation &amp; Agronomic Significance</th></tr></thead>
+              <tbody>
+                <tr><td><strong>NDVI</strong> &mdash; Normalized Difference Vegetation Index</td><td id="sNDVImean">—</td><td id="sNDVImax">—</td><td id="sNDVIint">Awaiting satellite data</td></tr>
+                <tr><td><strong>BSI</strong> &mdash; Bare Soil Index</td><td id="sBSImean">—</td><td>—</td><td id="sBSIint">Awaiting satellite data</td></tr>
+                <tr><td><strong>NDWI</strong> &mdash; Normalized Difference Water Index</td><td id="sNDWImean">—</td><td>—</td><td id="sNDWIint">Awaiting satellite data</td></tr>
+                <tr><td><strong>MSAVI</strong> &mdash; Modified Soil-Adjusted Vegetation Index</td><td id="sMSAVImean">—</td><td>—</td><td id="sMSAVIint">Awaiting satellite data</td></tr>
+              </tbody></table>
+              <div style="margin-top:16px;">
+                <canvas id="specRadarChart" height="100"></canvas>
               </div>
-              <div class="interp-note">&#128161; <strong>How to read:</strong> NDVI &gt; 0.5 indicates healthy dense vegetation. BSI &lt; 0 indicates soil well-covered by crops. NDWI &lt; 0 indicates dry conditions. MSAVI corrects NDVI for bare soil reflectance in early-season fields.</div>
+              <div class="interp-note" style="margin-top:12px;">&#128161; <strong>How to read:</strong> NDVI &gt; 0.5 indicates healthy dense vegetation. BSI &lt; 0 indicates soil well-covered by crops. NDWI &lt; 0 indicates dry conditions. MSAVI corrects NDVI for bare soil reflectance in early-season fields.</div>
               <div class="ai-insight" id="insight-spec" style="display:none;"></div>
             </div>
+          </div>
+          <div class="pg-ftr"><span class="pg-num">Page 4 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+        </div></div>
+
+        <div class="pdiv no-print">-- Page 5: Temporal Vegetation Index (NDVI) --</div>  
+        <div class="page-wrapper"><div class="rdoc">
+          <div class="pg-hdr">
+            <div class="arka-logo" style="width:340px;height:105px;"></div>
+            <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
+          </div>
+          <div class="page-content">
             <div class="rsec" style="flex:1;">
               <h2 class="rh2"><span class="rn">6</span><span id="rNDVI">Temporal Vegetation Index (NDVI) &mdash; Past 2 Years</span></h2>
               <p class="rsub" id="rNDVISub">Monthly NDVI from Sentinel-2 median composites. Click Generate Report to compute.</p>
-              <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:center;">
-                <canvas id="ndviTrendChart" height="95"></canvas>
-                <table class="rtbl"><thead><tr><th>Month</th><th>NDVI Value</th><th>Vegetation Status</th></tr></thead>
+              <canvas id="ndviTrendChart" height="80"></canvas>
+              <div style="margin-top:14px;">
+                <table class="rtbl" style="font-size:11px;"><thead><tr><th>Period</th><th>NDVI</th><th>Status</th></tr></thead>
                 <tbody id="ndviBody"><tr><td colspan="3" style="text-align:center;color:var(--mu);padding:12px;">Not yet computed &mdash; click Generate Report</td></tr></tbody></table>
               </div>
               <div class="ai-insight" id="insight-ndvi" style="display:none;"></div>
             </div>
           </div>
-          <div class="pg-ftr"><span class="pg-num">Page 4 of 8</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+          <div class="pg-ftr"><span class="pg-num">Page 5 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
         </div></div>
 
-        <div class="pdiv no-print">-- Page 5: Soil Health Profile --</div>
+        <div class="pdiv no-print">-- Page 6: Soil Health Profile --</div>
         <div class="page-wrapper"><div class="rdoc">
           <div class="pg-hdr">
             <div class="arka-logo" style="width:340px;height:105px;"></div>
@@ -661,21 +831,17 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
             <div class="rsec" >
               <h2 class="rh2"><span class="rn">5</span><span id="rSoil">Soil Health Profile</span></h2>
               <p class="rsub" id="rSoilSub">Parameters from the SoiLENZ portable soil test ticket. Optimal ranges per SoiLENZ reference guide.</p>
-              <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start;">
-                <table class="rtbl"><thead><tr><th id="thPar">Parameter (Full Name)</th><th id="thUnt">Unit</th><th id="thRng">Optimal Range</th><th id="thMeas">Measured Value</th><th id="thSt">Status</th></tr></thead>
-                <tbody id="soilBody"><tr><td colspan="5" style="text-align:center;color:var(--mu);padding:24px;">Enter values in Manual tab.</td></tr></tbody></table>
-                <div style="display:flex;flex-direction:column;gap:16px;">
-                  <canvas id="soilNutrientsChart" height="150"></canvas>
-                  <canvas id="soilSalinityChart" height="110"></canvas>
-                </div>
-              </div>
+              <table class="rtbl"><thead><tr><th id="thPar">Parameter (Full Name)</th><th id="thUnt">Unit</th><th id="thRng">Optimal Range</th><th id="thMeas">Measured Value</th><th id="thSt">Status</th></tr></thead>
+              <tbody id="soilBody"><tr><td colspan="5" style="text-align:center;color:var(--mu);padding:24px;">Enter values in Manual tab and click Add Soil Parameters to Report.</td></tr></tbody></table>
+              <canvas id="soilNutrientsChart" style="display:none;"></canvas>
+              <canvas id="soilSalinityChart" style="display:none;"></canvas>
               <div class="ai-insight" id="insight-soil" style="display:none;"></div>
             </div>
           </div>
-          <div class="pg-ftr"><span class="pg-num">Page 5 of 8</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+          <div class="pg-ftr"><span class="pg-num">Page 6 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
         </div></div>
 
-        <div class="pdiv no-print">-- Page 6: Rainfall & Water Deficit & Crop Suitability --</div>
+        <div class="pdiv no-print">-- Page 7: Rainfall & Water Deficit --</div>
         <div class="page-wrapper"><div class="rdoc">
           <div class="pg-hdr">
             <div class="arka-logo" style="width:340px;height:105px;"></div>
@@ -684,59 +850,91 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
           <div class="page-content">
             <div class="rsec" >
               <h2 class="rh2"><span class="rn">7</span><span id="rRain">Rainfall &amp; Water Deficit &mdash; ERA5-Land</span></h2>
-              <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:center;">
-                <div>
-                  <table class="rtbl"><thead><tr><th>Year</th><th>Rainfall (mm)</th><th>vs Normal</th><th>ET&#x2080; (mm)</th><th>Deficit (mm)</th><th>Drought Class</th></tr></thead>
-                  <tbody id="rainBody"><tr><td colspan="6" style="text-align:center;color:var(--mu);padding:12px;">Not yet computed</td></tr></tbody></table>
-                </div>
-                <div>
-                  <canvas id="rainDeficitChart" height="140"></canvas>
-                </div>
+              <div>
+                <table class="rtbl"><thead><tr><th>Year</th><th>Rainfall (mm)</th><th>vs Normal</th><th>ET&#x2080; (mm)</th><th>Deficit (mm)</th><th>Drought Class</th></tr></thead>
+                <tbody id="rainBody"><tr><td colspan="6" style="text-align:center;color:var(--mu);padding:12px;">Not yet computed</td></tr></tbody></table>
+              </div>
+              <div style="margin-top:16px;">
+                <canvas id="rainDeficitChart" height="110"></canvas>
               </div>
               <div class="ai-insight" id="insight-rain" style="display:none;"></div>
             </div>
-            <div class="rsec" >
-              <h2 class="rh2"><span class="rn">&#9733;</span><span id="rCropSuit">Crop Suitability Analysis</span></h2>
-              <p class="rsub">AI-assisted ratings based on soil parameters, NDVI, and local agronomic data.</p>
-              <table class="rtbl"><thead><tr><th>Crop Type</th><th>Suitability</th><th>Agronomic Insight</th></tr></thead>
-              <tbody id="cropSuitBody"><tr><td colspan="3" style="text-align:center;color:var(--mu);padding:12px;">Not evaluated &mdash; open the Crops tab to rate crops</td></tr></tbody></table>
-            </div>
           </div>
-          <div class="pg-ftr"><span class="pg-num">Page 6 of 8</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+          <div class="pg-ftr"><span class="pg-num">Page 7 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
         </div></div>
 
-        <div class="pdiv no-print">-- Page 7: Root Cause Analysis and Scorecard --</div>
+        <div class="pdiv no-print">-- Page 8: Crop Suitability Analysis --</div>
         <div class="page-wrapper"><div class="rdoc">
           <div class="pg-hdr">
             <div class="arka-logo" style="width:340px;height:105px;"></div>
             <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
           </div>
           <div class="page-content">
-            <div class="rsec" >
+            <div class="rsec" style="flex:1;">
+              <h2 class="rh2"><span class="rn">&#9733;</span><span id="rCropSuit">Crop Suitability Analysis</span></h2>
+              <p class="rsub">AI-assisted ratings based on soil parameters, NDVI, and local agronomic data.</p>
+              <table class="rtbl"><thead><tr><th>Crop Type</th><th>Suitability</th><th>Agronomic Insight</th></tr></thead>
+              <tbody id="cropSuitBody"><tr><td colspan="3" style="text-align:center;color:var(--mu);padding:12px;">Not evaluated</td></tr></tbody></table>
+            </div>
+          </div>
+          <div class="pg-ftr"><span class="pg-num">Page 8 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+        </div></div>
+
+        <div class="pdiv no-print">-- Page 9: Root Cause Analysis --</div>
+        <div class="page-wrapper"><div class="rdoc">
+          <div class="pg-hdr">
+            <div class="arka-logo" style="width:340px;height:105px;"></div>
+            <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
+          </div>
+          <div class="page-content">
+            <div class="rsec" style="flex:1;">
               <h2 class="rh2"><span class="rn">8</span><span id="rRC">Root Cause Analysis</span></h2>
               <p class="rsub">Derived from satellite spectral indices and soil parameter data. Priority tiers: Primary &#9658; Contributing &#9658; Secondary.</p>
               <div id="rcBox"><div class="es"><div class="ei">&#128300;</div>Generate Report to compute root causes from your satellite and soil data.</div></div>
             </div>
-            <div class="rsec" >
+          </div>
+          <div class="pg-ftr"><span class="pg-num">Page 9 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+        </div></div>
+
+        <div class="pdiv no-print">-- Page 10: Remediation Plan &amp; Recommendations --</div>
+        <div class="page-wrapper"><div class="rdoc">
+          <div class="pg-hdr">
+            <div class="arka-logo" style="width:340px;height:105px;"></div>
+            <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
+          </div>
+          <div class="page-content">
+            <div class="rsec" style="flex:1;">
               <h2 class="rh2"><span class="rn">9</span><span id="rRem">Remediation Plan &amp; Recommendations</span></h2>
-              <div class="rg">
-                <div class="rc rc-imm"><div class="rc-hdr"><span class="rc-icon">&#9889;</span><h4>Immediate <span class="rc-range">0&ndash;3 months</span></h4></div><ul id="planI"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
-                <div class="rc rc-s1"><div class="rc-hdr"><span class="rc-icon">&#127807;</span><h4>Season 1 &mdash; Soil Correction <span class="rc-range">3&ndash;9 months</span></h4></div><ul id="planS1"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
-                <div class="rc rc-s2"><div class="rc-hdr"><span class="rc-icon">&#127806;</span><h4>Season 2 &mdash; Crop Establishment <span class="rc-range">9&ndash;18 months</span></h4></div><ul id="planS2"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
-                <div class="rc rc-lt"><div class="rc-hdr"><span class="rc-icon">&#127963;</span><h4>Long-Term <span class="rc-range">18+ months</span></h4></div><ul id="planLT"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+              <p class="rsub">Phased intervention strategy based on satellite indices, soil parameters and agronomic best practices.</p>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;">
+                <div class="rc rc-imm"><div class="rc-hdr"><span class="rc-icon">&#9889;</span><h4>Immediate <span class="rc-range">0&ndash;3 months</span></h4></div><ul id="planI" style="padding-left:16px;font-size:12.5px;line-height:1.7;"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+                <div class="rc rc-s1"><div class="rc-hdr"><span class="rc-icon">&#127807;</span><h4>Season 1 &mdash; Soil Correction <span class="rc-range">3&ndash;9 months</span></h4></div><ul id="planS1" style="padding-left:16px;font-size:12.5px;line-height:1.7;"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+                <div class="rc rc-s2"><div class="rc-hdr"><span class="rc-icon">&#127806;</span><h4>Season 2 &mdash; Crop Establishment <span class="rc-range">9&ndash;18 months</span></h4></div><ul id="planS2" style="padding-left:16px;font-size:12.5px;line-height:1.7;"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
+                <div class="rc rc-lt"><div class="rc-hdr"><span class="rc-icon">&#127963;</span><h4>Long-Term <span class="rc-range">18+ months</span></h4></div><ul id="planLT" style="padding-left:16px;font-size:12.5px;line-height:1.7;"><li style="color:var(--mu);">Generate report to populate</li></ul></div>
               </div>
             </div>
-            <div class="rsec" >
+          </div>
+          <div class="pg-ftr"><span class="pg-num">Page 10 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+        </div></div>
+
+        <div class="pdiv no-print">-- Page 11: Site Health Scorecard --</div>
+        <div class="page-wrapper"><div class="rdoc">
+          <div class="pg-hdr">
+            <div class="arka-logo" style="width:340px;height:105px;"></div>
+            <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
+          </div>
+          <div class="page-content">
+            <div class="rsec" style="flex:1;">
               <h2 class="rh2"><span class="rn">10</span><span id="rSC">Site Health Scorecard</span></h2>
-              <div class="sbox"><div class="sbig" id="overScore">—</div><div class="smeta"><strong id="overLabel">Overall Site Health Score</strong><p id="overNote">Computed after satellite and soil data are available.</p></div></div>
+              <div class="sbox"><div class="sbig" id="overScore">&mdash;</div><div class="smeta"><strong id="overLabel">Overall Site Health Score</strong><p id="overNote">Computed after satellite and soil data are available.</p></div></div>
               <table class="rtbl"><thead><tr><th id="thSCI">Health Indicator</th><th id="thSCS">Score /10</th><th id="thSCR">Risk Level</th><th id="thSCA">Priority Action</th></tr></thead>
               <tbody id="scBody"><tr><td colspan="4" style="text-align:center;color:var(--mu);padding:14px;">Not yet computed</td></tr></tbody></table>
             </div>
           </div>
-          <div class="pg-ftr"><span class="pg-num">Page 7 of 8</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+          <div class="pg-ftr"><span class="pg-num">Page 11 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
         </div></div>
 
-        <div class="pdiv no-print">-- Page 8: Data Sources and Glossary --</div>
+        <div class="pdiv no-print">-- Page 12: Data Sources and Glossary --</div>
         <div class="page-wrapper"><div class="rdoc">
           <div class="pg-hdr">
             <div class="arka-logo" style="width:340px;height:105px;"></div>
@@ -757,7 +955,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <dl class="gdl" id="glossGrid"></dl>
             </div>
           </div>
-          <div class="pg-ftr"><span class="pg-num">Page 8 of 8</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+          <div class="pg-ftr"><span class="pg-num">Page 12 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
         </div></div>
       </div>
     </div>
@@ -905,25 +1103,26 @@ const GLOSS = {
 };
 
 /* ============================================================
-   TAB SWITCHING
+   TAB SWITCHING & SIDEBAR UI
 ============================================================ */
 document.querySelectorAll(".tab-btn").forEach(b=>{
   b.addEventListener("click",()=>{
     document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
     document.querySelectorAll(".tab-cnt").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    document.getElementById(b.dataset.tab).classList.add("active");
+    const tabEl = document.getElementById(b.dataset.tab);
+    if(tabEl) tabEl.classList.add("active");
   });
 });
 
-/* ============================================================
-   LANGUAGE
-============================================================ */
 function selLang(el){
   document.querySelectorAll(".lang-opt").forEach(o=>o.classList.remove("sel"));
   el.classList.add("sel"); S.lang=el.dataset.lang;
+  applyLangSelect({ value: S.lang });
 }
-function applyLang(){
+
+function applyLangSelect(el){
+  S.lang = el.value || el;
   const m={clFarmer:"farmer",clCrop:"crop",clLoc:"loc",clDate:"date",clMob:"mob",clHealth:"health",
     cFootL:"footL",slFert:"fert",slScore:"score",slInd:"ind",slFooter:"slogan",
     slLoc:"locLbl",slDate:"dateLbl",slArea:"areaLbl",slCrop:"cropLbl",
@@ -935,81 +1134,156 @@ function applyLang(){
     thPar:"thPar",thUnt:"thUnt",thRng:"thRng",thMeas:"thMeas",thSt:"thSt",
     thSCI:"thSCI",thSCS:"thSCS",thSCR:"thSCR",thSCA:"thSCA"};
   Object.entries(m).forEach(([id,key])=>{
-    const el=document.getElementById(id); if(el) el.textContent=t(key);
+    const target=document.getElementById(id); if(target) target.textContent=t(key);
   });
-  alert("Language applied: "+document.querySelector(".lang-opt.sel .ln").textContent);
+  
+  // Keep select and sidebar lang opts in sync
+  const select = document.getElementById("langSelect");
+  if(select && select.value !== S.lang) select.value = S.lang;
+  
+  document.querySelectorAll(".lang-opt").forEach(opt=>{
+    if(opt.dataset.lang === S.lang) opt.classList.add("sel");
+    else opt.classList.remove("sel");
+  });
+  
+  syncCover();
+}
+
+function toggleSettingsPanel(){
+  const panel = document.getElementById("settingsPanel");
+  const dot = document.getElementById("settingsStatusDot");
+  if(panel.style.display === "none"){
+    panel.style.display = "block";
+    dot.style.background = "#4A7C3C";
+  } else {
+    panel.style.display = "none";
+    dot.style.background = "#ccc";
+  }
+}
+
+/* ============================================================
+   SIDEBAR & REPORT SYNCHRONIZATION
+============================================================ */
+function syncSidebarToReport(){
+  const v=id=>document.getElementById(id)?.value||"";
+  
+  const reportInputs = {
+    inName: "sbName",
+    inCrop: "sbCrop",
+    inLat: "sbLat",
+    inLon: "sbLon",
+    inDate: "sbDate",
+    inMobile: "sbMobile",
+    inArea: "sbArea"
+  };
+  
+  Object.entries(reportInputs).forEach(([repId, sbId])=>{
+    const repEl = document.getElementById(repId);
+    const sbVal = v(sbId);
+    if(repEl && repEl.value !== sbVal) {
+      repEl.value = sbVal;
+    }
+  });
+  
+  syncCover();
+}
+
+function syncReportToSidebar(){
+  const v=id=>document.getElementById(id)?.value||"";
+  
+  const reportInputs = {
+    inName: "sbName",
+    inCrop: "sbCrop",
+    inLat: "sbLat",
+    inLon: "sbLon",
+    inDate: "sbDate",
+    inMobile: "sbMobile",
+    inArea: "sbArea"
+  };
+  
+  Object.entries(reportInputs).forEach(([repId, sbId])=>{
+    const sbEl = document.getElementById(sbId);
+    const repVal = v(repId);
+    if(sbEl && sbEl.value !== repVal) {
+      sbEl.value = repVal;
+    }
+  });
+}
+
+function syncKeys(){
+  const gee = document.getElementById("sbGeeClientId")?.value || "";
+  const hf = document.getElementById("sbHfToken")?.value || "";
+  const hfm = document.getElementById("sbHfModel")?.value || "";
+  
+  const repGee = document.getElementById("geeClientId");
+  const repHf = document.getElementById("hfToken");
+  const repHfm = document.getElementById("hfModel");
+  
+  if(repGee && repGee.value !== gee) repGee.value = gee;
+  if(repHf && repHf.value !== hf) repHf.value = hf;
+  if(repHfm && repHfm.value !== hfm) repHfm.value = hfm;
+  
+  localStorage.setItem("ai_gee", gee);
+  localStorage.setItem("ai_hf", hf);
+  localStorage.setItem("ai_hfm", hfm);
+}
+
+function syncKeysToSidebar(){
+  const gee = document.getElementById("geeClientId")?.value || "";
+  const hf = document.getElementById("hfToken")?.value || "";
+  const hfm = document.getElementById("hfModel")?.value || "";
+  
+  const sbGee = document.getElementById("sbGeeClientId");
+  const sbHf = document.getElementById("sbHfToken");
+  const sbHfm = document.getElementById("sbHfModel");
+  
+  if(sbGee && sbGee.value !== gee) sbGee.value = gee;
+  if(sbHf && sbHf.value !== hf) sbHf.value = hf;
+  if(sbHfm && sbHfm.value !== hfm) sbHfm.value = hfm;
 }
 
 /* ============================================================
    COVER SYNC
 ============================================================ */
 function syncCover(){
-  const v=id=>document.getElementById(id).value||"";
+  const v=id=>document.getElementById(id)?.value||"";
   const set=(id,val)=>{ const e=document.getElementById(id); if(e) e.textContent=val||"-"; };
-  set("cName",v("inName")); set("cCrop",v("inCrop")); set("cDate",v("inDate")); set("cMobile",v("inMobile"));
+  const setSpan=(id,val)=>{ const e=document.getElementById(id); if(e){ e.textContent=val||"—"; } };
   const lat=v("inLat"),lon=v("inLon");
-  set("cLatLon",(lat&&lon)?lat+" / "+lon:"");
   set("cGenDate","Generated "+new Date().toLocaleString());
-  set("slLocV",(lat&&lon)?lat+"N, "+lon+"E":""); set("slDateV",v("inDate"));
-  set("slCropV",v("inCrop")); set("slAreaV",v("inArea")?v("inArea")+" Ha":"");
+  set("slLocV",(lat&&lon)?lat+"N, "+lon+"E":""); 
+  set("slDateV",v("inDate"));
+  set("slCropV",v("inCrop"));
   if(S.sc) set("cHealth",S.sc.overall+"/100");
-}
-["inName","inMobile","inCrop","inLat","inLon","inDate","inArea"].forEach(id=>{
-  const e=document.getElementById(id); if(e) e.addEventListener("input",syncCover);
-});
-syncCover();
-
-/* ============================================================
-   MANUAL PARAM TABLE
-============================================================ */
-function renderManualTable(){
-  const w=document.getElementById("manualParamTable");
-  let h=`<table class="ptbl"><thead><tr><th>Parameter</th><th>Value</th><th>Status</th></tr></thead><tbody>`;
-  PO.forEach(c=>{
-    const d=PD[c],cur=S.mp[c]||{};
-    h+=`<tr><td><strong>${c}</strong><br><span style="font-size:10px;color:var(--mu)">${d.unit}</span></td>
-      <td><input type="text" id="mp_${c}" value="${cur.value||""}" placeholder="${d.range}"></td>
-      <td><select id="ms_${c}" style="font-size:11px;padding:3px;border:1px solid var(--ln);border-radius:5px;">
-        <option value="">-</option>
-        <option value="Low" ${cur.status=="Low"?"selected":""}>Low</option>
-        <option value="Sufficient" ${cur.status=="Sufficient"?"selected":""}>Sufficient</option>
-        <option value="High" ${cur.status=="High"?"selected":""}>High</option>
-      </select></td></tr>`;
-  });
-  w.innerHTML=h+"</tbody></table>";
-}
-renderManualTable();
-
-function applyManualParams(){
-  PO.forEach(c=>{
-    const v=document.getElementById("mp_"+c)?.value?.trim();
-    const st=document.getElementById("ms_"+c)?.value;
-    if(v){ S.mp[c]={range:PD[c].range,value:v,status:st||""}; }
-  });
-  Object.assign(S.tp,S.mp);
-  renderSoilTable(S.tp); updateSoiLENZ(); syncCover();
-  alert("Manual values applied to report.");
+  
+  // Sync print-only spans for cover page
+  setSpan("pName", v("inName"));
+  setSpan("pCrop", v("inCrop"));
+  setSpan("pLatLon", (lat&&lon) ? lat+"°N, "+lon+"°E" : "—");
+  setSpan("pDate", v("inDate"));
+  setSpan("pMobile", v("inMobile"));
+  
+  syncReportToSidebar();
 }
 
 function clearAllData(){
   if(!confirm("Are you sure you want to clear all data and start a new report?")) return;
   
-  ["inName","inMobile","inCrop","inLat","inLon","inArea"].forEach(id=>{
+  ["inName","inCrop","inLat","inLon","inDate","inMobile","inArea","sbName","sbCrop","sbLat","sbLon","sbDate","sbMobile","sbArea"].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.value = "";
   });
   document.getElementById("inDate").value = new Date().toISOString().split("T")[0];
+  document.getElementById("sbDate").value = new Date().toISOString().split("T")[0];
   
-  PO.forEach(c=>{
-    const v = document.getElementById("mp_"+c);
-    if(v) v.value = "";
-    const st = document.getElementById("ms_"+c);
-    if(st) st.value = "";
-  });
-  
-  S.tp = {}; S.mp = {}; S.sc = null; S.sat = null; S.ndviY = null; S.rainY = null;
+  S.tp = {};
+  PO.forEach(c => { S.tp[c] = { value: "", status: "" }; });
+  S.mp = {}; S.sc = null; S.sat = null; S.ndviY = null; S.rainY = null; 
+  S.crops = {}; CROP_LIST.forEach(crop=>{ S.crops[crop] = "Recommended"; });
+  S.customCrops = [];
   
   renderSoilTable(S.tp);
+  renderCropSuitTable();
   updateSoiLENZ();
   syncCover();
   
@@ -1063,16 +1337,114 @@ function stClass(s){if(!s)return"";if(/low|deficient|critical/i.test(s))return"L
    SOIL REPORT TABLE
 ============================================================ */
 function renderSoilTable(params){
-  const b=document.getElementById("soilBody"); b.innerHTML=""; let any=false;
+  const b=document.getElementById("soilBody"); b.innerHTML="";
   PO.forEach(c=>{
-    const p=params[c]; if(!p) return; any=true;
+    const p=params[c]||{value:"",status:""};
     const d=PD[c]||{label:c,unit:"",range:""};
-    const cs=stClass(p.status);
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td><strong>${d.label}</strong></td><td><span style="font-family:monospace;font-size:11px">${d.unit}</span></td><td>${d.range}</td><td><strong style="font-family:monospace">${p.value}</strong></td><td>${p.status?`<span class="bdg ${cs}">${p.status}</span>`:"—"}</td>`;
+
+    let optsHTML = `<option value="">-</option>`;
+    if(c === 'pH'){
+      optsHTML += `
+        <option value="Acidic" ${p.status=="Acidic"?"selected":""}>Acidic</option>
+        <option value="Alkaline" ${p.status=="Alkaline"?"selected":""}>Alkaline</option>`;
+    } else {
+      const opts = ["Low", "Medium", "Sufficient", "High", "Deficient"];
+      opts.forEach(o => {
+        optsHTML += `<option value="${o}" ${p.status==o?"selected":""}>${o}</option>`;
+      });
+    }
+
+    tr.innerHTML=`<td><strong>${d.label}</strong></td><td><span style="font-family:monospace;font-size:11px">${d.unit}</span></td><td>${d.range}</td><td><input type="text" class="soil-input" id="soil_val_${c}" value="${p.value}" placeholder="${d.range}" oninput="syncSoilVal('${c}')"></td><td><select class="soil-select" id="soil_st_${c}" onchange="syncSoilVal('${c}')">${optsHTML}</select></td>`;
     b.appendChild(tr);
   });
-  if(!any) b.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--mu);padding:24px">Upload a ticket or enter values manually.</td></tr>`;
+  
+  renderSidebarSoilParams();
+}
+
+function syncSoilVal(c){
+  const v = document.getElementById("soil_val_"+c)?.value?.trim() || "";
+  const st = document.getElementById("soil_st_"+c)?.value || "";
+  S.tp[c] = { range: PD[c].range, value: v, status: st };
+  
+  // Update sidebar inputs
+  const sbValEl = document.getElementById("sb_soil_val_"+c);
+  if(sbValEl && sbValEl.value !== v) sbValEl.value = v;
+  
+  const sbStEl = document.getElementById("sb_soil_st_"+c);
+  if(sbStEl && sbStEl.value !== st) sbStEl.value = st;
+  
+  updateSoiLENZ();
+  syncCover();
+}
+
+function renderSidebarSoilParams(){
+  const container = document.getElementById("sidebarSoilParams"); if(!container) return;
+  let h = `<table class="ptbl"><thead><tr><th>Parameter</th><th>Value</th><th>Status</th></tr></thead><tbody>`;
+  PO.forEach(c=>{
+    const p = S.tp[c] || {value:"", status:""};
+    const d = PD[c] || {label:c, unit:"", range:""};
+    
+    let optsHTML = `<option value="">-</option>`;
+    if(c === 'pH'){
+      optsHTML += `
+        <option value="Acidic" ${p.status=="Acidic"?"selected":""}>Acidic</option>
+        <option value="Alkaline" ${p.status=="Alkaline"?"selected":""}>Alkaline</option>`;
+    } else {
+      const opts = ["Low", "Medium", "Sufficient", "High", "Deficient"];
+      opts.forEach(o => {
+        optsHTML += `<option value="${o}" ${p.status==o?"selected":""}>${o}</option>`;
+      });
+    }
+    
+    h += `
+      <tr>
+        <td><strong>${c}</strong><br><span style="font-size:10px;color:var(--mu)">${d.unit}</span></td>
+        <td><input type="text" id="sb_soil_val_${c}" value="${p.value}" placeholder="${d.range}" oninput="syncSoilFromSidebar('${c}')" style="width:70px"></td>
+        <td>
+          <select id="sb_soil_st_${c}" onchange="syncSoilFromSidebar('${c}')" style="font-size:11px;padding:3px;border:1px solid var(--ln);border-radius:5px;">
+            ${optsHTML}
+          </select>
+        </td>
+      </tr>`;
+  });
+  h += `</tbody></table>`;
+  container.innerHTML = h;
+}
+
+function syncSoilFromSidebar(c){
+  const v = document.getElementById("sb_soil_val_"+c)?.value?.trim() || "";
+  const st = document.getElementById("sb_soil_st_"+c)?.value || "";
+  S.tp[c] = { range: PD[c].range, value: v, status: st };
+  
+  // Update report sheet inputs
+  const repValEl = document.getElementById("soil_val_"+c);
+  if(repValEl && repValEl.value !== v) repValEl.value = v;
+  
+  const repStEl = document.getElementById("soil_st_"+c);
+  if(repStEl && repStEl.value !== st) repStEl.value = st;
+  
+  updateSoiLENZ();
+  syncCover();
+}
+
+function applySoilFromSidebar(){
+  PO.forEach(c=>{
+    const v = document.getElementById("sb_soil_val_"+c)?.value?.trim() || "";
+    const st = document.getElementById("sb_soil_st_"+c)?.value || "";
+    S.tp[c] = { range: PD[c].range, value: v, status: st };
+    
+    // Update report sheet inputs
+    const repValEl = document.getElementById("soil_val_"+c);
+    if(repValEl) repValEl.value = v;
+    
+    const repStEl = document.getElementById("soil_st_"+c);
+    if(repStEl) repStEl.value = st;
+  });
+  
+  updateSoiLENZ();
+  syncCover();
+  alert("Soil parameters successfully added to report!");
 }
 
 /* ============================================================
@@ -1161,23 +1533,31 @@ function doConnect(){
   const cid=document.getElementById("geeClientId").value.trim();
   if(!cid){alert("Paste your OAuth Client ID in the GEE tab first.");return;}
   const bar=document.getElementById("geeStatusBar");
-  bar.innerHTML=`<span class="sdot" style="background:orange"></span> Connecting...`;
+  const barSb=document.getElementById("geeStatusBarSb");
+  const msg=text=> {
+    if(bar) bar.innerHTML=text;
+    if(barSb) barSb.innerHTML=text;
+  };
+  msg(`<span class="sdot" style="background:orange"></span> Connecting...`);
   if(typeof ee==="undefined"){
-    bar.innerHTML=`<span class="sdot" style="background:red"></span> Earth Engine API not loaded. Serve via python -m http.server on http://localhost`;
+    msg(`<span class="sdot" style="background:red"></span> Earth Engine API not loaded. Serve via python -m http.server on http://localhost`);
     return;
   }
   ee.data.authenticateViaOauth(cid,()=>{
     ee.initialize(null,null,()=>{
-      S.gee.ok=true; bar.className="gsb connected";
-      bar.innerHTML=`<span class="sdot" style="background:var(--ok)"></span> Connected OK`;
+      S.gee.ok=true; 
+      if(bar) bar.className="gsb connected";
+      if(barSb) barSb.className="gsb connected";
+      msg(`<span class="sdot" style="background:var(--ok)"></span> Connected OK`);
       document.getElementById("fetchSatBtn").disabled=false;
       document.getElementById("generateBtn").disabled=false;
-    },err=>{bar.innerHTML=`<span class="sdot" style="background:red"></span> Init failed: ${err}`;});
-  },err=>{bar.innerHTML=`<span class="sdot" style="background:red"></span> Auth failed: ${err}`;
+    },err=>{msg(`<span class="sdot" style="background:red"></span> Init failed: ${err}`);});
+  },err=>{msg(`<span class="sdot" style="background:red"></span> Auth failed: ${err}`);
   },["https://www.googleapis.com/auth/earthengine.readonly"]);
 }
 document.getElementById("connectGeeBtn").addEventListener("click",doConnect);
-document.getElementById("connectGeeBtnTab").addEventListener("click",doConnect);
+const sbConnectBtn = document.getElementById("connectGeeBtnTab");
+if(sbConnectBtn) sbConnectBtn.addEventListener("click",doConnect);
 
 /* ============================================================
    SATELLITE FETCH
@@ -1675,6 +2055,200 @@ function ruleBasedNarrative(){
   fill("planI",imm);fill("planS1",s1);fill("planS2",s2);fill("planLT",lt);
 }
 
+const CROP_LIST = ["Wheat", "Rice", "Maize", "Cotton", "Sugarcane", "Soybean", "Groundnut", "Pulses", "Vegetables", "Orchards"];
+const SUIT_OPTS = ["Highly Recommended", "Recommended", "Moderately Suitable", "Low", "Not Recommended"];
+
+// Initialize crops state
+S.crops = {};
+CROP_LIST.forEach(crop=>{ S.crops[crop] = "Recommended"; });
+S.customCrops = [];
+
+function renderCropSuitTable(){
+  const body = document.getElementById("cropSuitBody"); if(!body)return;
+  body.innerHTML = "";
+  
+  // Render Presets
+  CROP_LIST.forEach(crop=>{
+    const val = S.crops[crop] || "Recommended";
+    const tr = document.createElement("tr");
+    const optHTML = SUIT_OPTS.map(o=>`<option value="${o}" ${val===o?"selected":""}>${o}</option>`).join("");
+    const insight = getCropInsight(val);
+    const color = getCropColor(val);
+    
+    tr.innerHTML = `
+      <td><strong>${crop}</strong></td>
+      <td>
+        <select class="crop-suit-sel" style="color:${color};font-weight:bold" onchange="syncCropSuit('${crop}', this)">
+          ${optHTML}
+        </select>
+      </td>
+      <td style="font-size:11px;color:var(--mu);">${insight}</td>`;
+    body.appendChild(tr);
+  });
+  
+  // Render Custom Crops
+  S.customCrops.forEach(cc=>{
+    const tr = document.createElement("tr");
+    tr.id = `crow_${cc.id}`;
+    const optHTML = SUIT_OPTS.map(o=>`<option value="${o}" ${cc.val===o?"selected":""}>${o}</option>`).join("");
+    const insight = getCropInsight(cc.val);
+    const color = getCropColor(cc.val);
+    
+    tr.innerHTML = `
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button class="no-print" onclick="deleteCustomCrop(${cc.id})" style="background:none;border:none;cursor:pointer;color:var(--bd);font-size:14px;padding:0 2px;">✕</button>
+          <input type="text" class="custom-crop-name" value="${cc.name}" placeholder="Custom Crop Name" oninput="syncCustomCropName(${cc.id}, this)" style="font-weight:bold;">
+        </div>
+      </td>
+      <td>
+        <select class="crop-suit-sel" style="color:${color};font-weight:bold" onchange="syncCustomCropSuit(${cc.id}, this)">
+          ${optHTML}
+        </select>
+      </td>
+      <td style="font-size:11px;color:var(--mu);">${insight}</td>`;
+    body.appendChild(tr);
+  });
+
+  renderSidebarCrops();
+  renderSidebarCustomCrops();
+}
+
+function getCropInsight(val){
+  if(val==="Highly Recommended") return "Optimal soil and climate parameters for this crop. Highly recommended for maximum yield.";
+  if(val==="Recommended") return "Favorable conditions. Standard cultivation practices will yield good results.";
+  if(val==="Moderately Suitable") return "Moderate suitability. Yield may be average; minor soil adjustments needed.";
+  if(val==="Low") return "Low suitability. Expect lower yields or high irrigation and fertiliser inputs.";
+  if(val==="Not Recommended") return "Critical mismatch with soil or environmental profile. Not recommended.";
+  return "-";
+}
+
+function getCropColor(val){
+  if(val==="Highly Recommended") return "var(--ok)";
+  if(val==="Recommended") return "#4a7a4f";
+  if(val==="Moderately Suitable") return "var(--wn)";
+  if(val==="Low") return "#fb8c00";
+  if(val==="Not Recommended") return "var(--bd)";
+  return "var(--ink)";
+}
+
+function syncCropSuit(crop, el){
+  S.crops[crop] = el.value;
+  el.style.color = getCropColor(el.value);
+  const sbEl = document.getElementById("sb_suit_" + crop);
+  if(sbEl && sbEl.value !== el.value) sbEl.value = el.value;
+  renderCropSuitTable();
+}
+
+function renderSidebarCrops(){
+  const container = document.getElementById("sidebarCrops"); if(!container) return;
+  container.innerHTML = "";
+  CROP_LIST.forEach(crop=>{
+    const val = S.crops[crop] || "Recommended";
+    const d = document.createElement("div");
+    d.className = "fg";
+    d.style.cssText = "border:1px solid var(--ln);border-radius:8px;padding:10px 12px;margin-bottom:8px;";
+    const optHTML = SUIT_OPTS.map(o=>`<option value="${o}" ${val===o?"selected":""}>${o}</option>`).join("");
+    d.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <label style="margin:0;font-size:12px;font-weight:700;color:var(--gd);">${crop}</label>
+        <button onclick="removePresetCrop('${crop}')" style="background:none;border:none;cursor:pointer;color:var(--bd);font-size:13px;padding:0 3px;line-height:1;" title="Remove ${crop}">✕</button>
+      </div>
+      <select id="sb_suit_${crop}" class="soil-select" onchange="syncCropFromSidebar('${crop}', this)">${optHTML}</select>`;
+    container.appendChild(d);
+  });
+}
+
+function syncCropFromSidebar(crop, el){
+  S.crops[crop] = el.value;
+  renderCropSuitTable();
+}
+
+function renderSidebarCustomCrops(){
+  const container = document.getElementById("sidebarCustomCrops"); if(!container) return;
+  container.innerHTML = "";
+  S.customCrops.forEach(cc=>{
+    const d = document.createElement("div");
+    d.className = "g2";
+    d.id = `sb_crow_${cc.id}`;
+    d.style.marginBottom = "8px";
+    
+    const optHTML = SUIT_OPTS.map(o=>`<option value="${o}" ${cc.val===o?"selected":""}>${o}</option>`).join("");
+    d.innerHTML = `
+      <input type="text" class="soil-input" id="sb_cc_name_${cc.id}" value="${cc.name}" placeholder="Crop Name" oninput="syncCustomCropNameFromSidebar(${cc.id}, this)">
+      <div style="display:flex;gap:4px;">
+        <select class="soil-select" id="sb_cc_suit_${cc.id}" onchange="syncCustomCropSuitFromSidebar(${cc.id}, this)">${optHTML}</select>
+        <button onclick="deleteCustomCrop(${cc.id})" style="background:none;border:none;cursor:pointer;color:var(--bd);font-size:16px;">✕</button>
+      </div>`;
+    container.appendChild(d);
+  });
+}
+
+function syncCustomCropNameFromSidebar(id, el){
+  const cc = S.customCrops.find(x=>x.id === id);
+  if(cc) cc.name = el.value;
+  const repEl = document.querySelector(`#crow_${id} .custom-crop-name`);
+  if(repEl && repEl.value !== el.value) repEl.value = el.value;
+}
+
+function syncCustomCropSuitFromSidebar(id, el){
+  const cc = S.customCrops.find(x=>x.id === id);
+  if(cc) cc.val = el.value;
+  renderCropSuitTable();
+}
+
+function addCustomCropRow(){
+  const id = Date.now();
+  S.customCrops.push({ id, name: "", val: "Recommended" });
+  renderCropSuitTable();
+}
+
+function syncCustomCropName(id, el){
+  const cc = S.customCrops.find(x=>x.id === id);
+  if(cc) cc.name = el.value;
+  const sbEl = document.getElementById("sb_cc_name_" + id);
+  if(sbEl && sbEl.value !== el.value) sbEl.value = el.value;
+}
+
+function syncCustomCropSuit(id, el){
+  const cc = S.customCrops.find(x=>x.id === id);
+  if(cc) cc.val = el.value;
+  el.style.color = getCropColor(el.value);
+  renderCropSuitTable();
+}
+
+function deleteCustomCrop(id){
+  S.customCrops = S.customCrops.filter(x=>x.id !== id);
+  renderCropSuitTable();
+}
+
+function removePresetCrop(crop){
+  // Remove from CROP_LIST and S.crops so it no longer appears in the table
+  const idx = CROP_LIST.indexOf(crop);
+  if(idx > -1) CROP_LIST.splice(idx, 1);
+  delete S.crops[crop];
+  renderCropSuitTable();
+}
+
+function applyCropsFromSidebar(){
+  // Copy preset crops
+  CROP_LIST.forEach(crop=>{
+    const el = document.getElementById("sb_suit_" + crop);
+    if(el) S.crops[crop] = el.value;
+  });
+  
+  // Copy custom crops
+  S.customCrops.forEach(cc=>{
+    const nameEl = document.getElementById("sb_cc_name_" + cc.id);
+    const suitEl = document.getElementById("sb_cc_suit_" + cc.id);
+    if(nameEl) cc.name = nameEl.value;
+    if(suitEl) cc.val = suitEl.value;
+  });
+  
+  renderCropSuitTable();
+  alert("Crops successfully added to report!");
+}
+
 /* ============================================================
    PDF EXPORT
 ============================================================ */
@@ -1695,34 +2269,10 @@ document.getElementById("exportPdfBtn").addEventListener("click",async()=>{
   }catch(e){console.error(e);btn.textContent="⬇ Export PDF";btn.disabled=false;alert("PDF export failed: "+e.message);}
 });
 
-/* ============================================================
-   CROP SUITABILITY
-============================================================ */
-const CROP_LIST = ["Wheat", "Rice", "Maize", "Cotton", "Sugarcane", "Soybean", "Groundnut", "Pulses", "Vegetables", "Orchards"];
-const SUIT_OPTS = ["Not Evaluated", "Highly Suitable", "Moderately Suitable", "Marginally Suitable", "Unsuitable"];
+// Duplicate crop blocks removed
+// Removed duplicate addCustomCropRow
 
-function renderCropInputs(){
-  const c = document.getElementById("cropInputs"); if(!c)return;
-  c.innerHTML = "";
-  CROP_LIST.forEach(crop=>{
-    const d = document.createElement("div"); d.className="fg";
-    d.innerHTML = `<label>${crop}</label><select id="suit_${crop}" class="ci-sel">${SUIT_OPTS.map(o=>`<option value="${o}">${o}</option>`).join("")}</select>`;
-    c.appendChild(d);
-  });
-}
-function addCustomCropRow(){
-  const c = document.getElementById("customCropRows");
-  const idx = Date.now();
-  const d = document.createElement("div");
-  d.className = "crop-row"; d.id = `crow_${idx}`;
-  d.innerHTML = `
-    <div ><input type="text" class="custom-crop-name" placeholder="e.g. Turmeric, Banana, Coffee"></div>
-    <div style="width:160px;"><select class="custom-crop-suit ci-sel">${SUIT_OPTS.filter(o=>o!=="Not Evaluated").map(o=>`<option value="${o}">${o}</option>`).join("")}</select></div>
-    <button onclick="document.getElementById('crow_${idx}').remove()" style="background:none;border:none;cursor:pointer;color:var(--bd);font-size:16px;padding:0 4px;">✕</button>`;
-  c.appendChild(d);
-}
-
-function applyCrops(){
+function applyCrops_dup(){ return;
   const body = document.getElementById("cropSuitBody"); if(!body)return;
   body.innerHTML = "";
   let rows = [];
@@ -1764,8 +2314,17 @@ function applyCrops(){
    INIT
 ============================================================ */
 document.getElementById("inDate").value=new Date().toISOString().split("T")[0];
-renderCropInputs();
+document.getElementById("sbDate").value=new Date().toISOString().split("T")[0];
+PO.forEach(c => { S.tp[c] = { value: "", status: "" }; });
+renderSoilTable(S.tp);
+renderCropSuitTable();
 syncCover();
+
+// Event listeners for bidirectional syncing
+["inName","inMobile","inCrop","inLat","inLon","inDate","inArea"].forEach(id=>{
+  const e=document.getElementById(id); if(e) e.addEventListener("input",syncCover);
+});
+
 setTimeout(()=>{
   drawGauge(document.getElementById("healthGauge"),0,"#e0e0e0");
   drawGauge(document.getElementById("fertGauge"),0,"#e0e0e0");
@@ -1782,9 +2341,11 @@ window.addEventListener("load",()=>{
   if(localStorage.getItem("ai_hf")) hfInput.value=localStorage.getItem("ai_hf");
   if(localStorage.getItem("ai_hfm")) hfMod.value=localStorage.getItem("ai_hfm");
 
-  geeInput.addEventListener("input",e=>localStorage.setItem("ai_gee",e.target.value));
-  hfInput.addEventListener("input",e=>localStorage.setItem("ai_hf",e.target.value));
-  hfMod.addEventListener("input",e=>localStorage.setItem("ai_hfm",e.target.value));
+  syncKeysToSidebar();
+
+  geeInput.addEventListener("input",e=>{ localStorage.setItem("ai_gee",e.target.value); syncKeysToSidebar(); });
+  hfInput.addEventListener("input",e=>{ localStorage.setItem("ai_hf",e.target.value); syncKeysToSidebar(); });
+  hfMod.addEventListener("input",e=>{ localStorage.setItem("ai_hfm",e.target.value); syncKeysToSidebar(); });
 });
 </script>
 </body>
