@@ -105,21 +105,42 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
   border-bottom-color: #fff !important;
 }
 
-/* Cover inputs inside the light .cover-data section — dark text */
+/* Cover inputs inside the .cover-data section — dark cards, use light text */
+.cover-data .c-meta { grid-template-columns:repeat(3,1fr); gap:14px; }
+.cover-data .c-meta-card { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); border-radius:10px; padding:14px 16px; border-left:3px solid #a3d977; }
+.cover-data .c-meta-card .k { display:block; font-size:9.5px; text-transform:uppercase; letter-spacing:.08em; color:#fff; margin-bottom:5px; font-weight:600; }
+.cover-data .c-meta-card .v, .cover-data .c-meta-card .cover-print { font-size:14px; font-weight:700; color:#fff; }
+.cover-data .c-meta-card .v.sc { color:#fff; font-size:16px; }
 .cover-data .cover-input {
-  color: var(--gd) !important;
-  border-bottom: 1px dashed rgba(27,58,43,0.25) !important;
+  color: #ffffff !important;
+  border-bottom: 1px dashed rgba(255,255,255,0.3) !important;
   font-weight: 600 !important;
   font-size: 13.5px !important;
+  color-scheme: dark;
 }
 .cover-data .cover-input::placeholder {
-  color: rgba(27,58,43,0.35) !important;
+  color: rgba(255,255,255,0.45) !important;
   font-weight: 400 !important;
 }
 .cover-data .cover-input:focus {
-  background: rgba(255,255,255,0.6) !important;
-  color: var(--gd) !important;
-  border-bottom-color: var(--gl) !important;
+  background: rgba(255,255,255,0.15) !important;
+  color: #ffffff !important;
+  border-bottom-color: #a3d977 !important;
+}
+/* Date picker icon needs to be visible on the dark card background */
+.cover-data input[type="date"].cover-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+  cursor: pointer;
+}
+/* Prevent the browser's autofill white box from breaking the dark theme */
+.cover-input:-webkit-autofill,
+.cover-input:-webkit-autofill:hover,
+.cover-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(20,45,32,0.55) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: #ffffff;
 }
 
 .fg { margin-bottom:14px; }
@@ -175,7 +196,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
   margin: 0 auto 30px !important; 
   background: #fff !important; 
   box-shadow: 0 8px 24px rgba(0,0,0,0.18) !important; 
-  padding: 15mm !important; 
+  padding: 6mm !important; 
   box-sizing: border-box !important; 
   position: relative !important; 
   display: flex !important; 
@@ -185,10 +206,10 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
   border: none !important;
 }
 
-.pg-hdr { display:flex; justify-content:space-between; align-items:center; padding:12px 40px; border-bottom:1px solid var(--ln); background:#fff; flex-shrink:0; border-left:4px solid var(--gl); }
+.pg-hdr { display:flex; justify-content:space-between; align-items:center; padding:6px 16px; border-bottom:1px solid var(--ln); background:#fff; flex-shrink:0; border-left:4px solid var(--gl); }
 .pg-ht { font-family:Bitter,serif; font-size:13px; font-weight:800; color:var(--gd); text-align:right; line-height:1.2; }
 .pg-hs { font-size:9.5px; color:var(--mu); text-align:right; }
-.pg-ftr { border-top:1px solid var(--ln); padding:7px 40px; display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:var(--mu); flex-shrink:0; background:var(--ghl); }
+.pg-ftr { border-top:1px solid var(--ln); padding:5px 16px; display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:var(--mu); flex-shrink:0; background:var(--ghl); }
 .pg-ftr .pg-num { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--gl); font-size:10px; }
 .cover-page { background:var(--gd); color:#fff; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; min-height:680px; }
 .cover-bg { position:absolute; inset:0; z-index:0; width:100%; height:100%; }
@@ -207,17 +228,23 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .c-logo .lb { font-family:Bitter,serif; font-size:22px; font-weight:800; color:#fff; }
 .c-logo .ls { font-size:11px; color:#a5d6a7; }
 /* ---- REPORT PAGES ---- */
-.rsec { padding:28px 40px; border-bottom:1px solid var(--ln); page-break-inside:avoid; }
+.rsec { padding:14px 20px; border-bottom:1px solid var(--ln); page-break-inside:avoid; }
 .rsec:last-child { border-bottom:none; }
 .rh2 { font-size:16px; font-weight:800; color:var(--gd); display:flex; align-items:center; gap:10px; margin-bottom:4px; }
 .rh2 .rn { width:24px; height:24px; border-radius:50%; background:var(--gl); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'JetBrains Mono',monospace; flex-shrink:0; }
 .rsub { font-size:12px; color:var(--mu); margin-bottom:14px; margin-left:34px; }
+/* 8mm spacing after tables, canvases and section blocks */
+.rtbl { margin-bottom:8mm; }
+canvas.report-canvas, .rsec canvas { margin-bottom:8mm; }
+.rsec + .rsec { margin-top:2mm; }
+.map-card { margin-bottom:4mm; }
+.map-grid { margin-bottom:8mm; }
 /* ---- COVER PAGE ---- */
-.cover-page { background:#fff; color:var(--gd); display:flex; flex-direction:column; overflow:hidden; }
-.cover-hero { background:linear-gradient(135deg, #1B3A2B 0%, #2d5a38 60%, #3a6e45 100%); padding:36px 44px 32px; position:relative; overflow:hidden; flex-shrink:0; }
+.cover-page { background:linear-gradient(135deg, #1B3A2B 0%, #2d5a38 60%, #3a6e45 100%); color:#fff; display:flex; flex-direction:column; overflow:hidden; }
+.cover-hero { padding:22px 24px 18px; position:relative; overflow:hidden; flex:1; }
 .cover-hero::after { content:''; position:absolute; right:-60px; top:-60px; width:280px; height:280px; border-radius:50%; background:rgba(163,217,119,0.08); }
 .cover-hero::before { content:''; position:absolute; right:60px; top:80px; width:160px; height:160px; border-radius:50%; background:rgba(163,217,119,0.06); }
-.cover-data { background:var(--ghl); padding:28px 44px 32px; flex:1; display:flex; flex-direction:column; gap:20px; }
+.cover-data { background:rgba(0,0,0,0.30); padding:16px 24px 20px; flex-shrink:0; display:flex; flex-direction:column; gap:14px; }
 .cover-divider { height:3px; background:linear-gradient(90deg, var(--gl) 0%, var(--gcl) 60%, transparent 100%); margin:0; }
 .c-eye { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#a3d977; margin-bottom:14px; }
 .c-title { font-size:38px; font-weight:800; line-height:1.1; max-width:560px; margin-bottom:10px; color:#fff; }
@@ -230,27 +257,29 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .c-meta-card .v { font-size:14px; font-weight:700; color:var(--gd); }
 .c-meta-card .v.sc { color:var(--gl); font-size:16px; }
 .c-data-footer { display:flex; justify-content:space-between; align-items:flex-end; padding-top:4px; }
-.c-data-footer .cdf-l { font-size:11px; color:var(--mu); line-height:1.6; }
+.c-data-footer .cdf-l { font-size:11px; color:#a5d6a7; line-height:1.6; }
 .c-logo-lt { text-align:right; }
-.c-logo-lt .lb { font-family:Bitter,serif; font-size:20px; font-weight:800; color:var(--gd); }
-.c-logo-lt .ls { font-size:10px; color:var(--mu); line-height:1.4; }
-.c-logo-lt .lg { font-size:10px; color:var(--gl); margin-top:4px; font-family:'JetBrains Mono',monospace; }
+.c-logo-lt .lb { font-family:Bitter,serif; font-size:20px; font-weight:800; color:#fff; }
+.c-logo-lt .ls { font-size:10px; color:#a5d6a7; line-height:1.4; }
+.c-logo-lt .lg { font-size:10px; color:#a3d977; margin-top:4px; font-family:'JetBrains Mono',monospace; }
 /* ---- SOIL SUMMARY PAGE ---- */
-.sl-page { background:#fff; display:flex; flex-direction:column; }
-.sl-hdr { background:linear-gradient(90deg, var(--gd) 0%, var(--gm) 100%); color:#fff; padding:16px 40px; display:flex; justify-content:space-between; align-items:center; }
+.sl-page { background:#fff; display:flex; flex-direction:column; flex:1; overflow:hidden; }
+.sl-hdr { background:linear-gradient(90deg, var(--gd) 0%, var(--gm) 100%); color:#fff; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; }
 .sl-hdr .shb h2 { font-size:15px; font-weight:800; }
 .sl-hdr .shb p { font-size:10px; color:#a3d977; }
 .sl-hdr .shl { text-align:right; }
 .sl-hdr .shl .pw { font-size:9px; color:#a5d6a7; }
 .sl-hdr .shl .sn2 { font-family:Bitter,serif; font-size:16px; font-weight:800; color:#a3d977; }
 .sl-hdr .shl .sd { font-size:9px; color:#c8e6c9; line-height:1.3; }
-.sl-body { padding:20px 32px; display:grid; grid-template-columns:190px 1fr 1fr; gap:18px; align-items:start; }
-.si-item { display:flex; align-items:flex-start; gap:8px; margin-bottom:14px; }
+.sl-body { padding:24px 20px; display:grid; grid-template-columns:200px 1fr 1fr; gap:20px; align-items:stretch; flex:1; }
+.sl-col-info { display:flex; flex-direction:column; justify-content:space-evenly; }
+.si-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:0; }
 .si-item .ic { font-size:16px; color:var(--gl); margin-top:1px; }
 .si-item .tx .lbl { font-size:10.5px; color:var(--mu); text-transform:uppercase; letter-spacing:.04em; }
 .si-item .tx .vl { font-size:13.5px; font-weight:600; color:var(--ink); }
-.sc-col { display:flex; flex-direction:column; align-items:center; }
-.plant-oval { width:190px; height:230px; border-radius:50%; overflow:hidden; box-shadow:0 8px 32px rgba(27,58,43,.18); margin-bottom:12px; display:flex; align-items:center; justify-content:center; }
+.sc-col { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.sl-col-score { display:flex; flex-direction:column; justify-content:space-evenly; }
+.plant-oval { width:210px; height:250px; border-radius:50%; overflow:hidden; box-shadow:0 8px 32px rgba(27,58,43,.18); margin-bottom:16px; display:flex; align-items:center; justify-content:center; }
 .plant-oval img { width:100%; height:100%; object-fit:cover; display:block; }
 .fb { background:var(--gd); color:#fff; border-radius:10px; padding:12px 24px; text-align:center; width:100%; }
 .fb .fbl { font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:#a5d6a7; margin-bottom:4px; }
@@ -268,7 +297,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .gi .garc { width:52px; height:30px; }
 .gi .gl2 { font-size:10px; color:var(--mu); margin-top:2px; font-weight:600; }
 .gi .gsc { font-size:10px; color:var(--ink); font-weight:700; }
-.sl-ftr { background:var(--gd); color:#a3d977; text-align:center; padding:12px 40px; font-size:12.5px; font-weight:600; display:flex; justify-content:space-between; align-items:center; }
+.sl-ftr { background:var(--gd); color:#a3d977; text-align:center; padding:8px 16px; font-size:12.5px; font-weight:600; display:flex; justify-content:space-between; align-items:center; }
 .map-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
 .map-card { border:1px solid var(--ln); border-radius:8px; overflow:hidden; background:#fff; }
 .map-card img, .map-card canvas { width:100%; aspect-ratio:1/1; display:block; object-fit:cover; }
@@ -315,7 +344,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .page-content .rsec:last-child { border-bottom:none; }
 
 /* Satellite quick-stat bar */
-.pg-stat-bar { display:flex; background:var(--gd); padding:10px 40px; gap:0; flex-shrink:0; }
+.pg-stat-bar { display:flex; background:var(--gd); padding:8px 16px; gap:0; flex-shrink:0; }
 .psb-item { flex:1; text-align:center; border-right:1px solid rgba(255,255,255,.12); padding:0 12px; }
 .psb-item:last-child { border-right:none; }
 .psb-lbl { font-size:9px; text-transform:uppercase; letter-spacing:.1em; color:#a3d977; margin-bottom:3px; }
@@ -348,6 +377,31 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
 .mct { display:block; font-size:11px; font-weight:700; color:var(--gd); }
 .mcs { display:block; font-size:10px; color:var(--mu); margin-top:1px; }
 
+
+/* ---- GRID PARAM CARDS ---- */
+.grid-param-card { background:#fff; border:1px solid var(--ln); border-radius:8px; overflow:hidden; }
+.grid-param-card .gpc-hdr { padding:6px 10px; font-size:10.5px; font-weight:700; color:var(--gd); background:var(--ghl); border-bottom:1px solid var(--ln); }
+.grid-param-card .gpc-map { width:100%; height:80px; display:grid; gap:2px; background:#dfe4dc; padding:2px; box-sizing:border-box; }
+.gpc-cell { position:relative; border-radius:2px; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.15); }
+.grid-param-card .gpc-avg { padding:4px 10px 6px; font-size:10px; color:var(--mu); }
+.grid-param-card .gpc-avg strong { display:block; font-size:11.5px; color:var(--gd); }
+
+/* ---- AMENDMENT ACTION TIMELINE ---- */
+.apt-step { flex:1; background:#fff; border:1px solid var(--ln); border-radius:8px; padding:8px 10px; font-size:10.5px; }
+.apt-step .apt-icon { font-size:18px; margin-bottom:3px; }
+.apt-step .apt-title { font-weight:700; color:var(--gd); font-size:11px; }
+.apt-step .apt-range { font-size:9.5px; color:var(--mu); margin-bottom:5px; }
+.apt-step .apt-list { padding-left:14px; margin:0; color:var(--ink); font-size:10.5px; line-height:1.7; }
+.apt-arrow { display:flex; align-items:center; font-size:18px; color:var(--mu); padding:0 4px; flex-shrink:0; }
+
+/* ---- AMENDMENT ROW IN SIDEBAR ---- */
+.amend-row { background:var(--cr); border:1px solid var(--ln); border-radius:7px; padding:8px 10px; margin-bottom:6px; font-size:12px; }
+.amend-row .ar-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.amend-row label { font-size:10px; color:var(--mu); font-weight:700; text-transform:uppercase; display:block; margin-bottom:2px; }
+.amend-row input, .amend-row select { width:100%; padding:5px 8px; border:1.5px solid var(--ln); border-radius:6px; font-size:12px; font-family:Inter,sans-serif; background:#fff; color:var(--ink); outline:none; box-sizing:border-box; }
+.amend-row input:focus, .amend-row select:focus { border-color:var(--gl); box-shadow:0 0 0 2px rgba(76,122,61,.1); }
+.amend-row .ar-del { margin-top:6px; width:100%; background:none; border:1px solid #eee; border-radius:5px; padding:3px; font-size:11px; color:var(--mu); cursor:pointer; }
+.amend-row .ar-del:hover { border-color:var(--bd); color:var(--bd); background:#fde8e8; }
 
 .pdiv { display:none; }
 
@@ -402,7 +456,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
     width:210mm !important; 
     height:297mm !important;
     margin:0 auto !important; 
-    padding:10mm 12mm !important;
+    padding:4mm !important;
     box-sizing:border-box; 
     box-shadow:none !important; 
     border-radius:0 !important;
@@ -415,38 +469,38 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
   
   /* Make sure content doesn't stretch and create gaps */
   .page-content { flex:1; display:flex; flex-direction:column; justify-content:flex-start; overflow:hidden; min-height:0; }
-  /* Cover page: hero fills ~45%, data fills remaining */
+  /* Cover page: hero (green) fills all space above the data strip */
   .cover-page { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-  .cover-hero { padding:32px 44px 28px; flex-shrink:0; }
-  .cover-data { padding:24px 44px 28px; flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:16px; }
+  .cover-hero { padding:32px 16px 28px; flex:1; }
+  .cover-data { padding:20px 16px 16px; flex-shrink:0; display:flex; flex-direction:column; justify-content:flex-end; gap:14px; }
   .c-meta { grid-template-columns:repeat(3,1fr); gap:12px; }
   .c-meta-card { padding:12px 14px; }
   
-  /* Constrain the cover background to be inside the 15mm padding */
+  /* Constrain the cover background to be inside the 5mm padding */
   .cover-bg {
-    top: 15mm !important;
-    left: 15mm !important;
-    bottom: 15mm !important;
-    right: 15mm !important;
+    top: 5mm !important;
+    left: 5mm !important;
+    bottom: 5mm !important;
+    right: 5mm !important;
     width: auto !important;
     height: auto !important;
     border-radius: 8px !important;
   }
   .c-data-footer { margin: auto 0 0 0 !important; border-radius: 0 0 8px 8px; }
-
+ 
   /* Page header */
-  .pg-hdr { margin: 0 !important; padding:10px 32px; flex-shrink:0; border-left:none; border-bottom:1px solid #D1E8C9; }
-  .pg-ftr { margin: 0 !important; padding:6px 32px; flex-shrink:0; border-radius: 0 0 8px 8px; }
-
+  .pg-hdr { margin: 0 !important; padding:10px 16px; flex-shrink:0; border-left:none; border-bottom:1px solid #D1E8C9; }
+  .pg-ftr { margin: 0 !important; padding:6px 16px; flex-shrink:0; border-radius: 0 0 8px 8px; }
+ 
   /* Soil summary page */
   .sl-page { flex:1; display:flex; flex-direction:column; overflow:hidden; }
   .sl-hdr { flex-shrink:0; }
-  .sl-body { flex:1; padding:18px 32px; grid-template-columns:180px 1fr 1fr; gap:16px; }
+  .sl-body { flex:1; padding:18px 16px; grid-template-columns:180px 1fr 1fr; gap:16px; }
   .sl-ftr { flex-shrink:0; }
-
+ 
   /* Content pages */
-  .rsec { padding:20px 32px; page-break-inside:avoid; }
-  .rtbl { font-size:11.5px; }
+  .rsec { padding:20px 16px; page-break-inside:avoid; }
+  .rtbl { font-size:11.5px; margin-bottom:8mm; }
   .rtbl th { padding:6px 10px; font-size:10px; }
   .rtbl td { padding:6px 10px; }
   .rg { gap:12px; }
@@ -454,10 +508,15 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
   .rc ul li { font-size:11.5px; margin-bottom:3px; }
   .ci { padding:8px 12px; }
   .cx { font-size:12px; }
+  /* 8mm uniform spacing for all content blocks in print */
+  .map-grid { margin-bottom:8mm !important; }
+  .map-card { margin-bottom:0; }
+  canvas { margin-bottom:8mm !important; display:block; }
+  .rsec { margin-bottom:4mm; }
 
   /* Ensure backgrounds print */
   .cover-hero { background:linear-gradient(135deg, #1B3A2B 0%, #2d5a38 60%, #3a6e45 100%) !important; }
-  .cover-data { background:#F4FAF2 !important; }
+  .cover-data { background:rgba(0,0,0,0.30) !important; }
   .cover-divider { background:linear-gradient(90deg, #4A7C3C 0%, #C8E6C9 60%, transparent 100%) !important; }
   .rtbl th { background:#4A7C3C !important; color:#fff !important; }
   .rtbl tr:nth-child(even) td { background:#F4FAF2 !important; }
@@ -490,7 +549,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
   .cover-print {
     font-size:14px;
     font-weight:700;
-    color:var(--gd);
+    color:#ffffff;
     display:block;
     padding:2px 0;
   }
@@ -556,8 +615,10 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
       <div class="tabs">
         <button class="tab-btn active" data-tab="tm">✏ Manual</button>
         <button class="tab-btn" data-tab="tg">🛰 GEE</button>
-        <button class="tab-btn" data-tab="tl">🌐 Language</button>
+        <button class="tab-btn" data-tab="tl">🌐 Lang</button>
         <button class="tab-btn" data-tab="tc">🌾 Crops</button>
+        <button class="tab-btn" data-tab="tsa">🌱 Amend</button>
+        <button class="tab-btn" data-tab="tcc">♻ Carbon</button>
       </div>
       
       <!-- Manual Tab -->
@@ -613,6 +674,56 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
         <button class="btn btn-o" style="width:100%;margin-top:8px;color:var(--gd);border-color:var(--gd);" onclick="addCustomCropRow()">+ Add Custom Crop</button>
         <button class="btn btn-p" style="width:100%;margin-top:16px;" onclick="applyCropsFromSidebar()">💾 Add Crops to Report</button>
       </div>
+      <!-- Soil Amendment Tab -->
+      <div class="tab-cnt" id="tsa">
+        <div class="sh"><span class="sn">🌱</span><span class="st">Soil Amendment & Action Plan</span></div>
+        <p class="ss">Enter amendment inputs for the Soil Amendment & Action Plan page.</p>
+        <div class="sh" style="margin-top:12px;"><span class="sn">A</span><span class="st">Field Inputs</span></div>
+        <div class="fg"><label>Field Area (Ha)</label><input type="text" id="sa_fieldArea" placeholder="e.g. 2.5" oninput="syncAmendment()"></div>
+        <div class="fg"><label>Analysis Date</label><input type="date" id="sa_date" oninput="syncAmendment()"></div>
+        <div class="fg"><label>Grid Size</label><input type="text" id="sa_gridSize" placeholder="e.g. 30 m x 30 m" oninput="syncAmendment()"></div>
+        <div class="fg"><label>Total Grids</label><input type="number" id="sa_totalGrids" placeholder="e.g. 16" oninput="syncAmendment()"></div>
+        <div class="sh" style="margin-top:12px;"><span class="sn">B</span><span class="st">Grid Soil Parameters (Averages)</span></div>
+        <p class="ss">Automatically pulled from the Soil Parameters (Manual Entry) you filled in the Test tab — no need to re-enter values here.</p>
+        <div class="sh" style="margin-top:16px;"><span class="sn">C</span><span class="st">Amendment Inputs Table</span></div>
+        <p class="ss">Enter each amendment row. Priority: HIGH=red, MEDIUM=orange, LOW=green.</p>
+        <div id="amendmentRows"></div>
+        <button class="btn btn-o" style="width:100%;margin-top:8px;color:var(--gd);border-color:var(--gd);" onclick="addAmendmentRow()">+ Add Amendment</button>
+        <button class="btn btn-p" style="width:100%;margin-top:12px;" onclick="applyAmendment()">💾 Apply to Report</button>
+        <div class="sh" style="margin-top:16px;"><span class="sn">D</span><span class="st">Grid Analysis Insights</span></div>
+        <div class="fg"><label>Insight 1</label><input type="text" id="sa_insight1" placeholder="e.g. pH is alkaline across the field." oninput="syncAmendment()"></div>
+        <div class="fg"><label>Insight 2</label><input type="text" id="sa_insight2" placeholder="e.g. Organic carbon is uniformly low." oninput="syncAmendment()"></div>
+        <div class="fg"><label>Insight 3</label><input type="text" id="sa_insight3" placeholder="e.g. N & Mn are deficient in most grids." oninput="syncAmendment()"></div>
+        <div class="fg"><label>Insight 4</label><input type="text" id="sa_insight4" placeholder="e.g. P & S are medium and can be improved." oninput="syncAmendment()"></div>
+        <div class="fg"><label>Insight 5</label><input type="text" id="sa_insight5" placeholder="e.g. K, Ca, Mg, Fe, Cu & Zn are sufficient to high." oninput="syncAmendment()"></div>
+      </div>
+
+      <!-- Carbon Credit Tab -->
+      <div class="tab-cnt" id="tcc">
+        <div class="sh"><span class="sn">♻</span><span class="st">Carbon Credit Impact Dashboard</span></div>
+        <p class="ss">Enter values for the Carbon Credit Impact page.</p>
+        <div class="sh" style="margin-top:8px;"><span class="sn">A</span><span class="st">Carbon Health Score</span></div>
+        <div class="fg"><label>Carbon Health Score (0-100)</label><input type="number" id="cc_score" placeholder="78" min="0" max="100" oninput="syncCarbon()"></div>
+        <div class="fg"><label>Score Label (e.g. Good)</label><input type="text" id="cc_label" placeholder="Good" oninput="syncCarbon()"></div>
+        <div class="sh" style="margin-top:8px;"><span class="sn">B</span><span class="st">Organic Carbon Sequestration</span></div>
+        <div class="g2">
+          <div class="fg"><label>OC Current (%)</label><input type="number" id="cc_oc_cur" placeholder="0.33" step="0.01" oninput="syncCarbon()"></div>
+          <div class="fg"><label>OC After (1 yr)</label><input type="number" id="cc_oc_after" placeholder="0.75" step="0.01" oninput="syncCarbon()"></div>
+        </div>
+        <div class="fg"><label>OC Annual Sequestration (kg CO₂/acre)</label><input type="number" id="cc_oc_seq" placeholder="210" oninput="syncCarbon()"></div>
+        <div class="sh" style="margin-top:8px;"><span class="sn">C</span><span class="st">Biomass Sequestration</span></div>
+        <div class="g2">
+          <div class="fg"><label>Biomass Current (t/acre)</label><input type="number" id="cc_bio_cur" placeholder="1.5" step="0.1" oninput="syncCarbon()"></div>
+          <div class="fg"><label>Biomass After (1 yr)</label><input type="number" id="cc_bio_after" placeholder="3.5" step="0.1" oninput="syncCarbon()"></div>
+        </div>
+        <div class="fg"><label>Biomass Annual Sequestration (kg CO₂/acre)</label><input type="number" id="cc_bio_seq" placeholder="420" oninput="syncCarbon()"></div>
+        <div class="sh" style="margin-top:8px;"><span class="sn">D</span><span class="st">Key Benefits</span></div>
+        <div class="fg"><label>Benefit 1 (Income)</label><input type="text" id="cc_ben1" placeholder="₹1,200 – ₹1,800 extra income possible from carbon credits" oninput="syncCarbon()"></div>
+        <div class="fg"><label>Benefit 2</label><input type="text" id="cc_ben2" placeholder="Improves soil structure & water holding" oninput="syncCarbon()"></div>
+        <div class="fg"><label>Benefit 3</label><input type="text" id="cc_ben3" placeholder="Enhances crop productivity" oninput="syncCarbon()"></div>
+        <div class="fg"><label>Benefit 4</label><input type="text" id="cc_ben4" placeholder="Supports sustainable & climate smart farming" oninput="syncCarbon()"></div>
+        <button class="btn btn-p" style="width:100%;margin-top:12px;" onclick="syncCarbon()">💾 Apply to Report</button>
+      </div>
     </div>
     <div class="panel-r">
       <div id="reportRoot">
@@ -635,8 +746,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
             <div class="cover-c">
               <!-- TOP HERO: dark green brand section -->
               <div class="cover-hero">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
-                  <div class="arka-logo" style="width:340px;height:105px;filter:brightness(0) invert(1);opacity:0.9;"></div>
+                <div style="display:flex;justify-content:flex-end;align-items:flex-start;margin-bottom:20px;">
                   <div style="text-align:right;font-size:10px;color:#81c784;font-family:'JetBrains Mono',monospace;line-height:1.8;">
                     <div style="font-weight:700;font-size:13px;color:#fff;">SoiLENZ</div>
                     <div>Powered by ArkaShine</div>
@@ -652,7 +762,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <!-- BOTTOM DATA: light sage farmer info -->
               <div class="cover-data">
                 <div>
-                  <div style="font-size:11px;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;">Field Summary &amp; Details</div>
+                  <div style="font-size:11px;font-weight:700;color:#a3d977;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;">Field Summary &amp; Details</div>
                   <div class="c-meta">
                     <div class="c-meta-card">
                       <span class="k" id="clFarmer">Farmer Name</span>
@@ -685,6 +795,29 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
                     <div class="c-meta-card" style="border-left-color:var(--ok);"><span class="k" id="clHealth">Overall Soil Health</span><span class="v sc" id="cHealth">—</span></div>
                   </div>
                 </div>
+                <!-- Key Field Metrics Bar -->
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:14px 0 10px;background:rgba(255,255,255,0.08);border-radius:10px;border:1px solid rgba(255,255,255,0.15);overflow:hidden;">
+                  <div style="text-align:center;padding:12px 8px;">
+                    <div style="font-size:9px;font-weight:700;color:#81c784;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">NDVI Index</div>
+                    <div id="covNDVI" style="font-size:22px;font-weight:800;color:#a3d977;font-family:'Bitter',serif;">&mdash;</div>
+                    <div style="font-size:9px;color:#c8e6c9;">Vegetation Health</div>
+                  </div>
+                  <div style="text-align:center;padding:12px 8px;border-left:1px solid rgba(255,255,255,0.12);">
+                    <div style="font-size:9px;font-weight:700;color:#81c784;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Soil Score</div>
+                    <div id="covScore" style="font-size:22px;font-weight:800;color:#a3d977;font-family:'Bitter',serif;">&mdash;</div>
+                    <div style="font-size:9px;color:#c8e6c9;">/100 Health Score</div>
+                  </div>
+                  <div style="text-align:center;padding:12px 8px;border-left:1px solid rgba(255,255,255,0.12);">
+                    <div style="font-size:9px;font-weight:700;color:#81c784;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Annual Rainfall</div>
+                    <div id="covRain" style="font-size:22px;font-weight:800;color:#a3d977;font-family:'Bitter',serif;">&mdash;</div>
+                    <div style="font-size:9px;color:#c8e6c9;">mm / year</div>
+                  </div>
+                  <div style="text-align:center;padding:12px 8px;border-left:1px solid rgba(255,255,255,0.12);">
+                    <div style="font-size:9px;font-weight:700;color:#81c784;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Field Area</div>
+                    <div id="covArea" style="font-size:22px;font-weight:800;color:#a3d977;font-family:'Bitter',serif;">&mdash;</div>
+                    <div style="font-size:9px;color:#c8e6c9;">Hectares / Acres</div>
+                  </div>
+                </div>
                 <div class="c-data-footer">
                   <div class="cdf-l" id="cFootL">Generated from SoiLENZ Field Ticket OCR + Sentinel-2 / ERA5 via Google Earth Engine</div>
                   <div class="c-logo-lt">
@@ -708,7 +841,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <div class="shl"><div class="pw">Powered by</div><div class="sn2">ArkaShine</div><div class="sd">Advanced Soil Intelligence<br>from Arkashine Innovations</div></div>
             </div>
             <div class="sl-body">
-              <div>
+              <div class="sl-col-info">
                 <div class="si-item"><div class="ic">📍</div><div class="tx"><div class="lbl" id="slLoc">Location</div><div class="vl" id="slLocV">-</div></div></div>
                 <div class="si-item"><div class="ic">📅</div><div class="tx"><div class="lbl" id="slDate">Date of Analysis</div><div class="vl" id="slDateV">-</div></div></div>
                 <div class="si-item"><div class="ic">🌾</div><div class="tx"><div class="lbl" id="slArea">Field Area</div><input type="text" class="soil-input" id="inArea" placeholder="e.g. 2.5 Ha" oninput="syncCover()"></div></div>
@@ -727,7 +860,7 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
                   <canvas id="fertGauge" width="120" height="65" style="margin:8px auto 0;display:block;"></canvas>
                 </div>
               </div>
-              <div>
+              <div class="sl-col-score">
                 <div class="hsc">
                   <div class="hscl" id="slScore">SOIL HEALTH SCORE</div>
                   <div><span class="hscn" id="slScoreV">-</span><span class="hscd">/100</span></div>
@@ -768,7 +901,9 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
                 <div class="map-card"><div class="ph"><div class="phi">&#x1F33F;</div><span>Vegetation Index NDVI</span></div><div class="mc"><span class="mct" id="mNDVI">Normalized Difference Vegetation Index (NDVI)</span><span class="mcs">Green = healthy; Red = bare or stressed</span></div></div>
                 <div class="map-card"><div class="ph"><div class="phi">&#x1F3DC;</div><span>Bare Soil Index BSI</span></div><div class="mc"><span class="mct" id="mBSI">Bare Soil Index (BSI)</span><span class="mcs">Red = exposed bare soil; Green = vegetation</span></div></div>
                 <div class="map-card"><div class="ph"><div class="phi">&#x1F331;</div><span>MSAVI</span></div><div class="mc"><span class="mct" id="mMSAVI">Modified Soil-Adjusted Vegetation Index (MSAVI)</span><span class="mcs">Corrected for soil brightness</span></div></div>
-                <div class="map-card"><div class="ph"><div class="phi">&#x1F4A7;</div><span>Water Index NDWI</span></div><div class="mc"><span class="mct" id="mNDWI">Normalized Difference Water Index (NDWI)</span><span class="mcs">Blue = water-stressed; Red = wet or irrigated</span></div></div>
+                <div class="map-card"><div class="ph"><div class="phi">&#x1F4A7;</div><span>Water Index NDWI</span></div><div class="mc"><span class="mct" id="mNDWI">Normalized Difference Water Index (NDWI)</span><span class="mcs">Brown = water-stressed; Blue = wet or irrigated</span></div></div>
+                <div class="map-card"><div class="ph"><div class="phi">&#x1F321;</div><span>Soil Moisture Index</span></div><div class="mc"><span class="mct" id="mSMI">Soil Moisture Index (SMI)</span><span class="mcs">Derived from NDWI/thermal; Blue = moist, Red = dry topsoil</span></div></div>
+
                 <div class="map-card"><canvas id="rainfallChart"></canvas><div class="mc"><span class="mct" id="mRain">Monthly Rainfall Profile</span><span class="mcs">ERA5-Land reanalysis (last 12 months)</span></div></div>
               </div>
             </div>
@@ -792,11 +927,33 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
                 <tr><td><strong>BSI</strong> &mdash; Bare Soil Index</td><td id="sBSImean">—</td><td>—</td><td id="sBSIint">Awaiting satellite data</td></tr>
                 <tr><td><strong>NDWI</strong> &mdash; Normalized Difference Water Index</td><td id="sNDWImean">—</td><td>—</td><td id="sNDWIint">Awaiting satellite data</td></tr>
                 <tr><td><strong>MSAVI</strong> &mdash; Modified Soil-Adjusted Vegetation Index</td><td id="sMSAVImean">—</td><td>—</td><td id="sMSAVIint">Awaiting satellite data</td></tr>
+                <tr style="background:rgba(255,152,0,0.07);"><td><strong>LST</strong> &mdash; Land Surface Temperature</td><td id="sLSTmean">—</td><td>—</td><td id="sLSTint">ERA5-Land thermal; heat stress risk above 35&deg;C</td></tr>
+                <tr style="background:rgba(30,136,229,0.07);"><td><strong>SMI</strong> &mdash; Soil Moisture Index</td><td id="sSMImean">—</td><td>—</td><td id="sSMIint">Derived from NDWI; values &lt; -0.2 indicate dry topsoil requiring irrigation</td></tr>
               </tbody></table>
-              <div style="margin-top:16px;">
-                <canvas id="specRadarChart" height="100"></canvas>
+              <div style="margin-top:12px;">
+                <canvas id="specRadarChart" height="80"></canvas>
               </div>
-              <div class="interp-note" style="margin-top:12px;">&#128161; <strong>How to read:</strong> NDVI &gt; 0.5 indicates healthy dense vegetation. BSI &lt; 0 indicates soil well-covered by crops. NDWI &lt; 0 indicates dry conditions. MSAVI corrects NDVI for bare soil reflectance in early-season fields.</div>
+              <div class="interp-note" style="margin-top:8px;">&#128161; <strong>How to read:</strong> NDVI &gt; 0.5 = healthy vegetation. BSI &lt; 0 = covered soil. NDWI &lt; 0 = dry. LST and SMI add thermal/moisture context.</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:10px 12px;background:var(--ghl);">
+                  <div style="font-size:10px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;">&#127807; Vegetation Index Thresholds</div>
+                  <div style="font-size:10.5px;color:var(--ink);display:flex;flex-direction:column;gap:4px;">
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#1a5e20;border-radius:2px;margin-right:5px;"></span>NDVI &gt; 0.65 &mdash; Dense healthy canopy</div>
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#4caf50;border-radius:2px;margin-right:5px;"></span>NDVI 0.5&ndash;0.65 &mdash; Moderate cover</div>
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#ff9800;border-radius:2px;margin-right:5px;"></span>NDVI 0.3&ndash;0.5 &mdash; Stressed / sparse</div>
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#c62828;border-radius:2px;margin-right:5px;"></span>NDVI &lt; 0.3 &mdash; Bare soil / critical stress</div>
+                  </div>
+                </div>
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:10px 12px;background:var(--ghl);">
+                  <div style="font-size:10px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;">&#128167; Soil &amp; Water Thresholds</div>
+                  <div style="font-size:10.5px;color:var(--ink);display:flex;flex-direction:column;gap:4px;">
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#8d6e63;border-radius:2px;margin-right:5px;"></span>BSI &gt; 0.1 &mdash; Bare soil (erosion risk)</div>
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#1e88e5;border-radius:2px;margin-right:5px;"></span>NDWI &lt; -0.2 &mdash; Severe water deficit</div>
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#43a047;border-radius:2px;margin-right:5px;"></span>MSAVI &gt; 0.4 &mdash; Good soil-corrected cover</div>
+                    <div><span style="display:inline-block;width:10px;height:10px;background:#e64a19;border-radius:2px;margin-right:5px;"></span>LST &gt; 35&deg;C &mdash; Heat stress zone</div>
+                  </div>
+                </div>
+              </div>
               <div class="ai-insight" id="insight-spec" style="display:none;"></div>
             </div>
           </div>
@@ -811,12 +968,32 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
           </div>
           <div class="page-content">
             <div class="rsec" style="flex:1;">
-              <h2 class="rh2"><span class="rn">6</span><span id="rNDVI">Temporal Vegetation Index (NDVI) &mdash; Past 2 Years</span></h2>
+              <h2 class="rh2"><span class="rn">5</span><span id="rNDVI">Temporal Vegetation Index (NDVI) &mdash; Past 2 Years</span></h2>
               <p class="rsub" id="rNDVISub">Monthly NDVI from Sentinel-2 median composites. Click Generate Report to compute.</p>
               <canvas id="ndviTrendChart" height="80"></canvas>
               <div style="margin-top:14px;">
                 <table class="rtbl" style="font-size:11px;"><thead><tr><th>Period</th><th>NDVI</th><th>Status</th></tr></thead>
                 <tbody id="ndviBody"><tr><td colspan="3" style="text-align:center;color:var(--mu);padding:12px;">Not yet computed &mdash; click Generate Report</td></tr></tbody></table>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;">
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:12px;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">&#127775; NDVI Health Scale</div>
+                  <div style="font-size:11px;display:flex;flex-direction:column;gap:5px;">
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#1a5e20;border-radius:2px;flex-shrink:0;"></div><span><strong>0.65&ndash;1.0:</strong> Dense, healthy vegetation</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#4caf50;border-radius:2px;flex-shrink:0;"></div><span><strong>0.5&ndash;0.65:</strong> Moderate vegetation cover</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#ffee58;border-radius:2px;flex-shrink:0;"></div><span><strong>0.35&ndash;0.5:</strong> Stressed or sparse</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#ff9800;border-radius:2px;flex-shrink:0;"></div><span><strong>0.2&ndash;0.35:</strong> Very sparse / early growth</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#c62828;border-radius:2px;flex-shrink:0;"></div><span><strong>&lt; 0.2:</strong> Bare soil / severe stress</span></div>
+                  </div>
+                </div>
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:12px;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">&#127968; Seasonal Interpretation</div>
+                  <div style="font-size:11px;color:var(--ink);display:flex;flex-direction:column;gap:7px;">
+                    <div><strong>&#127806; Kharif (Jun&ndash;Oct):</strong> NDVI &gt; 0.5 during growth. Below 0.4 = moisture stress or pest pressure.</div>
+                    <div><strong>&#127807; Rabi (Nov&ndash;Mar):</strong> 0.4&ndash;0.65 typical for wheat/mustard. Sharp dips = frost or water stress.</div>
+                    <div><strong>&#9728;&#65039; Summer (Apr&ndash;May):</strong> 0.1&ndash;0.25 post-harvest normal. High values = irrigated perennial crops.</div>
+                  </div>
+                </div>
               </div>
               <div class="ai-insight" id="insight-ndvi" style="display:none;"></div>
             </div>
@@ -832,12 +1009,16 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
           </div>
           <div class="page-content">
             <div class="rsec" >
-              <h2 class="rh2"><span class="rn">5</span><span id="rSoil">Soil Health Profile</span></h2>
+              <h2 class="rh2"><span class="rn">6</span><span id="rSoil">Soil Health Profile</span></h2>
               <p class="rsub" id="rSoilSub">Parameters from the SoiLENZ portable soil test ticket. Optimal ranges per SoiLENZ reference guide.</p>
               <table class="rtbl"><thead><tr><th id="thPar">Parameter (Full Name)</th><th id="thUnt">Unit</th><th id="thRng">Optimal Range</th><th id="thMeas">Measured Value</th><th id="thSt">Status</th></tr></thead>
               <tbody id="soilBody"><tr><td colspan="5" style="text-align:center;color:var(--mu);padding:24px;">Enter values in Manual tab and click Add Soil Parameters to Report.</td></tr></tbody></table>
               <canvas id="soilNutrientsChart" style="display:none;"></canvas>
               <canvas id="soilSalinityChart" style="display:none;"></canvas>
+              <div id="soilHealthBars" style="margin-top:14px;display:none;">
+                <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">&#127744; Parameter Health Status</div>
+                <div id="soilBarsGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+              </div>
               <div class="ai-insight" id="insight-soil" style="display:none;"></div>
             </div>
           </div>
@@ -860,6 +1041,23 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <div style="margin-top:16px;">
                 <canvas id="rainDeficitChart" height="110"></canvas>
               </div>
+              <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:14px;">
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:12px;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">&#9748;&#65039; Drought Risk Indicators</div>
+                  <table class="rtbl" style="font-size:11px;">
+                    <thead><tr><th>Risk Indicator</th><th>Threshold</th><th>Status</th><th>Recommendation</th></tr></thead>
+                    <tbody id="droughtRiskBody"><tr><td colspan="4" style="text-align:center;color:var(--mu);padding:10px;">Generate Report to compute drought risk</td></tr></tbody>
+                  </table>
+                </div>
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;justify-content:center;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;">&#128167; Irrigation Estimate</div>
+                  <div style="text-align:center;padding:10px 0;">
+                    <div id="irrEstVal" style="font-size:28px;font-weight:800;color:var(--gd);font-family:'Bitter',serif;">&mdash;</div>
+                    <div style="font-size:10px;color:var(--mu);">mm/month deficit</div>
+                  </div>
+                  <div style="font-size:10px;color:var(--mu);line-height:1.5;" id="irrEstNote">Deficit = ET&#8320; &minus; Rainfall. Negative = surplus.</div>
+                </div>
+              </div>
               <div class="ai-insight" id="insight-rain" style="display:none;"></div>
             </div>
           </div>
@@ -878,9 +1076,204 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <p class="rsub">AI-assisted ratings based on soil parameters, NDVI, and local agronomic data.</p>
               <table class="rtbl"><thead><tr><th>Crop Type</th><th>Suitability</th><th>Agronomic Insight</th></tr></thead>
               <tbody id="cropSuitBody"><tr><td colspan="3" style="text-align:center;color:var(--mu);padding:12px;">Not evaluated</td></tr></tbody></table>
+              <div style="margin-top:14px;">
+                <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">&#127942; Suitability Score Comparison</div>
+                <canvas id="cropSuitChart" height="120"></canvas>
+              </div>
+              <div id="cropHfInsights" style="display:block;margin-top:12px;background:var(--ghl);border-radius:8px;padding:12px;border-left:4px solid var(--gd);">
+                <div style="font-size:10px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">&#129302; AI Agronomic Insights</div>
+                <div id="cropHfText" style="font-size:11.5px;color:var(--ink);line-height:1.7;white-space:pre-wrap;">Based on your soil and field data, the crops listed above have been rated for suitability. Click "Generate Report" with a Hugging Face token to get detailed AI-powered agronomic insights for each crop.</div>
+              </div>
             </div>
           </div>
           <div class="pg-ftr"><span class="pg-num">Page 8 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
+        </div></div>
+
+        <div class="pdiv no-print">-- Page 8B: SoiLENZ Grid Analysis --</div>
+        <div class="page-wrapper"><div class="rdoc">
+          <div class="pg-hdr">
+            <div class="arka-logo" style="width:340px;height:105px;"></div>
+            <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
+          </div>
+          <div class="page-content">
+            <div class="rsec">
+              <h2 class="rh2"><span class="rn" style="background:var(--gl);">G</span><span>SoiLENZ Grid Analysis — Field Wise Variability</span></h2>
+              <div id="gridInfoBar" style="display:flex;gap:16px;margin:8px 0 12px;flex-wrap:wrap;">
+                <div style="border:1px solid var(--ln);border-radius:6px;padding:5px 12px;font-size:11px;"><div style="color:var(--mu);font-size:9px;text-transform:uppercase;letter-spacing:.05em;">Field Area</div><div id="grid_fieldArea" style="font-weight:700;color:var(--gd);">—</div></div>
+                <div style="border:1px solid var(--ln);border-radius:6px;padding:5px 12px;font-size:11px;"><div style="color:var(--mu);font-size:9px;text-transform:uppercase;letter-spacing:.05em;">Grid Size</div><div id="grid_gridSize" style="font-weight:700;color:var(--gd);">—</div></div>
+                <div style="border:1px solid var(--ln);border-radius:6px;padding:5px 12px;font-size:11px;"><div style="color:var(--mu);font-size:9px;text-transform:uppercase;letter-spacing:.05em;">Total Grids</div><div id="grid_totalGrids" style="font-weight:700;color:var(--gd);">—</div></div>
+                <div style="border:1px solid var(--ln);border-radius:6px;padding:5px 12px;font-size:11px;"><div style="color:var(--mu);font-size:9px;text-transform:uppercase;letter-spacing:.05em;">Analysis Date</div><div id="grid_date" style="font-weight:700;color:var(--gd);">—</div></div>
+              </div>
+              <!-- Grid cards - 4 per row, 3 rows = 12 params. Each shows gradient heatmap and avg value -->
+              <div id="gridParamCards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;"></div>
+              <!-- Heatmap Legend -->
+              <div style="display:flex;align-items:center;gap:6px;margin:8px 0 10px;font-size:10px;color:var(--mu);">
+                <span style="font-weight:600;">Heatmap Scale:</span>
+                <div style="display:flex;align-items:center;gap:2px;">
+                  <div style="width:16px;height:10px;background:#c62828;border-radius:2px;"></div>
+                  <span>Critical</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:2px;">
+                  <div style="width:16px;height:10px;background:#ef6c00;border-radius:2px;"></div>
+                  <span>Low</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:2px;">
+                  <div style="width:16px;height:10px;background:#fbc02d;border-radius:2px;"></div>
+                  <span>Below Optimal</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:2px;">
+                  <div style="width:16px;height:10px;background:#43a047;border-radius:2px;"></div>
+                  <span>Optimal</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:2px;">
+                  <div style="width:16px;height:10px;background:#1565c0;border-radius:2px;"></div>
+                  <span>High</span>
+                </div>
+              </div>
+              <!-- Grid Insights box -->
+              <div style="background:var(--gd);color:#fff;border-radius:8px;padding:10px 14px;margin-top:4px;">
+                <div style="font-weight:700;font-size:11px;color:#a3d977;letter-spacing:.05em;margin-bottom:6px;">GRID ANALYSIS INSIGHTS</div>
+                <ul id="gridInsightsList" style="padding-left:16px;font-size:11px;color:#c8e6c9;line-height:1.7;margin:0;">
+                  <li>Enter grid analysis insights in the Amend tab on the left.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="pg-ftr"><span class="pg-num">Page 8B of 14</span><span>CONFIDENTIAL — Client Use Only | Data: Sentinel-2 · ERA5-Land · SoiLENZ</span></div>
+        </div></div>
+
+        <div class="pdiv no-print">-- Page 8C: Soil Amendment & Action Plan --</div>
+        <div class="page-wrapper"><div class="rdoc">
+          <div class="pg-hdr">
+            <div class="arka-logo" style="width:340px;height:105px;"></div>
+            <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
+          </div>
+          <div class="page-content">
+            <div class="rsec">
+              <h2 class="rh2" style="color:var(--gd);"><span class="rn" style="background:var(--gl);">⚗</span><span>Soil Amendment &amp; Action Plan</span></h2>
+              <p class="rsub">Balanced soil nutrition is the key to sustainable high yield and health.</p>
+              <table class="rtbl" style="margin-bottom:10px;">
+                <thead><tr>
+                  <th>Input / Amendment</th><th>Dose (Per Acre)</th><th>Purpose</th><th>Timing</th><th>Priority</th>
+                </tr></thead>
+                <tbody id="amendmentTableBody">
+                  <tr><td colspan="5" style="text-align:center;color:var(--mu);padding:12px;">Add amendments in the Amend tab on the left.</td></tr>
+                </tbody>
+              </table>
+              <!-- AI Amendment Description Panel -->
+              <div id="amendAiDesc" style="margin-bottom:12px;background:linear-gradient(135deg,#f1f8f2,#e8f5e9);border-radius:8px;padding:12px 14px;border-left:4px solid var(--gd);">
+                <div style="font-size:10px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">🤖 AI Amendment Summary</div>
+                <div id="amendAiText" style="font-size:11.5px;color:var(--ink);line-height:1.7;">Soil amendment recommendations are generated based on your soil parameters (pH, EC, Organic Carbon, N, P, K, Zn). Click "Generate Report" with a Hugging Face token to get a personalised AI-powered amendment plan for your field.</div>
+              </div>
+              <!-- Action Plan Timeline -->
+              <div style="border:1px solid var(--ln);border-radius:8px;padding:12px 14px;background:var(--ghl);">
+                <div style="font-weight:800;font-size:13px;color:var(--gd);margin-bottom:10px;display:flex;align-items:center;gap:8px;"><span style="font-size:16px;">📋</span> Action Plan Timeline</div>
+                <div style="display:flex;align-items:flex-start;gap:0;overflow:hidden;">
+                  <div class="apt-step" data-phase="pre">
+                    <div class="apt-icon">🚜</div>
+                    <div class="apt-title">Pre Sowing</div>
+                    <div class="apt-range">0 – 7 days</div>
+                    <ul class="apt-list" id="apt_pre"><li>Apply FYM / Compost</li><li>Apply Lime</li><li>Prepare fine tilth</li></ul>
+                  </div>
+                  <div class="apt-arrow">→</div>
+                  <div class="apt-step" data-phase="basal">
+                    <div class="apt-icon">🌱</div>
+                    <div class="apt-title">Basal Dose</div>
+                    <div class="apt-range">At sowing</div>
+                    <ul class="apt-list" id="apt_basal"><li>Apply DAP, MOP</li><li>Apply Zinc Sulphate</li><li>Apply 1/3 Urea</li></ul>
+                  </div>
+                  <div class="apt-arrow">→</div>
+                  <div class="apt-step" data-phase="growth">
+                    <div class="apt-icon">🌿</div>
+                    <div class="apt-title">During Crop Growth</div>
+                    <div class="apt-range">20 – 45 DAS</div>
+                    <ul class="apt-list" id="apt_growth"><li>Apply 2nd split Urea</li><li>Foliar micronutrients</li><li>Weed management</li></ul>
+                  </div>
+                  <div class="apt-arrow">→</div>
+                  <div class="apt-step" data-phase="harvest">
+                    <div class="apt-icon">✅</div>
+                    <div class="apt-title">Pre Harvest</div>
+                    <div class="apt-range">90 – 100 DAS</div>
+                    <ul class="apt-list" id="apt_harvest"><li>Balanced irrigation</li><li>Harvest at maturity</li></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pg-ftr"><span class="pg-num">Page 8C of 14</span><span>CONFIDENTIAL — Client Use Only | Data: Sentinel-2 · ERA5-Land · SoiLENZ</span></div>
+        </div></div>
+
+        <div class="pdiv no-print">-- Page 8D: Carbon Credit Impact Dashboard --</div>
+        <div class="page-wrapper"><div class="rdoc">
+          <div class="pg-hdr">
+            <div class="arka-logo" style="width:340px;height:105px;"></div>
+            <div><div class="pg-ht">SoiLENZ Diagnostic Report</div><div class="pg-hs">Powered by ArkaShine</div></div>
+          </div>
+          <div class="page-content">
+            <div class="rsec">
+              <h2 class="rh2"><span class="rn" style="background:var(--gl);">♻</span><span>Carbon Credit Impact Dashboard</span></h2>
+              <p class="rsub">Your soil health action leads to environment and income.</p>
+              <!-- Flow -->
+              <div style="display:flex;align-items:center;gap:6px;margin:8px 0 14px;flex-wrap:wrap;font-size:11px;color:var(--mu);">
+                <span style="background:var(--gp);border-radius:6px;padding:4px 10px;color:var(--gd);font-weight:600;">🌱 Sustainable Practices</span>
+                <span>→</span><span style="background:var(--gp);border-radius:6px;padding:4px 10px;color:var(--gd);font-weight:600;">🌿 Improved Soil Health</span>
+                <span>→</span><span style="background:var(--gp);border-radius:6px;padding:4px 10px;color:var(--gd);font-weight:600;">🌾 Higher Yield &amp; Biomass</span>
+                <span>→</span><span style="background:var(--gp);border-radius:6px;padding:4px 10px;color:var(--gd);font-weight:600;">☁ CO₂ Sequestration</span>
+                <span>→</span><span style="background:var(--gd);border-radius:6px;padding:4px 10px;color:#a3d977;font-weight:600;">💳 Carbon Credit Generation</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto;gap:16px;margin-bottom:14px;">
+                <!-- Sequestration Table -->
+                <div>
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Estimated Carbon Sequestration (Per Acre)</div>
+                  <table class="rtbl">
+                    <thead><tr><th>Parameter</th><th>Current Value</th><th>After Improvement (1 Year)</th><th>Annual Sequestration (kg CO₂/acre)</th></tr></thead>
+                    <tbody>
+                      <tr><td>Organic Carbon (%)</td><td id="cc_tbl_oc_cur">—</td><td id="cc_tbl_oc_after">—</td><td id="cc_tbl_oc_seq">—</td></tr>
+                      <tr><td>Biomass (t/acre)</td><td id="cc_tbl_bio_cur">—</td><td id="cc_tbl_bio_after">—</td><td id="cc_tbl_bio_seq">—</td></tr>
+                      <tr style="background:var(--gp);"><td><strong>Total</strong></td><td>—</td><td>—</td><td><strong id="cc_tbl_total">—</strong></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- CO2 Saved Box -->
+                <div style="background:var(--gd);border-radius:10px;padding:16px 20px;text-align:center;color:#fff;min-width:160px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;">
+                  <div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#a3d977;">CO₂ SAVED (Per Year)</div>
+                  <div style="font-size:32px;font-weight:800;color:#a3d977;font-family:Bitter,serif;" id="cc_display_total">—</div>
+                  <div style="font-size:10px;color:#c8e6c9;">kg CO₂</div>
+                  <div style="font-size:10px;color:#c8e6c9;">(Per Acre)</div>
+                  <div style="height:1px;background:rgba(255,255,255,.15);width:100%;margin:8px 0;"></div>
+                  <div style="font-size:9px;color:#a3d977;">TOTAL CO₂ SAVED</div>
+                  <div style="font-size:13px;font-weight:700;color:#fff;" id="cc_display_label">— kg CO₂ / Acre / Year</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                <!-- Carbon Health Score Gauge -->
+                <div style="border:1px solid var(--ln);border-radius:10px;padding:14px;text-align:center;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Carbon Health Score</div>
+                  <canvas id="carbonScoreGauge" width="200" height="110" style="max-width:100%;display:block;margin:0 auto;"></canvas>
+                  <div style="margin-top:6px;">
+                    <span style="font-size:32px;font-weight:800;font-family:Bitter,serif;color:var(--gd);" id="cc_gauge_val">—</span>
+                    <span style="font-size:16px;color:var(--mu);">/100</span>
+                  </div>
+                  <div style="font-size:12px;font-weight:700;color:var(--ok);margin-top:3px;" id="cc_gauge_label">—</div>
+                </div>
+                <!-- Key Benefits -->
+                <div style="border:1px solid var(--ln);border-radius:10px;padding:14px;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Key Benefits</div>
+                  <ul id="cc_benefits_list" style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;">
+                    <li style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--ink);"><span style="color:var(--gl);font-size:14px;margin-top:1px;">🌱</span><span>Enter benefits in the Carbon tab on the left.</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- Carbon AI Description Panel -->
+            <div class="rsec" style="padding:10px 20px;">
+              <div id="carbonAiDesc" style="background:linear-gradient(135deg,#f1f8f2,#e8f5e9);border-radius:8px;padding:12px 14px;border-left:4px solid var(--gl);">
+                <div style="font-size:10px;font-weight:700;color:var(--gd);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">🌍 AI Carbon Credit Outlook</div>
+                <div id="carbonAiText" style="font-size:11.5px;color:var(--ink);line-height:1.7;">Implementing the recommended soil health improvements can significantly enhance your farm's carbon sequestration potential. Click "Generate Report" with a Hugging Face token to get a detailed AI-driven carbon credit outlook specific to your field conditions.</div>
+              </div>
+            </div>
+          </div>
+          <div class="pg-ftr"><span class="pg-num">Page 8D of 14</span><span>CONFIDENTIAL — Client Use Only | Data: Sentinel-2 · ERA5-Land · SoiLENZ</span></div>
         </div></div>
 
         <div class="pdiv no-print">-- Page 9: Root Cause Analysis --</div>
@@ -932,6 +1325,35 @@ h1,h2,h3,h4 { font-family: Bitter,serif; }
               <div class="sbox"><div class="sbig" id="overScore">&mdash;</div><div class="smeta"><strong id="overLabel">Overall Site Health Score</strong><p id="overNote">Computed after satellite and soil data are available.</p></div></div>
               <table class="rtbl"><thead><tr><th id="thSCI">Health Indicator</th><th id="thSCS">Score /10</th><th id="thSCR">Risk Level</th><th id="thSCA">Priority Action</th></tr></thead>
               <tbody id="scBody"><tr><td colspan="4" style="text-align:center;color:var(--mu);padding:14px;">Not yet computed</td></tr></tbody></table>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;">
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:12px;text-align:center;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Health Profile Radar</div>
+                  <canvas id="scorecardRadarChart" height="200" style="max-width:100%;"></canvas>
+                </div>
+                <div style="border:1px solid var(--ln);border-radius:8px;padding:12px;">
+                  <div style="font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Score Interpretation Guide</div>
+                  <div style="font-size:11px;color:var(--ink);display:flex;flex-direction:column;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#2e7d32;border-radius:2px;flex-shrink:0;"></div><span><strong>8&ndash;10:</strong> Excellent &mdash; Optimal conditions</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#81c784;border-radius:2px;flex-shrink:0;"></div><span><strong>6&ndash;8:</strong> Good &mdash; Minor attention needed</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#fbc02d;border-radius:2px;flex-shrink:0;"></div><span><strong>4&ndash;6:</strong> Moderate &mdash; Targeted interventions</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#ef6c00;border-radius:2px;flex-shrink:0;"></div><span><strong>2&ndash;4:</strong> Poor &mdash; Significant remediation needed</span></div>
+                    <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;background:#c62828;border-radius:2px;flex-shrink:0;"></div><span><strong>0&ndash;2:</strong> Critical &mdash; Immediate action required</span></div>
+                  </div>
+                  <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--ln);">
+                    <div style="font-size:10px;font-weight:700;color:var(--mu);margin-bottom:6px;">Overall Score Bands (out of 100)</div>
+                    <div style="display:flex;gap:2px;height:14px;border-radius:6px;overflow:hidden;">
+                      <div style="flex:4;background:#c62828;" title="0-40: Critical"></div>
+                      <div style="flex:2;background:#ef6c00;" title="40-55: Poor"></div>
+                      <div style="flex:3;background:#fbc02d;" title="55-70: Moderate"></div>
+                      <div style="flex:2;background:#81c784;" title="70-85: Good"></div>
+                      <div style="flex:1;background:#2e7d32;" title="85-100: Excellent"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);margin-top:3px;">
+                      <span>0</span><span>40</span><span>55</span><span>70</span><span>85</span><span>100</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="pg-ftr"><span class="pg-num">Page 11 of 12</span><span>CONFIDENTIAL &mdash; Client Use Only | Data: Sentinel-2 &middot; ERA5-Land &middot; SoiLENZ</span></div>
@@ -1249,6 +1671,18 @@ function syncKeysToSidebar(){
    COVER SYNC
 ============================================================ */
 function syncCover(){
+  const ndCov=S.sat?.NDVI_mean;if(ndCov!=null){const e=document.getElementById("covNDVI");if(e)e.textContent=ndCov.toFixed(3);}
+  const scCov=S.sc?.overall;if(scCov!=null){const e=document.getElementById("covScore");if(e)e.textContent=scCov;}
+  if(S.rainY?.list?.length){const avg=S.rainY.list.reduce((a,r)=>a+(r[1]||0),0)/S.rainY.list.length;const e=document.getElementById("covRain");if(e)e.textContent=avg.toFixed(0);}
+  const aEl=document.getElementById("inArea");if(aEl?.value){const e=document.getElementById("covArea");if(e)e.textContent=aEl.value;}
+  // Cover page key metrics
+  const nd=S.sat?.NDVI_mean;
+  if(nd!=null){const e=document.getElementById("covNDVI");if(e)e.textContent=nd.toFixed(3);}
+  const sc=S.sc?.overall;
+  if(sc!=null){const e=document.getElementById("covScore");if(e)e.textContent=sc;}
+  if(S.rainY?.list?.length){const avg=S.rainY.list.reduce((a,r)=>a+(r[1]||0),0)/S.rainY.list.length;const e=document.getElementById("covRain");if(e)e.textContent=avg.toFixed(0);}
+  const areaEl=document.getElementById("inArea");
+  if(areaEl?.value){const e=document.getElementById("covArea");if(e)e.textContent=areaEl.value;}
   const v=id=>document.getElementById(id)?.value||"";
   const set=(id,val)=>{ const e=document.getElementById(id); if(e) e.textContent=val||"-"; };
   const setSpan=(id,val)=>{ const e=document.getElementById(id); if(e){ e.textContent=val||"—"; } };
@@ -1379,6 +1813,7 @@ function syncSoilVal(c){
   
   updateSoiLENZ();
   syncCover();
+  renderGridParamCards();
 }
 
 function renderSidebarSoilParams(){
@@ -1429,6 +1864,7 @@ function syncSoilFromSidebar(c){
   
   updateSoiLENZ();
   syncCover();
+  renderGridParamCards();
 }
 
 function applySoilFromSidebar(){
@@ -1447,6 +1883,8 @@ function applySoilFromSidebar(){
   
   updateSoiLENZ();
   syncCover();
+  // Grid Analysis cards read directly from S.tp, so just re-render them
+  renderGridParamCards();
   alert("Soil parameters successfully added to report!");
 }
 
@@ -1621,7 +2059,7 @@ async function fetchSat(){
   if(!S.gee.ok){alert("Connect Earth Engine first.");return;}
   const pt=getPoint(); if(!pt){alert("Enter valid Latitude and Longitude in the Manual tab.");return;}
   const btn=document.getElementById("fetchSatBtn"); btn.disabled=true; btn.textContent="Fetching...";
-  for(let i=0;i<5;i++){const c=document.querySelectorAll("#mapGrid .map-card")[i];if(c){const o=c.querySelector(".ph,img");if(o){const s=document.createElement("div");s.className="skeleton";o.replaceWith(s);}}
+  for(let i=0;i<6;i++){const c=document.querySelectorAll("#mapGrid .map-card")[i];if(c){const o=c.querySelector(".ph,img");if(o){const s=document.createElement("div");s.className="skeleton";o.replaceWith(s);}}
   }
   try{
     const point=ee.Geometry.Point([pt.lon,pt.lat]);
@@ -1640,7 +2078,8 @@ async function fetchSat(){
       thumb(ndvi,{min:-0.2,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},regionObj),
       thumb(bsi,{min:-0.3,max:0.5,palette:["#1b5e20","#81c784","#ffcc02","#e53935","#b71c1c"]},regionObj),
       thumb(msavi,{min:0,max:0.8,palette:["#b71c1c","#e53935","#ffcc02","#81c784","#1b5e20"]},regionObj),
-      thumb(ndwi,{min:-0.5,max:0.5,palette:["#6d4c41","#ffcc02","#64b5f6","#0d47a1"]},regionObj)
+      thumb(ndwi,{min:-0.5,max:0.5,palette:["#6d4c41","#ffcc02","#64b5f6","#0d47a1"]},regionObj),
+      thumb(ndwi,{min:-0.5,max:0.5,palette:["#e53935","#ffcc02","#81c784","#1e88e5"]},regionObj) // SMI proxy
     ];
     const thumbUrls=await Promise.all(thumbPromises);
     thumbUrls.forEach((url,idx)=>setMapImg(idx,url));
@@ -1783,20 +2222,28 @@ function drawSpecChart(r){
   if(!ctx)return;
   if(specChart)specChart.destroy();
   const ndvi=r.NDVI_mean||0, bsi=r.BSI_mean||0, ndwi=r.NDWI_mean||0, msavi=r.MSAVI_mean||0;
+  const chartLabels=["NDVI","BSI","NDWI","MSAVI"];
+  const chartData=[+ndvi.toFixed(3),+bsi.toFixed(3),+ndwi.toFixed(3),+msavi.toFixed(3)];
+  const chartColors=["#2d5a38","#8d6e63","#1e88e5","#43a047"];
+  // SMI derived from NDWI
+  const smi=ndwi;
+  chartLabels.push("SMI");chartData.push(+smi.toFixed(3));chartColors.push("#0288d1");
+  document.getElementById("sSMImean").textContent=smi.toFixed(3);
+  document.getElementById("sSMIint").textContent=smi<-0.2?"Dry topsoil — irrigation recommended":smi<0?"Moderate moisture — monitor closely":"Adequate soil moisture";
   specChart=new Chart(ctx,{
     type:"bar",
     data:{
-      labels:["NDVI","BSI","NDWI","MSAVI"],
+      labels:chartLabels,
       datasets:[{
-        data:[+ndvi.toFixed(3),+bsi.toFixed(3),+ndwi.toFixed(3),+msavi.toFixed(3)],
-        backgroundColor:["#2d5a38","#8d6e63","#1e88e5","#43a047"],
-        borderRadius:4
+        data:chartData,
+        backgroundColor:chartColors,
+        borderRadius:6
       }]
     },
     options:{
       indexAxis:'y',
       plugins:{legend:{display:false}},
-      scales:{x:{min:-0.5,max:1}}
+      scales:{x:{min:-0.6,max:1.1,grid:{color:"rgba(0,0,0,0.05)"}},y:{grid:{display:false}}}
     }
   });
 }
@@ -1826,6 +2273,13 @@ function drawSoilCharts(params){
         scales:{x:{type:'logarithmic',title:{display:true,text:'kg/ha (Log scale)'}}}
       }
     });
+  }
+  // Populate health bar grid
+  const hbGrid=document.getElementById("soilBarsGrid"),hbWrap=document.getElementById("soilHealthBars");
+  if(hbGrid&&Object.keys(params).length>0){
+    hbGrid.innerHTML="";hbWrap.style.display="block";
+    const bars=[{key:"pH",label:"pH",mn:0,mx:14,warn:[6,7.5]},{key:"EC",label:"Salinity (EC)",mn:0,mx:6,warn:[0,1.5],unit:" dS/m"},{key:"OC",label:"Organic Carbon",mn:0,mx:3,warn:[0.5,1.5],unit:"%"},{key:"N",label:"Nitrogen (N)",mn:0,mx:560,warn:[280,420],unit:" kg/ha"},{key:"P",label:"Phosphorus (P)",mn:0,mx:60,warn:[25,45],unit:" kg/ha"},{key:"K",label:"Potassium (K)",mn:0,mx:600,warn:[280,500],unit:" kg/ha"},{key:"Zn",label:"Zinc (Zn)",mn:0,mx:5,warn:[1,3],unit:" ppm"}];
+    bars.forEach(b=>{const v=params[b.key]?parseFloat(params[b.key].value):null;if(v==null)return;const pct=Math.min(100,Math.max(0,(v-b.mn)/(b.mx-b.mn)*100));const ok=v>=b.warn[0]&&v<=b.warn[1];const clr=ok?"#43a047":v<b.warn[0]?"#c62828":"#1565c0";const div=document.createElement("div");div.style.cssText="padding:6px 8px;border:1px solid var(--ln);border-radius:6px;";div.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;"><span style="font-weight:600">${b.label}</span><span style="font-weight:700;color:${clr}">${v}${b.unit||""}</span></div><div style="height:7px;background:var(--ln);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${clr};border-radius:4px;"></div></div>`;hbGrid.appendChild(div);});
   }
   const ctxSal=document.getElementById("soilSalinityChart");
   if(ctxSal){
@@ -1906,6 +2360,20 @@ async function computeRain(){
         body.appendChild(tr);
       });
       drawRainDeficitChart(list);
+      const drb=document.getElementById("droughtRiskBody");
+      if(drb&&list.length){
+        drb.innerHTML="";
+        const latest=list[list.length-1];const rain=latest[1]||0,et0=latest[2]||0;const deficit=et0-rain;
+        const norm=S.rainY?.norm||rain;const pct=(rain-norm)/norm*100;
+        const irrEl=document.getElementById("irrEstVal");if(irrEl)irrEl.textContent=(deficit>0?"+":"")+deficit.toFixed(0)+" mm";
+        const note=document.getElementById("irrEstNote");if(note)note.textContent=deficit>0?"Supplemental irrigation needed to bridge the water deficit.":"Rainfall adequate — monitor for waterlogging risk.";
+        const risks=[
+          {ind:"Annual Rainfall vs. Normal",thr:"Within ±10%",val:(pct>=0?"+":"")+pct.toFixed(1)+"%",cls:Math.abs(pct)<10?"MEDIUM":pct<-25?"CRITICAL":"HIGH",rec:pct<-10?"Water conservation & rainwater harvesting":"Maintain current irrigation schedule"},
+          {ind:"Water Deficit (ET₀ − Rain)",thr:"< 100 mm OK",val:deficit.toFixed(0)+" mm",cls:deficit>200?"CRITICAL":deficit>100?"HIGH":"MEDIUM",rec:deficit>100?"Drip/sprinkler irrigation essential":"Monitor water balance monthly"},
+          {ind:"Drought Classification",thr:"Normal / Moderate / Severe",val:pct<-25?"Severe Drought":pct<-10?"Moderate Drought":"Normal",cls:pct<-25?"CRITICAL":pct<-10?"HIGH":"MEDIUM",rec:pct<-10?"Emergency irrigation + organic mulching":"Continue monitoring ERA5 data"}
+        ];
+        risks.forEach(r=>{const tr=document.createElement("tr");tr.innerHTML=`<td>${r.ind}</td><td style="font-family:monospace;font-size:10px">${r.thr}</td><td><span class="bdg ${r.cls}">${r.val}</span></td><td style="font-size:11px">${r.rec}</td>`;drb.appendChild(tr);});
+      }
       resolve();
     });
   });
@@ -1942,6 +2410,24 @@ function computeSC(){
   oe.textContent=pct+"/100";
   oe.className="sbig"+(pct<40?" bd":pct<65?" wn":"");
   document.getElementById("overNote").textContent=pct<40?"Multiple critical indicators - immediate multi-pronged remediation required.":pct<65?"Moderate stress across indicators - targeted intervention recommended.":"Generally healthy site with minor issues to monitor.";
+  // Draw radar chart
+  const rctx=document.getElementById("scorecardRadarChart");
+  if(rctx&&rows.length>0){
+    if(window._scRadarChart)window._scRadarChart.destroy();
+    window._scRadarChart=new Chart(rctx,{
+      type:"radar",
+      data:{
+        labels:rows.map(r=>r.name.split("(")[0].trim().split(" ").slice(0,3).join(" ")),
+        datasets:[{label:"Score",data:rows.map(r=>+r.score.toFixed(1)),
+          backgroundColor:"rgba(45,90,56,0.2)",borderColor:"#2d5a38",
+          pointBackgroundColor:"#2d5a38",pointRadius:4,borderWidth:2}]
+      },
+      options:{
+        scales:{r:{min:0,max:10,ticks:{stepSize:2,font:{size:8}},pointLabels:{font:{size:8}}}},
+        plugins:{legend:{display:false}}
+      }
+    });
+  }
 }
 
 /* ============================================================
@@ -1953,7 +2439,8 @@ async function genNarrative(){
   const facts=buildFacts();
   if(tok){
     try{
-      const prompt=`You are a senior agronomist writing a field diagnostic report.\n\nDATA:\n${facts}\n\nWrite SIX sections:\n\n## SPEC_INSIGHT\n(Provide 2-3 detailed sentences analyzing the spectral indices and their impact on crop health)\n\n## SOIL_INSIGHT\n(Provide 2-3 detailed sentences diagnosing the soil parameters and identifying key limiting factors)\n\n## NDVI_INSIGHT\n(Provide 2-3 detailed sentences analyzing the vegetation trend over the past 2 years and identifying seasonal patterns or anomalies)\n\n## RAIN_INSIGHT\n(Provide 2-3 detailed sentences evaluating the rainfall and water deficit, and suggesting immediate moisture management strategies)\n\n## ROOT CAUSE ANALYSIS\n(4-5 bullet points, each starting with "- ", identifying causes of soil/crop stress)\n\n## REMEDIATION PLAN\nIMMEDIATE:\n- action\nSEASON1:\n- action\nSEASON2:\n- action\nLONGTERM:\n- action\n\nBe specific and base everything strictly on the data provided.`;
+      const cropList=Object.keys(S.crops||{}).join(', ')||'common crops for this region';
+      const prompt=`You are a senior agronomist writing a field diagnostic report.\n\nDATA:\n${facts}\n\nWrite NINE sections:\n\n## SPEC_INSIGHT\n(Provide 2-3 detailed sentences analyzing the spectral indices and their impact on crop health)\n\n## SOIL_INSIGHT\n(Provide 2-3 detailed sentences diagnosing the soil parameters and identifying key limiting factors)\n\n## NDVI_INSIGHT\n(Provide 2-3 detailed sentences analyzing the vegetation trend over the past 2 years and identifying seasonal patterns or anomalies)\n\n## RAIN_INSIGHT\n(Provide 2-3 detailed sentences evaluating the rainfall and water deficit, and suggesting immediate moisture management strategies)\n\n## ROOT CAUSE ANALYSIS\n(4-5 bullet points, each starting with "- ", identifying causes of soil/crop stress)\n\n## CROP_INSIGHTS\n(For each crop in: ${cropList} — write "CROP: [name] - [2 sentence suitability insight based on soil/climate data]")\n\n## AMENDMENT_PLAN\n(5-7 bullet points, each "- [Amendment]: [dose], [timing]" based on the soil data)\n\n## CARBON_BENEFITS\n(4-5 bullet points, each "- [benefit]" on environmental and financial gains from soil improvement)\n\n## ROOT CAUSE ANALYSIS\n(4-5 bullet points identifying causes of stress)\n\n## REMEDIATION PLAN\nIMMEDIATE:\n- action\nSEASON1:\n- action\nSEASON2:\n- action\nLONGTERM:\n- action\n\nBe specific and base everything on the data.`;
       const resp=await fetch(`https://api-inference.huggingface.co/models/${mdl}`,{
         method:"POST",headers:{"Authorization":`Bearer ${tok}`,"Content-Type":"application/json"},
         body:JSON.stringify({inputs:prompt,parameters:{max_new_tokens:800,temperature:0.3,return_full_text:false}})
@@ -1985,6 +2472,22 @@ function parseHFText(text){
   sh("insight-soil", extract("SOIL_INSIGHT"));
   sh("insight-ndvi", extract("NDVI_INSIGHT"));
   sh("insight-rain", extract("RAIN_INSIGHT"));
+  // Crop HF insights
+  const cropIns=extract("CROP_INSIGHTS");
+  if(cropIns){const ci=document.getElementById("cropHfInsights"),ct=document.getElementById("cropHfText");if(ci&&ct){ct.textContent=cropIns;ci.style.display="block";}}
+  // Amendment AI description
+  const amendHFDesc=extract("AMENDMENT_PLAN");
+  if(amendHFDesc){const ad=document.getElementById("amendAiText");if(ad){const summary=amendHFDesc.split("\n").filter(l=>l.trim()).slice(0,3).join(" ").substring(0,400);ad.textContent=summary||amendHFDesc.substring(0,400);}}
+  // Carbon AI description
+  const carbonHFDesc=extract("CARBON_BENEFITS");
+  if(carbonHFDesc){const cd=document.getElementById("carbonAiText");if(cd){const summary=carbonHFDesc.split("\n").filter(l=>l.trim()).map(l=>l.replace(/^[-*]\s*/,"")).slice(0,3).join(". ");cd.textContent=(summary||carbonHFDesc.substring(0,400))+".";}}
+
+  // Amendment HF plan
+  const amendHF=extract("AMENDMENT_PLAN");
+  if(amendHF){const ab=document.getElementById("amendmentTableBody");if(ab&&(ab.children.length===0||ab.textContent.includes("Add amendments"))){ab.innerHTML="";amendHF.split("\n").filter(l=>l.trim().startsWith("-")).slice(0,8).forEach((l,i)=>{const text=l.replace(/^-\s*/,"");const parts=text.split(":");const name=parts[0]||text;const tr=document.createElement("tr");tr.innerHTML=`<td><strong>${name}</strong></td><td>Per label</td><td>${parts[1]||"Soil correction"}</td><td>Pre-sowing</td><td><span class="bdg ${i<2?"HIGH":"MEDIUM"}">${i<2?"HIGH":"MEDIUM"}</span></td>`;ab.appendChild(tr);});}}
+  // Carbon HF benefits
+  const carbonHF=extract("CARBON_BENEFITS");
+  if(carbonHF){const cl=document.getElementById("cc_benefits_list");if(cl){cl.innerHTML="";carbonHF.split("\n").filter(l=>l.trim().startsWith("-")).slice(0,5).forEach(l=>{const li=document.createElement("li");li.style.cssText="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--ink);";li.innerHTML=`<span style="color:var(--gl);font-size:14px;margin-top:1px;">🌱</span><span>${l.replace(/^-\s*/,"")}</span>`;cl.appendChild(li);});}}
 
   const rcBox=document.getElementById("rcBox"); rcBox.innerHTML="";
   const rcm=text.match(/ROOT CAUSE ANALYSIS([\s\S]*?)(?:## REMEDIATION|IMMEDIATE:|$)/i);
@@ -2006,13 +2509,42 @@ function parseHFText(text){
 }
 function ruleBasedNarrative(){
   const sat=S.sat||{},p=S.tp||{};
+
+  // Dynamic Rule-Based Crop Suitability Fallback
+  const ph = p.pH ? parseFloat(p.pH.value) : 7;
+  const ec = p.EC ? parseFloat(p.EC.value) : 0;
+  Object.keys(S.crops).forEach(c => {
+    let score = "Recommended";
+    if (ph > 8.5 || ec > 3) score = "Low";
+    else if (ph > 7.8 || ec > 1.5) score = "Moderately Suitable";
+    else if (c === "Wheat" || c === "Cotton") score = "Highly Recommended";
+    else if (c === "Rice" && (sat.NDWI_mean || 0) < -0.2) score = "Low";
+    S.crops[c] = score;
+  });
+  if(typeof renderCropSuitTable === "function") renderCropSuitTable();
+
+  // Carbon Benefits Fallback
+  const cl=document.getElementById("cc_benefits_list");
+  if(cl && cl.children.length===0){
+    cl.innerHTML="";
+    const defCb=["Improves soil water retention and builds drought resilience","Increases microbial biodiversity and nutrient cycling efficiency","Long-term sequestration of atmospheric CO₂","Creates potential eligibility for agricultural carbon credit markets","Reduces dependency on synthetic fertilizers over time"];
+    defCb.forEach(l=>{const li=document.createElement("li");li.style.cssText="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--ink);";li.innerHTML=`<span style="color:var(--gl);font-size:14px;margin-top:1px;">🌱</span><span>${l}</span>`;cl.appendChild(li);});
+  }
+
+  // Crop Insights Fallback
+  const ci=document.getElementById("cropHfInsights"),ct=document.getElementById("cropHfText");
+  if(ci&&ct&&(ct.textContent===""||ct.textContent==="Generating insights...")){
+    ct.textContent="Based on the soil properties (pH, EC, Organic Carbon) and current spectral indices, the recommended crops demonstrate moderate to high tolerance for the observed field conditions. For optimal yield, address primary limiting factors (like water deficit or low organic matter) prior to sowing.";
+    ci.style.display="block";
+  }
+
   const nd=sat.NDVI_mean,bs=sat.BSI_mean,nw=sat.NDWI_mean;
   const get=c=>p[c]?parseFloat(p[c].value):null;
   const causes=[];
   if(nd!=null&&nd<0.4)causes.push({tag:"PRIMARY - Vegetation Stress",text:`Normalized Difference Vegetation Index (NDVI) mean of ${nd.toFixed(3)} indicates sparse or severely stressed vegetation. Healthy agricultural land typically shows NDVI above 0.55 during active growth phases.`});
   if(nw!=null&&nw<-0.15)causes.push({tag:"PRIMARY - Water Deficit",text:`Normalized Difference Water Index (NDWI) of ${nw.toFixed(3)} signals significant water deficit in the crop canopy and surface soil, linked to inadequate rainfall or poor water-holding capacity from low Organic Carbon.`});
   if(bs!=null&&bs>0.12)causes.push({tag:"SECONDARY - Bare Soil Exposure",text:`Bare Soil Index (BSI) of ${bs.toFixed(3)} indicates elevated exposure of bare unvegetated soil. This accelerates surface evaporation, reduces soil microbial activity, and increases erosion risk during intense rainfall.`});
-  const oc=get("OC"),ph=get("pH"),ec=get("EC"),n=get("N"),zn=get("Zn");
+  const oc=get("OC"),n=get("N"),zn=get("Zn");
   if(oc!=null&&oc<0.5)causes.push({tag:"PRIMARY - Organic Matter Depletion",text:`Organic Carbon (OC) at ${oc}% is below the critical threshold of 0.5%. Depleted organic matter reduces water retention, beneficial microbial populations, cation exchange capacity, and availability of all major and micronutrients.`});
   if(ph!=null&&ph>7.8)causes.push({tag:"CONTRIBUTING - Soil Alkalinity",text:`Soil pH of ${ph} indicates alkaline to highly alkaline conditions. At pH above 7.8, plant availability of Phosphorus, Iron, Manganese, Zinc and Boron drops significantly through precipitation and fixation reactions.`});
   if(ec!=null&&ec>1.5)causes.push({tag:"CONTRIBUTING - Soil Salinity",text:`Electrical Conductivity (EC) of ${ec} dS/m indicates saline soil conditions restricting root water uptake through osmotic stress, reducing nutrient absorption efficiency.`});
@@ -2057,6 +2589,40 @@ function ruleBasedNarrative(){
   lt.push("Explore Soil Health Card scheme and NABARD farm finance for subsidised soil correction inputs");
   const fill=(id,arr)=>{const ul=document.getElementById(id);ul.innerHTML="";arr.forEach(tx=>{const li=document.createElement("li");li.textContent=tx;ul.appendChild(li);});};
   fill("planI",imm);fill("planS1",s1);fill("planS2",s2);fill("planLT",lt);
+
+  // AI Amendment Summary Fallback (rule-based, data-driven)
+  const pNut=get("P"),kNut=get("K");
+  const amendEl=document.getElementById("amendAiText");
+  if(amendEl && (amendEl.textContent.includes("Click \"Generate Report\"")||amendEl.textContent.trim()==="")){
+    const bits=[];
+    if(oc!=null)bits.push(oc<0.5
+      ? `Organic Carbon is critically low at ${oc}%, well under the 0.5% threshold needed for healthy microbial activity and moisture retention — this is the single biggest lever for improving this field, and FYM/vermicompost and green manure applications should be prioritised over synthetic inputs alone.`
+      : `Organic Carbon at ${oc}% is within an acceptable range, so amendments here should focus on maintaining biological activity through periodic organic matter top-ups rather than aggressive correction.`);
+    if(ph!=null)bits.push(ph>7.8
+      ? `Soil pH of ${ph} is alkaline, which locks up Phosphorus, Iron, Zinc and Boron — gypsum and elemental Sulphur applications are recommended to gradually bring pH down and unlock these nutrients.`
+      : ph<6.0 ? `Soil pH of ${ph} is acidic; agricultural lime is recommended to raise pH into the optimal 6.5–7.5 range for most crops.`
+      : `Soil pH of ${ph} is close to the optimal range, so no major pH correction is required at this time.`);
+    if(ec!=null&&ec>1.5)bits.push(`Electrical Conductivity of ${ec} dS/m indicates salinity stress; gypsum plus deep leaching irrigation is advised to displace sodium and restore root-zone water uptake.`);
+    if(n!=null&&n<280)bits.push(`Available Nitrogen (${n} kg/ha) is below optimal, so split-dose Urea/DAP application timed to crop growth stages will improve nitrogen use efficiency.`);
+    if(zn!=null&&zn<1.0)bits.push(`Zinc (${zn} ppm) is deficient — foliar Zinc Sulphate sprays are the fastest way to correct this within the current season.`);
+    if(pNut!=null&&pNut>60)bits.push(`Phosphorus (${pNut} kg/ha) is already adequate to high, so additional DAP/SSP application can be reduced to avoid nutrient lock-out and cost overruns.`);
+    if(kNut!=null&&kNut>400)bits.push(`Potassium (${kNut} kg/ha) is sufficient; MOP application can be minimised this cycle.`);
+    if(!bits.length)bits.push("Soil parameters are broadly within acceptable ranges. Continue balanced NPK maintenance and periodic organic matter addition to sustain current fertility levels.");
+    amendEl.textContent = bits.join(" ");
+  }
+
+  // AI Carbon Credit Outlook Fallback (rule-based, data-driven)
+  const carbonEl=document.getElementById("carbonAiText");
+  if(carbonEl && (carbonEl.textContent.includes("Click \"Generate Report\"")||carbonEl.textContent.trim()==="")){
+    const ocGain = oc!=null ? Math.max(0, (0.75-oc)) : null;
+    const bits=[];
+    bits.push(oc!=null && oc<0.5
+      ? `Current Organic Carbon of ${oc}% is well below the 0.75% target that supports strong carbon credit eligibility. Sustained organic amendments (farmyard manure, vermicompost, green manure crops) can realistically lift OC by ${ocGain? ocGain.toFixed(2):"0.3-0.5"}% over 12 months, directly increasing sequestered CO₂ per acre.`
+      : `Organic Carbon levels are reasonably healthy, giving this field a solid baseline for carbon credit accrual through continued conservation practices.`);
+    bits.push("Combined with reduced tillage, cover cropping, and biomass retention, these practices compound over multiple seasons — both raising soil carbon stocks and reducing the farm's fertiliser-linked emissions footprint.");
+    bits.push("Higher biomass and root-zone carbon also translate into better water-holding capacity and yield stability, which strengthens the financial case for enrolling this field in voluntary carbon credit or Soil Health Card-linked incentive programs.");
+    carbonEl.textContent = bits.join(" ");
+  }
 }
 
 const CROP_LIST = ["Wheat", "Rice", "Maize", "Cotton", "Sugarcane", "Soybean", "Groundnut", "Pulses", "Vegetables", "Orchards"];
@@ -2070,7 +2636,34 @@ S.customCrops = [];
 function renderCropSuitTable(){
   const body = document.getElementById("cropSuitBody"); if(!body)return;
   body.innerHTML = "";
-  
+
+  const SUIT_SCORES={"Highly Recommended":100,"Recommended":75,"Moderately Suitable":50,"Low":25,"Not Recommended":5};
+  const chartEntries = [
+    ...Object.keys(S.crops).map(crop => ({ name: crop, value: S.crops[crop] })),
+    ...S.customCrops.map(cc => ({ name: (cc.name || "").trim() || `Custom Crop ${cc.id}`, value: cc.val }))
+  ];
+
+  // Draw crop suitability bar chart
+  const csCtx=document.getElementById("cropSuitChart");
+  if(csCtx&&chartEntries.length>0){
+    if(window._cropSuitChart)window._cropSuitChart.destroy();
+    const cNames=chartEntries.map(entry=>entry.name);
+    const cVals=chartEntries.map(entry=>SUIT_SCORES[entry.value]||0);
+    const cColors=cVals.map(v=>v>=75?"#2d5a38":v>=50?"#f9a825":v>=25?"#ef6c00":"#c62828");
+    window._cropSuitChart=new Chart(csCtx,{
+      type:"bar",data:{labels:cNames,datasets:[{data:cVals,backgroundColor:cColors,borderRadius:4,barThickness:10,borderWidth:1,borderColor:"rgba(0,0,0,0.1)"}]},
+      options:{
+        indexAxis:'y',
+        plugins:{legend:{display:false},tooltip:{enabled:false}},
+        scales:{
+          x:{min:0,max:100,grid:{color:"rgba(0,0,0,0.05)",drawBorder:false},ticks:{maxRotation:0,font:{size:9},color:"#666",callback:v=>v===0?"Not Suitable":v===25?"Low":v===50?"Moderate":v===75?"Recommended":v===100?"Highly Suitable":""}},
+          y:{grid:{display:false},ticks:{font:{size:10,weight:"500"},color:"#333"}}
+        },
+        animation:{duration:1500,easing:'easeOutQuart'}
+      }
+    });
+  }
+
   // Render Presets
   CROP_LIST.forEach(crop=>{
     const val = S.crops[crop] || "Recommended";
@@ -2098,11 +2691,12 @@ function renderCropSuitTable(){
     const insight = getCropInsight(cc.val);
     const color = getCropColor(cc.val);
     
+    const displayName = (cc.name || "").trim() || `Custom Crop ${cc.id}`;
     tr.innerHTML = `
       <td>
         <div style="display:flex;align-items:center;gap:6px;">
           <button class="no-print" onclick="deleteCustomCrop(${cc.id})" style="background:none;border:none;cursor:pointer;color:var(--bd);font-size:14px;padding:0 2px;">✕</button>
-          <input type="text" class="custom-crop-name" value="${cc.name}" placeholder="Custom Crop Name" oninput="syncCustomCropName(${cc.id}, this)" style="font-weight:bold;">
+          <input type="text" class="custom-crop-name" value="${displayName}" placeholder="Custom Crop Name" oninput="syncCustomCropName(${cc.id}, this)" style="font-weight:bold;">
         </div>
       </td>
       <td>
@@ -2341,6 +2935,396 @@ function applyCrops_dup(){ return;
 }
 
 /* ============================================================
+   SOIL GRID ANALYSIS
+============================================================ */
+// Grid parameter definitions (subset from PD, with display range and label unit)
+const GRID_PARAMS = [
+  {key:"pH",  label:"pH (0-14)",       unit:"pH",       range:[0,14],    colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"EC",  label:"EC (dS/m)",       unit:"dS/m",     range:[0,5],     colorLow:"#43a047",colorHigh:"#e53935"},
+  {key:"OC",  label:"Organic Carbon (%)", unit:"%",     range:[0,1],     colorLow:"#e53935",colorHigh:"#2e7d32"},
+  {key:"N",   label:"Nitrogen (kg/ha)",unit:"kg/ha",    range:[0,800],   colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"P",   label:"Phosphorus (kg/ha)",unit:"kg/ha",  range:[0,200],   colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"K",   label:"Potassium (kg/ha)",unit:"kg/ha",   range:[0,1000],  colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"Ca",  label:"Calcium (meq/100g)",unit:"meq/100g",range:[0,100], colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"Mg",  label:"Magnesium (meq/100g)",unit:"meq/100g",range:[0,10],colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"S",   label:"Sulfur (ppm)",    unit:"ppm",      range:[0,100],   colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"Fe",  label:"Iron (ppm)",      unit:"ppm",      range:[0,50],    colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"Zn",  label:"Zinc (ppm)",      unit:"ppm",      range:[0,10],    colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"Mn",  label:"Manganese (ppm)", unit:"ppm",      range:[0,10],    colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"Cu",  label:"Copper (ppm)",    unit:"ppm",      range:[0,5],     colorLow:"#e53935",colorHigh:"#43a047"},
+  {key:"B",   label:"Boron (ppm)",     unit:"ppm",      range:[0,2],     colorLow:"#e53935",colorHigh:"#43a047"},
+];
+
+function initGridParamInputs(){
+  // Grid parameters now come directly from the manually entered Soil Parameters (S.tp) —
+  // no separate input form needed.
+  return;
+}
+
+function lerp(a,b,t){ return a+(b-a)*t; }
+function lerpColor(hexA,hexB,t){
+  const parse=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+  const [r1,g1,b1]=parse(hexA); const [r2,g2,b2]=parse(hexB);
+  return `rgb(${Math.round(lerp(r1,r2,t))},${Math.round(lerp(g1,g2,t))},${Math.round(lerp(b1,b2,t))})`;
+}
+function clamp01(v){ return Math.max(0,Math.min(1,v)); }
+// Deterministic PRNG so each parameter's grid pattern is stable across re-renders (screen + print match)
+function mulberry32(seed){
+  let a=seed>>>0;
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function hashStr(s){
+  let h=0; for(let i=0;i<s.length;i++){ h=(Math.imul(31,h)+s.charCodeAt(i))|0; }
+  return h>>>0;
+}
+
+function buildGridHeatmap(param, avgVal){
+  // Build a proper 4x3 grid with smooth, deterministic spatial variation around avgVal
+  // (bilinear interpolation between 4 corner deviations, instead of independent per-cell noise)
+  const cols=4, rows=3;
+  const [lo,hi]=param.range;
+  const norm = clamp01((avgVal-lo)/(hi-lo)||0);
+  const rand = mulberry32(hashStr(param.key));
+  const corners = [rand(),rand(),rand(),rand()].map(r=>(r-0.5)*0.32); // TL, TR, BL, BR deviation
+  const cells=[];
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const u = cols>1 ? c/(cols-1) : 0.5;
+      const v = rows>1 ? r/(rows-1) : 0.5;
+      const top = lerp(corners[0], corners[1], u);
+      const bottom = lerp(corners[2], corners[3], u);
+      const dev = lerp(top, bottom, v);
+      const t = clamp01(norm + dev);
+      const cellVal = lo + t*(hi-lo);
+      cells.push(`<div class="gpc-cell" style="background:${lerpColor(param.colorLow,param.colorHigh,t)};" title="Grid R${r+1}C${c+1}: ${cellVal.toFixed(2)} ${param.unit}"></div>`);
+    }
+  }
+  return `<div class="gpc-map" style="grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);">${cells.join("")}</div>`;
+}
+
+function renderGridParamCards(){
+  const container = document.getElementById("gridParamCards");
+  if(!container) return;
+  const cards = GRID_PARAMS.map(p=>{
+    // Read directly from the manually entered Soil Parameters (S.tp)
+    const tp = S.tp[p.key];
+    let avgVal = (tp && tp.value !== "") ? parseFloat(tp.value) : NaN;
+    const dispVal = isNaN(avgVal) ? "—" : avgVal;
+    const heatmap = isNaN(avgVal) ? `<div class="gpc-map" style="background:#f0ede8;height:80px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#9b9b9b;">No data</div>` : buildGridHeatmap(p, avgVal);
+    return `<div class="grid-param-card">
+      <div class="gpc-hdr">${p.label}</div>
+      ${heatmap}
+      <div class="gpc-avg"><span style="color:var(--mu);">0 – ${p.range[1]}</span> <strong>Avg: ${dispVal}</strong></div>
+    </div>`;
+  });
+  container.innerHTML = cards.join("");
+}
+
+function syncAmendmentMeta(){
+  const fieldArea = document.getElementById("sa_fieldArea");
+  const gridSize  = document.getElementById("sa_gridSize");
+  const totalGrids= document.getElementById("sa_totalGrids");
+  const dateInp   = document.getElementById("sa_date");
+  if(fieldArea) document.getElementById("grid_fieldArea").textContent = fieldArea.value || "—";
+  if(gridSize)  document.getElementById("grid_gridSize").textContent  = gridSize.value  || "—";
+  if(totalGrids)document.getElementById("grid_totalGrids").textContent= totalGrids.value|| "—";
+  if(dateInp)   document.getElementById("grid_date").textContent      = dateInp.value   || "—";
+}
+
+function syncGridInsights(){
+  const list = document.getElementById("gridInsightsList");
+  if(!list) return;
+  const items = [];
+  for(let i=1;i<=5;i++){
+    const el = document.getElementById("sa_insight"+i);
+    if(el && el.value.trim()) items.push(`<li>${el.value.trim()}</li>`);
+  }
+  list.innerHTML = items.length ? items.join("") : "<li>Enter grid analysis insights in the Amend tab on the left.</li>";
+}
+
+function syncAmendment(){
+  syncAmendmentMeta();
+  renderGridParamCards();
+  syncGridInsights();
+  renderAmendmentTable();
+}
+
+/* ============================================================
+   SOIL AMENDMENT TABLE
+============================================================ */
+let AMENDMENT_ROWS = [];
+let AMEND_ID = 0;
+
+const AMEND_PHASE_OPTS = ["Pre sowing","Basal","During Crop Growth","Foliar","Pre Harvest"];
+const AMEND_PRIORITY = {"HIGH":"#C0392B","MEDIUM":"#E0941E","LOW":"#4A7C3C"};
+const AMEND_INPUT_OPTIONS = [
+  "FYM / Compost","Vermicompost","Lime","Urea (46% N)","DAP (18-46-0)",
+  "MOP (0-0-60)","Zinc Sulphate","MnSO4","Boron","Micronutrient Mix"
+];
+
+function addAmendmentRow(){
+  const id = ++AMEND_ID;
+  AMENDMENT_ROWS.push({id, input:"", dose:"", purpose:"", timing:"Basal", priority:"MEDIUM", usingOther:false});
+  renderAmendmentSidebar();
+  renderAmendmentTable();
+}
+
+function removeAmendmentRow(id){
+  AMENDMENT_ROWS = AMENDMENT_ROWS.filter(r=>r.id!==id);
+  renderAmendmentSidebar();
+  renderAmendmentTable();
+}
+
+function selectAmendInput(id, val){
+  const row = AMENDMENT_ROWS.find(r=>r.id===id);
+  if(!row) return;
+  if(val === "Other"){
+    row.usingOther = true;
+    row.input = "";
+  } else {
+    row.usingOther = false;
+    row.input = val;
+  }
+  renderAmendmentSidebar();
+  renderAmendmentTable();
+}
+
+function readAmendmentRows(){
+  AMENDMENT_ROWS.forEach(row=>{
+    const el = id => document.getElementById("ar_"+id+"_"+row.id);
+    if(row.usingOther){
+      const otherEl = document.getElementById("ar_input_other_"+row.id);
+      row.input = otherEl ? otherEl.value : "";
+    }
+    if(el("dose"))     row.dose     = el("dose").value;
+    if(el("purpose"))  row.purpose  = el("purpose").value;
+    if(el("timing"))   row.timing   = el("timing").value;
+    if(el("priority")) row.priority = el("priority").value;
+  });
+}
+
+function renderAmendmentSidebar(){
+  const c = document.getElementById("amendmentRows");
+  if(!c) return;
+  if(!AMENDMENT_ROWS.length){ c.innerHTML = `<div style="font-size:12px;color:var(--mu);padding:8px 0;">No amendments added yet.</div>`; return; }
+  c.innerHTML = AMENDMENT_ROWS.map(row=>`
+    <div class="amend-row">
+      <div class="ar-grid">
+        <div><label>Input/Amendment</label><select id="ar_input_${row.id}" onchange="selectAmendInput(${row.id}, this.value)">
+          <option value="">- Select -</option>
+          ${AMEND_INPUT_OPTIONS.map(o=>`<option${(!row.usingOther && o===row.input)?" selected":""}>${o}</option>`).join("")}
+          <option value="Other"${row.usingOther?" selected":""}>Other (type below)</option>
+        </select>
+        ${row.usingOther ? `<input type="text" id="ar_input_other_${row.id}" value="${row.input}" placeholder="Custom input name" style="margin-top:5px;" oninput="readAmendmentRows();renderAmendmentTable()">` : ``}
+        </div>
+        <div><label>Dose (Per Acre)</label><input type="text" id="ar_dose_${row.id}" value="${row.dose}" placeholder="e.g. 1000 kg" oninput="readAmendmentRows();renderAmendmentTable()"></div>
+        <div><label>Purpose</label><input type="text" id="ar_purpose_${row.id}" value="${row.purpose}" placeholder="e.g. Improve organic matter" oninput="readAmendmentRows();renderAmendmentTable()"></div>
+        <div><label>Timing</label><select id="ar_timing_${row.id}" onchange="readAmendmentRows();renderAmendmentTable()">
+          ${AMEND_PHASE_OPTS.map(o=>`<option${o===row.timing?" selected":""}>${o}</option>`).join("")}
+        </select></div>
+      </div>
+      <div style="margin-top:5px;"><label>Priority</label>
+        <select id="ar_priority_${row.id}" onchange="readAmendmentRows();renderAmendmentTable()" style="width:100%;padding:5px 8px;border:1.5px solid var(--ln);border-radius:6px;font-size:12px;font-family:Inter,sans-serif;">
+          ${["HIGH","MEDIUM","LOW"].map(p=>`<option${p===row.priority?" selected":""}>${p}</option>`).join("")}
+        </select>
+      </div>
+      <button class="ar-del" onclick="removeAmendmentRow(${row.id})">✕ Remove</button>
+    </div>`).join("");
+}
+
+function renderAmendmentTable(){
+  const tbody = document.getElementById("amendmentTableBody");
+  if(!tbody) return;
+  if(!AMENDMENT_ROWS.length){
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--mu);padding:12px;">Add amendments in the Amend tab on the left.</td></tr>`;
+    drawAmendDoseChart([]);
+    return;
+  }
+  tbody.innerHTML = AMENDMENT_ROWS.map(row=>{
+    const pColor = AMEND_PRIORITY[row.priority]||"#9b9b9b";
+    const pBg = row.priority==="HIGH"?"#fde8e8":row.priority==="MEDIUM"?"#fff3e0":"#e8f5e1";
+    return `<tr>
+      <td><strong>${row.input||"—"}</strong></td>
+      <td>${row.dose||"—"}</td>
+      <td>${row.purpose||"—"}</td>
+      <td>${row.timing||"—"}</td>
+      <td><span style="background:${pBg};color:${pColor};border-radius:12px;padding:2px 10px;font-size:10.5px;font-weight:700;">${row.priority}</span></td>
+    </tr>`;
+  }).join("");
+  drawAmendDoseChart(AMENDMENT_ROWS);
+}
+
+function drawAmendDoseChart(rows){
+  const canvas = document.getElementById("amendDoseChart");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const valid = (rows||[]).map(r=>({
+    name: (r.input || "—").toString(),
+    dose: parseFloat(String(r.dose||"").replace(/[^\d.]/g,"")) || 0,
+    priority: r.priority || "MEDIUM"
+  })).filter(r=>r.dose>0);
+
+  if(!valid.length){
+    ctx.fillStyle = "#9b9b9b";
+    ctx.font = "7px Inter, sans-serif";
+    ctx.fillText("No data", 6, 26);
+    return;
+  }
+
+  const colors = valid.map(r=>AMEND_PRIORITY[r.priority]||"#4A7C3C");
+  const chartHeight = canvas.height - 10;
+  const maxVal = Math.max(...valid.map(r=>r.dose), 1);
+  const gap = 4;
+  const barWidth = Math.max(6, Math.floor((canvas.width - gap * (valid.length + 1)) / valid.length));
+
+  valid.forEach((r, i)=>{
+    const barHeight = Math.max(4, Math.round((r.dose / maxVal) * (chartHeight - 6)));
+    const x = gap + i * (barWidth + gap);
+    const y = canvas.height - 4 - barHeight;
+    ctx.fillStyle = colors[i] || "#4A7C3C";
+    ctx.fillRect(x, y, barWidth, barHeight);
+    ctx.fillStyle = "#444";
+    ctx.font = "6px Inter, sans-serif";
+    ctx.fillText((r.name || "—").slice(0, 6), x, canvas.height - 1);
+  });
+}
+
+function applyAmendment(){
+  readAmendmentRows();
+  syncAmendment();
+  alert("Amendment data applied to report!");
+}
+
+/* ============================================================
+   CARBON CREDIT
+============================================================ */
+function syncCarbon(){
+  const get = id => { const el=document.getElementById(id); return el?el.value:""; };
+  const score    = parseFloat(get("cc_score"))||0;
+  const label    = get("cc_label")||"—";
+  const ocCur    = parseFloat(get("cc_oc_cur"))||0;
+  const ocAfter  = parseFloat(get("cc_oc_after"))||0;
+  const ocSeq    = parseFloat(get("cc_oc_seq"))||0;
+  const bioCur   = parseFloat(get("cc_bio_cur"))||0;
+  const bioAfter = parseFloat(get("cc_bio_after"))||0;
+  const bioSeq   = parseFloat(get("cc_bio_seq"))||0;
+  const total    = ocSeq + bioSeq;
+
+  // Table
+  const setT = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v||"—"; };
+  setT("cc_tbl_oc_cur",  ocCur  || "—");
+  setT("cc_tbl_oc_after",ocAfter|| "—");
+  setT("cc_tbl_oc_seq",  ocSeq  || "—");
+  setT("cc_tbl_bio_cur", bioCur || "—");
+  setT("cc_tbl_bio_after",bioAfter||"—");
+  setT("cc_tbl_bio_seq", bioSeq || "—");
+  setT("cc_tbl_total",   total  ? total+" kg CO₂/acre" : "—");
+
+  // CO2 display
+  setT("cc_display_total", total ? total : "—");
+  setT("cc_display_label", total ? `${total} kg CO₂ / Acre / Year` : "—");
+
+  // Gauge
+  setT("cc_gauge_val", score || "—");
+  setT("cc_gauge_label", label);
+  drawCarbonGauge(score, label);
+  drawCarbonSeqChart(ocCur, ocAfter, bioCur, bioAfter);
+
+  // Benefits
+  const bList = document.getElementById("cc_benefits_list");
+  if(bList){
+    const icons=["🌱","💧","🌾","🌍"];
+    const bens=[get("cc_ben1"),get("cc_ben2"),get("cc_ben3"),get("cc_ben4")];
+    const items = bens.filter(b=>b.trim()).map((b,i)=>`<li style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--ink);"><span style="color:var(--gl);font-size:14px;margin-top:1px;">${icons[i]||"✓"}</span><span>${b}</span></li>`);
+    bList.innerHTML = items.length ? items.join("") : `<li style="color:var(--mu);font-size:11.5px;">Enter benefits in the Carbon tab on the left.</li>`;
+  }
+}
+
+function drawCarbonGauge(score, label){
+  const canvas = document.getElementById("carbonScoreGauge");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2, cy=H-14, r=80;
+  const startA=Math.PI, endA=0;
+  // Background arc
+  ctx.beginPath(); ctx.arc(cx,cy,r,startA,endA); ctx.lineWidth=18; ctx.strokeStyle="#e0e0e0"; ctx.stroke();
+  // Color segments
+  const segs=[{t:0.4,c:"#e53935"},{t:0.65,c:"#E0941E"},{t:0.85,c:"#a3d977"},{t:1,c:"#4A7C3C"}];
+  let prev=0;
+  segs.forEach(seg=>{
+    const sA=Math.PI+(prev*Math.PI), eA=Math.PI+(seg.t*Math.PI);
+    ctx.beginPath(); ctx.arc(cx,cy,r,sA,eA); ctx.lineWidth=18; ctx.strokeStyle=seg.c; ctx.stroke();
+    prev=seg.t;
+  });
+  // Needle
+  const norm=Math.max(0,Math.min(1,(score||0)/100));
+  const needleA=Math.PI+(norm*Math.PI);
+  ctx.save(); ctx.translate(cx,cy);
+  ctx.rotate(needleA);
+  ctx.beginPath(); ctx.moveTo(-6,0); ctx.lineTo(0,-r+6); ctx.lineTo(6,0); ctx.closePath();
+  ctx.fillStyle="#1B3A2B"; ctx.fill();
+  ctx.restore();
+  // Center dot
+  ctx.beginPath(); ctx.arc(cx,cy,6,0,Math.PI*2); ctx.fillStyle="#1B3A2B"; ctx.fill();
+}
+
+function drawCarbonSeqChart(ocCur, ocAfter, bioCur, bioAfter){
+  const canvas = document.getElementById("carbonSeqChart");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const values = [ocCur||0, bioCur||0, ocAfter||0, bioAfter||0];
+  if(!values.some(v=>v>0)){
+    ctx.fillStyle = "#9b9b9b";
+    ctx.font = "7px Inter, sans-serif";
+    ctx.fillText("No data", 6, 26);
+    return;
+  }
+
+  const maxVal = Math.max(...values, 1);
+  const groupCount = 2;
+  const barWidth = 8;
+  const groupGap = 8;
+  const chartHeight = canvas.height - 10;
+  const xStart = 6;
+
+  const groups = [
+    { label: "Cur", values: [ocCur||0, bioCur||0], color: "#c8e6c9" },
+    { label: "After", values: [ocAfter||0, bioAfter||0], color: "#2d5a38" }
+  ];
+
+  groups.forEach((group, gi)=>{
+    const baseX = xStart + gi * (groupGap + barWidth * 2 + 4);
+    group.values.forEach((value, vi)=>{
+      const barHeight = Math.max(4, Math.round((value / maxVal) * (chartHeight - 6)));
+      const x = baseX + vi * (barWidth + 2);
+      const y = canvas.height - 4 - barHeight;
+      ctx.fillStyle = group.color;
+      ctx.fillRect(x, y, barWidth, barHeight);
+    });
+  });
+
+  ctx.fillStyle = "#444";
+  ctx.font = "6px Inter, sans-serif";
+  ctx.fillText("OC", 6, canvas.height - 1);
+  ctx.fillText("Bio", 20, canvas.height - 1);
+}
+
+/* ============================================================
    INIT
 ============================================================ */
 document.getElementById("inDate").value=new Date().toISOString().split("T")[0];
@@ -2349,6 +3333,14 @@ PO.forEach(c => { S.tp[c] = { value: "", status: "" }; });
 renderSoilTable(S.tp);
 renderCropSuitTable();
 syncCover();
+initGridParamInputs();
+renderGridParamCards();
+renderAmendmentSidebar();
+renderAmendmentTable();
+// Set default date for amendment
+{ const d = document.getElementById("sa_date"); if(d) d.value = new Date().toISOString().split("T")[0]; }
+// Default carbon gauge
+drawCarbonGauge(0,"—");
 
 // Event listeners for bidirectional syncing
 ["inName","inMobile","inCrop","inLat","inLon","inDate","inArea"].forEach(id=>{
