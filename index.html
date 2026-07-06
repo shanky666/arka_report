@@ -1792,7 +1792,7 @@ function renderSoilTable(params){
       });
     }
 
-    tr.innerHTML=`<td><strong>${d.label}</strong></td><td><span style="font-family:monospace;font-size:11px">${d.unit}</span></td><td>${d.range}</td><td><input type="text" class="soil-input" id="soil_val_${c}" value="${p.value}" placeholder="${d.range}" oninput="syncSoilVal('${c}')"></td><td><select class="soil-select" id="soil_st_${c}" onchange="syncSoilVal('${c}')">${optsHTML}</select></td>`;
+    tr.innerHTML=`<td><strong>${d.label}</strong></td><td><span style="font-family:monospace;font-size:11px">${d.unit}</span></td><td>${d.range}</td><td><input type="text" class="soil-input" id="soil_val_${c}" value="${p.value}" placeholder="${d.range}" oninput="syncSoilVal('${c}')"><span class="print-only" id="p_soil_val_${c}">${p.value||"—"}</span></td><td><select class="soil-select" id="soil_st_${c}" onchange="syncSoilVal('${c}')">${optsHTML}</select><span class="print-only" id="p_soil_st_${c}">${p.status||"—"}</span></td>`;
     b.appendChild(tr);
   });
   
@@ -1810,6 +1810,12 @@ function syncSoilVal(c){
   
   const sbStEl = document.getElementById("sb_soil_st_"+c);
   if(sbStEl && sbStEl.value !== st) sbStEl.value = st;
+  
+  // Update print-only spans so PDF export reflects the current values
+  const pValEl = document.getElementById("p_soil_val_"+c);
+  if(pValEl) pValEl.textContent = v || "—";
+  const pStEl = document.getElementById("p_soil_st_"+c);
+  if(pStEl) pStEl.textContent = st || "—";
   
   updateSoiLENZ();
   syncCover();
@@ -1862,6 +1868,12 @@ function syncSoilFromSidebar(c){
   const repStEl = document.getElementById("soil_st_"+c);
   if(repStEl && repStEl.value !== st) repStEl.value = st;
   
+  // Update print-only spans so PDF export reflects the current values
+  const pValEl = document.getElementById("p_soil_val_"+c);
+  if(pValEl) pValEl.textContent = v || "—";
+  const pStEl = document.getElementById("p_soil_st_"+c);
+  if(pStEl) pStEl.textContent = st || "—";
+  
   updateSoiLENZ();
   syncCover();
   renderGridParamCards();
@@ -1872,6 +1884,10 @@ function applySoilFromSidebar(){
     const v = document.getElementById("sb_soil_val_"+c)?.value?.trim() || "";
     const st = document.getElementById("sb_soil_st_"+c)?.value || "";
     S.tp[c] = { range: PD[c].range, value: v, status: st };
+    const pValEl2 = document.getElementById("p_soil_val_"+c);
+    if(pValEl2) pValEl2.textContent = v || "—";
+    const pStEl2 = document.getElementById("p_soil_st_"+c);
+    if(pStEl2) pStEl2.textContent = st || "—";
     
     // Update report sheet inputs
     const repValEl = document.getElementById("soil_val_"+c);
@@ -2874,6 +2890,19 @@ document.getElementById("exportPdfBtn").addEventListener("click", () => {
   const lon = (document.getElementById("inLon") || {}).value || "";
   const pll = document.getElementById("pLatLon");
   if (pll) pll.textContent = (lat && lon) ? `${lat}N, ${lon}E` : (lat || lon || "—");
+
+  // Soil Health Profile table — refresh print-only spans from current values,
+  // in case they got out of sync (e.g. value set programmatically)
+  if (typeof PO !== "undefined") {
+    PO.forEach(c => {
+      const v  = document.getElementById("soil_val_" + c)?.value?.trim() || "";
+      const st = document.getElementById("soil_st_" + c)?.value || "";
+      const pv = document.getElementById("p_soil_val_" + c);
+      if (pv) pv.textContent = v || "—";
+      const ps = document.getElementById("p_soil_st_" + c);
+      if (ps) ps.textContent = st || "—";
+    });
+  }
 
   // 2. Set document title so Save-as-PDF dialog gets a good filename
   const name = document.getElementById("inName").value || "AgriInsight";
