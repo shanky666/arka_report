@@ -2694,6 +2694,7 @@ function renderCropSuitTable(){
         <select class="crop-suit-sel" style="color:${color};font-weight:bold" onchange="syncCropSuit('${crop}', this)">
           ${optHTML}
         </select>
+        <span class="print-only" style="color:${color};font-weight:bold;">${val}</span>
       </td>
       <td style="font-size:11px;color:var(--mu);">${insight}</td>`;
     body.appendChild(tr);
@@ -2713,12 +2714,14 @@ function renderCropSuitTable(){
         <div style="display:flex;align-items:center;gap:6px;">
           <button class="no-print" onclick="deleteCustomCrop(${cc.id})" style="background:none;border:none;cursor:pointer;color:var(--bd);font-size:14px;padding:0 2px;">✕</button>
           <input type="text" class="custom-crop-name" value="${displayName}" placeholder="Custom Crop Name" oninput="syncCustomCropName(${cc.id}, this)" style="font-weight:bold;">
+          <span class="print-only" id="p_cc_name_${cc.id}" style="font-weight:bold;">${displayName}</span>
         </div>
       </td>
       <td>
         <select class="crop-suit-sel" style="color:${color};font-weight:bold" onchange="syncCustomCropSuit(${cc.id}, this)">
           ${optHTML}
         </select>
+        <span class="print-only" style="color:${color};font-weight:bold;">${cc.val}</span>
       </td>
       <td style="font-size:11px;color:var(--mu);">${insight}</td>`;
     body.appendChild(tr);
@@ -2803,6 +2806,8 @@ function syncCustomCropNameFromSidebar(id, el){
   if(cc) cc.name = el.value;
   const repEl = document.querySelector(`#crow_${id} .custom-crop-name`);
   if(repEl && repEl.value !== el.value) repEl.value = el.value;
+  const pEl = document.getElementById("p_cc_name_" + id);
+  if(pEl) pEl.textContent = el.value.trim() || `Custom Crop ${id}`;
 }
 
 function syncCustomCropSuitFromSidebar(id, el){
@@ -2822,6 +2827,8 @@ function syncCustomCropName(id, el){
   if(cc) cc.name = el.value;
   const sbEl = document.getElementById("sb_cc_name_" + id);
   if(sbEl && sbEl.value !== el.value) sbEl.value = el.value;
+  const pEl = document.getElementById("p_cc_name_" + id);
+  if(pEl) pEl.textContent = el.value.trim() || `Custom Crop ${id}`;
 }
 
 function syncCustomCropSuit(id, el){
